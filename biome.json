@@ -11,7 +11,7 @@
   },
 
   "files": {
-    "includes": ["**", "!apps/*/.react-router/**/*.*"]
+    "includes": ["**", "!apps/*/.react-router/**/*.*", "!.turbo"]
   },
 
   "css": {

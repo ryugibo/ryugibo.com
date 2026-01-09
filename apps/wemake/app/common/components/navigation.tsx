@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import { cn } from "~/lib/utils";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -9,7 +10,6 @@ import {
   navigationMenuTriggerStyle,
 } from "./ui/navigation-menu";
 import { Separator } from "./ui/separator";
-import { cn } from "~/lib/utils";
 
 const menus = [
   {
