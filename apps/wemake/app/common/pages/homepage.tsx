@@ -1,6 +1,7 @@
 import { Link, type MetaFunction } from "react-router";
 import { PostCard } from "../../features/community/components/post-card";
 import { IdeaCard } from "../../features/ideas/components/idea-card";
+import { JobCard } from "../../features/jobs/components/job-card";
 import { ProductCard } from "../../features/products/components/product-card";
 import { Button } from "../components/ui/button";
 
@@ -36,6 +37,18 @@ const ideas = Array.from({ length: 10 }).map((_, index) => ({
   createdAt: "12 hours ago",
   likesCount: 12,
   claimed: index % 2 === 0,
+}));
+
+const jobs = Array.from({ length: 10 }).map((_, index) => ({
+  id: `jobId-${index}`,
+  companyName: "Tesla Motors",
+  companyLogoUrl: "https://github.com/teslamotors.png",
+  title: "Software Engineer",
+  postedAt: "12 hours ago",
+  type: "Full-time",
+  locationType: "Remote",
+  salary: "$100,000 - $150,000",
+  location: "San Francisco, CA",
 }));
 
 export default function Homepage() {
@@ -79,6 +92,18 @@ export default function Homepage() {
         </div>
         {ideas.map((idea) => (
           <IdeaCard key={idea.id} {...idea} />
+        ))}
+      </div>
+      <div className="grid grid-cols-4 gap-4">
+        <div>
+          <h2 className="text-5xl font-bold leading-tight tracking-tight">Latest Jobs</h2>
+          <p className="text-2xl font-light text-foreground">Find jobs for your next project.</p>
+          <Button variant="link" asChild className="text-lg p-0">
+            <Link to="/jobs">Explore all jobs &rarr;</Link>
+          </Button>
+        </div>
+        {jobs.map((job) => (
+          <JobCard key={job.id} {...job} />
         ))}
       </div>
     </div>
