@@ -34,8 +34,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <Navigation isLoggedIn={true} hasNotifications={true} hasMessages={true} />
-        {children}
+        <div className="py-28">
+          <Navigation isLoggedIn={true} hasNotifications={true} hasMessages={true} />
+          {children}
+        </div>
         <ScrollRestoration />
         <Scripts />
       </body>
