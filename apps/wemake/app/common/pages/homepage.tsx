@@ -3,6 +3,7 @@ import { PostCard } from "../../features/community/components/post-card";
 import { IdeaCard } from "../../features/ideas/components/idea-card";
 import { JobCard } from "../../features/jobs/components/job-card";
 import { ProductCard } from "../../features/products/components/product-card";
+import { TeamCard } from "../../features/teams/components/team-card";
 import { Button } from "../components/ui/button";
 
 export const meta: MetaFunction = () => [
@@ -49,6 +50,14 @@ const jobs = Array.from({ length: 10 }).map((_, index) => ({
   locationType: "Remote",
   salary: "$100,000 - $150,000",
   location: "San Francisco, CA",
+}));
+
+const teams = Array.from({ length: 10 }).map((_, index) => ({
+  id: `teamId-${index}`,
+  leaderName: "wemake",
+  leaderAvatarUrl: "https://github.com/shadcn.png",
+  positions: ["React Developer", "Backend Developer", "Product Manager"],
+  projectDescription: "a new social media platform",
 }));
 
 export default function Homepage() {
@@ -104,6 +113,20 @@ export default function Homepage() {
         </div>
         {jobs.map((job) => (
           <JobCard key={job.id} {...job} />
+        ))}
+      </div>
+      <div className="grid grid-cols-4 gap-4">
+        <div>
+          <h2 className="text-5xl font-bold leading-tight tracking-tight">Find a team member</h2>
+          <p className="text-2xl font-light text-foreground">
+            Find a team member for your next project.
+          </p>
+          <Button variant="link" asChild className="text-lg p-0">
+            <Link to="/teams">Explore all teams &rarr;</Link>
+          </Button>
+        </div>
+        {teams.map((team) => (
+          <TeamCard key={team.id} {...team} />
         ))}
       </div>
     </div>
