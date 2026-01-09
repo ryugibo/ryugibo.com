@@ -25,12 +25,13 @@ const posts = Array.from({ length: 10 }).map((_, index) => ({
   authorName: "Wemake",
   authorAvatarUrl: "https://github.com/shadcn.png",
   category: "Productivity",
-  postedAt: "12 hours ago"
+  postedAt: "12 hours ago",
 }));
 
 const ideas = Array.from({ length: 10 }).map((_, index) => ({
   id: `ideaId-${index}`,
-  title: "A startup that creates an AI-powered generated personal trainer, delivering customized fitness recommendations and tracking of progress using a mobile app to track workouts and progress as well as a website to manage the business.",
+  title:
+    "A startup that creates an AI-powered generated personal trainer, delivering customized fitness recommendations and tracking of progress using a mobile app to track workouts and progress as well as a website to manage the business.",
   viewCount: 123,
   createdAt: "12 hours ago",
   likesCount: 12,
@@ -38,53 +39,48 @@ const ideas = Array.from({ length: 10 }).map((_, index) => ({
 }));
 
 export default function Homepage() {
-  return <div className="px-20 space-y-40">
-    <div className="grid grid-cols-3 gap-4">
-      <div>
-        <h2 className="text-5xl font-bold leading-tight tracking-tight">
-          Today's Products
-        </h2>
-        <p className="text-2xl font-light text-foreground">The best products made by our community today.</p>
-        <Button variant="link" asChild className="text-lg p-0">
-          <Link to="/products">Explore all products &rarr;</Link>
-        </Button>
+  return (
+    <div className="px-20 space-y-40">
+      <div className="grid grid-cols-3 gap-4">
+        <div>
+          <h2 className="text-5xl font-bold leading-tight tracking-tight">Today's Products</h2>
+          <p className="text-2xl font-light text-foreground">
+            The best products made by our community today.
+          </p>
+          <Button variant="link" asChild className="text-lg p-0">
+            <Link to="/products">Explore all products &rarr;</Link>
+          </Button>
+        </div>
+        {products.map((product) => (
+          <ProductCard key={product.id} {...product} />
+        ))}
       </div>
-      {products.map((product) => (
-        <ProductCard
-          key={product.id}
-          {...product}
-        />
-      ))}
-    </div>
-    <div className="grid grid-cols-3 gap-4">
-      <div>
-        <h2 className="text-5xl font-bold leading-tight tracking-tight">
-          Latest Discussions
-        </h2>
-        <p className="text-2xl font-light text-foreground">The latest discussions from our community.</p>
-        <Button variant="link" asChild className="text-lg p-0">
-          <Link to="/community">Explore all discussions &rarr;</Link>
-        </Button>
+      <div className="grid grid-cols-3 gap-4">
+        <div>
+          <h2 className="text-5xl font-bold leading-tight tracking-tight">Latest Discussions</h2>
+          <p className="text-2xl font-light text-foreground">
+            The latest discussions from our community.
+          </p>
+          <Button variant="link" asChild className="text-lg p-0">
+            <Link to="/community">Explore all discussions &rarr;</Link>
+          </Button>
+        </div>
+        {posts.map((post) => (
+          <PostCard key={post.id} {...post} />
+        ))}
       </div>
-      {posts.map((post) => (
-        <PostCard
-          key={post.id}
-          {...post}
-        />
-      ))}
-    </div>
-    <div className="grid grid-cols-3 gap-4">
-      <div>
+      <div className="grid grid-cols-3 gap-4">
+        <div>
           <h2 className="text-5xl font-bold leading-tight tracking-tight">IdeasGPT</h2>
-        <p className="text-2xl font-light text-foreground">Find ideas for your next project.</p>
-        <Button variant="link" asChild className="text-lg p-0">
-          <Link to="/ideas">Explore all ideas &rarr;</Link>
-        </Button>
-      </div>
-      {ideas.map((idea) => (
+          <p className="text-2xl font-light text-foreground">Find ideas for your next project.</p>
+          <Button variant="link" asChild className="text-lg p-0">
+            <Link to="/ideas">Explore all ideas &rarr;</Link>
+          </Button>
+        </div>
+        {ideas.map((idea) => (
           <IdeaCard key={idea.id} {...idea} />
-      ))}
+        ))}
       </div>
     </div>
-  </div>;
+  );
 }
