@@ -1,6 +1,6 @@
-import type { MetaFunction } from "react-router";
+import type { Route } from "./+types/search";
 
-export const meta: MetaFunction = () => [
+export const meta: Route.MetaFunction = () => [
   { title: "Search | wemake" },
   { name: "description", content: "Search Products" },
 ];

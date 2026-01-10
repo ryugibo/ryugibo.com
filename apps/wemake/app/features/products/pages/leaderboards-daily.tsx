@@ -1,6 +1,6 @@
-import type { MetaFunction } from "react-router";
+import type { Route } from "./+types/leaderboards-daily";
 
-export const meta: MetaFunction = () => [
+export const meta: Route.MetaFunction = () => [
   { title: "Daily Leaderboard | wemake" },
   { name: "description", content: "Daily Product Leaderboard" },
 ];

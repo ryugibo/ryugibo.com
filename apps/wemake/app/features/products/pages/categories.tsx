@@ -1,6 +1,6 @@
-import type { MetaFunction } from "react-router";
+import type { Route } from "./+types/categories";
 
-export const meta: MetaFunction = () => [
+export const meta: Route.MetaFunction = () => [
   { title: "Categories | wemake" },
   { name: "description", content: "Product Categories" },
 ];

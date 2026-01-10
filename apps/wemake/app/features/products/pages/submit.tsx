@@ -1,6 +1,6 @@
-import type { MetaFunction } from "react-router";
+import type { Route } from "./+types/submit";
 
-export const meta: MetaFunction = () => [
+export const meta: Route.MetaFunction = () => [
   { title: "Submit Product | wemake" },
   { name: "description", content: "Submit a new product" },
 ];

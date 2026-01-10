@@ -1,17 +1,19 @@
-import { Link, type MetaFunction } from "react-router";
+import { Link } from "react-router";
 import { PostCard } from "../../features/community/components/post-card";
 import { IdeaCard } from "../../features/ideas/components/idea-card";
 import { JobCard } from "../../features/jobs/components/job-card";
 import { ProductCard } from "../../features/products/components/product-card";
 import { TeamCard } from "../../features/teams/components/team-card";
 import { Button } from "../components/ui/button";
+import type { Route } from "./+types/homepage";
 
-export const meta: MetaFunction = () => [
+export const meta: Route.MetaFunction = () => [
   {
     title: "Home",
   },
   { name: "description", content: "Welcome to wemake" },
 ];
+
 const products = Array.from({ length: 11 }).map((_, index) => ({
   id: `productId-${index}`,
   title: "Product Title",
