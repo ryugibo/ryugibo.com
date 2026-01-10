@@ -1,10 +1,10 @@
 import { Link } from "react-router";
-import { PostCard } from "../../features/community/components/post-card";
-import { IdeaCard } from "../../features/ideas/components/idea-card";
-import { JobCard } from "../../features/jobs/components/job-card";
-import { ProductCard } from "../../features/products/components/product-card";
-import { TeamCard } from "../../features/teams/components/team-card";
-import { Button } from "../components/ui/button";
+import { Button } from "~/common/components/ui/button";
+import { PostCard } from "~/features/community/components/post-card";
+import { IdeaCard } from "~/features/ideas/components/idea-card";
+import { JobCard } from "~/features/jobs/components/job-card";
+import { ProductCard } from "~/features/products/components/product-card";
+import { TeamCard } from "~/features/teams/components/team-card";
 import type { Route } from "./+types/homepage";
 
 export const meta: Route.MetaFunction = () => [
