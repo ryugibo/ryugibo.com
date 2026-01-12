@@ -7,7 +7,7 @@ import { Button } from "~/common/components/ui/button";
 import { ProductCard } from "~/features/products/components/product-card";
 import type { Route } from "./+types/leaderboards-yearly-page";
 
-export function meta({ loaderData }: Route.MetaArgs) {
+export const meta = ({ loaderData }: Route.MetaArgs) => {
   if (!loaderData) {
     return [{ title: "Best of year | wemake" }];
   }
@@ -17,13 +17,13 @@ export function meta({ loaderData }: Route.MetaArgs) {
       title: `Best of year ${date.startOf("year").toLocaleString({ year: "numeric" })} | wemake`,
     },
   ];
-}
+};
 
 const paramsSchema = z.object({
   year: z.coerce.number(),
 });
 
-export function loader({ params }: Route.LoaderArgs) {
+export const loader = ({ params }: Route.LoaderArgs) => {
   const { success, data: parsedData } = paramsSchema.safeParse(params);
   if (!success) {
     throw data({ error_code: "invalid_date", message: "invalid date" }, { status: 400 });
@@ -39,7 +39,7 @@ export function loader({ params }: Route.LoaderArgs) {
   return {
     ...parsedData,
   };
-}
+};
 
 const products = Array.from({ length: 11 }).map((_, index) => ({
   id: `productId-${index}`,

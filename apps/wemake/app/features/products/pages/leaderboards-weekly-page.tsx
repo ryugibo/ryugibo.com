@@ -7,7 +7,7 @@ import { Button } from "~/common/components/ui/button";
 import { ProductCard } from "~/features/products/components/product-card";
 import type { Route } from "./+types/leaderboards-weekly-page";
 
-export function meta({ loaderData }: Route.MetaArgs) {
+export const meta = ({ loaderData }: Route.MetaArgs) => {
   if (!loaderData) {
     return [{ title: "Best of week | wemake" }];
   }
@@ -17,14 +17,14 @@ export function meta({ loaderData }: Route.MetaArgs) {
       title: `Best of week ${date.startOf("week").toLocaleString(DateTime.DATE_SHORT)} - ${date.endOf("week").toLocaleString(DateTime.DATE_SHORT)} | wemake`,
     },
   ];
-}
+};
 
 const paramsSchema = z.object({
   weekYear: z.coerce.number(),
   weekNumber: z.coerce.number(),
 });
 
-export function loader({ params }: Route.LoaderArgs) {
+export const loader = ({ params }: Route.LoaderArgs) => {
   const { success, data: parsedData } = paramsSchema.safeParse(params);
   if (!success) {
     throw data({ error_code: "invalid_date", message: "invalid date" }, { status: 400 });
@@ -40,7 +40,7 @@ export function loader({ params }: Route.LoaderArgs) {
   return {
     ...parsedData,
   };
-}
+};
 
 const products = Array.from({ length: 11 }).map((_, index) => ({
   id: `productId-${index}`,
