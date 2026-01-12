@@ -7,10 +7,15 @@ import { Button } from "~/common/components/ui/button";
 import { ProductCard } from "~/features/products/components/product-card";
 import type { Route } from "./+types/leaderboards-weekly";
 
-export function meta(_: Route.MetaArgs) {
+export function meta({ loaderData }: Route.MetaArgs) {
+  if (!loaderData) {
+    return [{ title: "Best of week | wemake" }];
+  }
+  const date = DateTime.fromObject(loaderData);
   return [
-    { title: "Daily Leaderboard | wemake" },
-    { name: "description", content: "Daily Product Leaderboard" },
+    {
+      title: `Best of week ${date.startOf("week").toLocaleString(DateTime.DATE_SHORT)} - ${date.endOf("week").toLocaleString(DateTime.DATE_SHORT)} | wemake`,
+    },
   ];
 }
 
@@ -53,7 +58,9 @@ export default function LeaderboardsWeeklyPage({ loaderData }: Route.ComponentPr
   const isToday = urlDate.equals(DateTime.now().startOf("week"));
   return (
     <div className="space-y-10">
-      <Hero title={`Best of week ${urlDate.startOf("week").toLocaleString(DateTime.DATE_SHORT)}`} />
+      <Hero
+        title={`Best of week ${urlDate.startOf("week").toLocaleString(DateTime.DATE_SHORT)} - ${urlDate.endOf("week").toLocaleString(DateTime.DATE_SHORT)}`}
+      />
       <div className="flex items-center justify-center gap-2">
         <Button variant="secondary">
           <Link to={`/products/leaderboards/weekly/${prevDate.weekYear}/${prevDate.weekNumber}`}>

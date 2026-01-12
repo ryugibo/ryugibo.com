@@ -7,10 +7,15 @@ import { Button } from "~/common/components/ui/button";
 import { ProductCard } from "~/features/products/components/product-card";
 import type { Route } from "./+types/leaderboards-monthly";
 
-export function meta(_: Route.MetaArgs) {
+export function meta({ loaderData }: Route.MetaArgs) {
+  if (!loaderData) {
+    return [{ title: "Best of month | wemake" }];
+  }
+  const date = DateTime.fromObject(loaderData);
   return [
-    { title: "Daily Leaderboard | wemake" },
-    { name: "description", content: "Daily Product Leaderboard" },
+    {
+      title: `Best of month ${date.startOf("month").toLocaleString({ month: "long", year: "numeric" })} | wemake`,
+    },
   ];
 }
 

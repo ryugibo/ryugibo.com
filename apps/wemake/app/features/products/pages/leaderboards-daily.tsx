@@ -7,11 +7,12 @@ import { Button } from "~/common/components/ui/button";
 import { ProductCard } from "~/features/products/components/product-card";
 import type { Route } from "./+types/leaderboards-daily";
 
-export function meta(_: Route.MetaArgs) {
-  return [
-    { title: "Daily Leaderboard | wemake" },
-    { name: "description", content: "Daily Product Leaderboard" },
-  ];
+export function meta({ loaderData }: Route.MetaArgs) {
+  if (!loaderData) {
+    return [{ title: "The best products | wemake" }];
+  }
+  const date = DateTime.fromObject(loaderData);
+  return [{ title: `The best products of ${date.toLocaleString(DateTime.DATE_MED)} | wemake` }];
 }
 
 const paramsSchema = z.object({
