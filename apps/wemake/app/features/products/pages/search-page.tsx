@@ -1,4 +1,4 @@
-import type { Route } from "./+types/search";
+import type { Route } from "./+types/search-page";
 
 export const meta: Route.MetaFunction = () => [
   { title: "Search | wemake" },

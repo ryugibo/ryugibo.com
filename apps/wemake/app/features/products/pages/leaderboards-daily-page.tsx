@@ -5,22 +5,20 @@ import { Hero } from "~/common/components/hero";
 import { ProductPagination } from "~/common/components/product-pagination";
 import { Button } from "~/common/components/ui/button";
 import { ProductCard } from "~/features/products/components/product-card";
-import type { Route } from "./+types/leaderboards-yearly";
+import type { Route } from "./+types/leaderboards-daily-page";
 
 export function meta({ loaderData }: Route.MetaArgs) {
   if (!loaderData) {
-    return [{ title: "Best of year | wemake" }];
+    return [{ title: "The best products | wemake" }];
   }
   const date = DateTime.fromObject(loaderData);
-  return [
-    {
-      title: `Best of year ${date.startOf("year").toLocaleString({ year: "numeric" })} | wemake`,
-    },
-  ];
+  return [{ title: `The best products of ${date.toLocaleString(DateTime.DATE_MED)} | wemake` }];
 }
 
 const paramsSchema = z.object({
   year: z.coerce.number(),
+  month: z.coerce.number(),
+  day: z.coerce.number(),
 });
 
 export function loader({ params }: Route.LoaderArgs) {
@@ -32,7 +30,7 @@ export function loader({ params }: Route.LoaderArgs) {
   if (!date.isValid) {
     throw data({ error_code: "invalid_date", message: "invalid date" }, { status: 400 });
   }
-  const today = DateTime.now().startOf("year");
+  const today = DateTime.now().startOf("day");
   if (date > today) {
     throw data({ error_code: "future_date", message: "future date" }, { status: 400 });
   }
@@ -50,24 +48,28 @@ const products = Array.from({ length: 11 }).map((_, index) => ({
   upvotesCount: 120,
 }));
 
-export default function LeaderboardsYearlyPage({ loaderData }: Route.ComponentProps) {
+export default function LeaderboardsDailyPage({ loaderData }: Route.ComponentProps) {
   const urlDate = DateTime.fromObject(loaderData);
-  const prevDate = urlDate.minus({ year: 1 });
-  const nextDate = urlDate.plus({ year: 1 });
-  const isToday = urlDate.equals(DateTime.now().startOf("year"));
+  const prevDate = urlDate.minus({ days: 1 });
+  const nextDate = urlDate.plus({ days: 1 });
+  const isToday = urlDate.equals(DateTime.now().startOf("day"));
   return (
     <div className="space-y-10">
-      <Hero title={`Best of year ${urlDate.startOf("year").toLocaleString({ year: "numeric" })}`} />
+      <Hero title={`The best products of ${urlDate.toLocaleString(DateTime.DATE_MED)}`} />
       <div className="flex items-center justify-center gap-2">
         <Button variant="secondary">
-          <Link to={`/products/leaderboards/yearly/${prevDate.year}`}>
-            &larr; {prevDate.toLocaleString({ year: "numeric" })}
+          <Link
+            to={`/products/leaderboards/daily/${prevDate.year}/${prevDate.month}/${prevDate.day}`}
+          >
+            &larr; {prevDate.toLocaleString(DateTime.DATE_SHORT)}
           </Link>
         </Button>
         {!isToday && (
           <Button variant="secondary">
-            <Link to={`/products/leaderboards/yearly/${nextDate.year}`}>
-              {nextDate.toLocaleString({ year: "numeric" })} &rarr;
+            <Link
+              to={`/products/leaderboards/daily/${nextDate.year}/${nextDate.month}/${nextDate.day}`}
+            >
+              {nextDate.toLocaleString(DateTime.DATE_SHORT)} &rarr;
             </Link>
           </Button>
         )}

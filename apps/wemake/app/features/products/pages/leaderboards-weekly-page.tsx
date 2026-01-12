@@ -5,7 +5,7 @@ import { Hero } from "~/common/components/hero";
 import { ProductPagination } from "~/common/components/product-pagination";
 import { Button } from "~/common/components/ui/button";
 import { ProductCard } from "~/features/products/components/product-card";
-import type { Route } from "./+types/leaderboards-weekly";
+import type { Route } from "./+types/leaderboards-weekly-page";
 
 export function meta({ loaderData }: Route.MetaArgs) {
   if (!loaderData) {

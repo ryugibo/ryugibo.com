@@ -2,7 +2,7 @@ import { Link } from "react-router";
 import { Hero } from "~/common/components/hero";
 import { Button } from "~/common/components/ui/button";
 import { ProductCard } from "~/features/products/components/product-card";
-import type { Route } from "./+types/leaderboards";
+import type { Route } from "./+types/leaderboards-page";
 
 const products = Array.from({ length: 10 }).map((_, index) => ({
   id: `productId-${index}`,

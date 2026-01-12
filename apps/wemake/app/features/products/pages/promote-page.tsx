@@ -1,4 +1,4 @@
-import type { Route } from "./+types/promote";
+import type { Route } from "./+types/promote-page";
 
 export const meta: Route.MetaFunction = () => [
   { title: "Promote Product | wemake" },

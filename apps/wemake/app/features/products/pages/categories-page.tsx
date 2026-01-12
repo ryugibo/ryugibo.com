@@ -1,4 +1,4 @@
-import type { Route } from "./+types/categories";
+import type { Route } from "./+types/categories-page";
 
 export const meta: Route.MetaFunction = () => [
   { title: "Categories | wemake" },
