@@ -1,14 +1,31 @@
-import type { Route } from "./+types/category-page";
+import { Hero } from "~/common/components/hero";
+import { ProductPagination } from "~/common/components/product-pagination";
+import { ProductCard } from "~/features/products/components/product-card";
 
-export const meta: Route.MetaFunction = () => [
-  { title: "Category | wemake" },
-  { name: "description", content: "Product Category" },
+export const meta = () => [
+  { title: "Developer Tools | wemake" },
+  { name: "description", content: "Tools for developers to build products faster" },
 ];
 
 export default function CategoryPage() {
   return (
     <div className="space-y-10">
-      <h1 className="text-4xl font-bold">Category</h1>
+      <Hero title="Developer Tools" description="Tools for developers to build products faster" />
+
+      <div className="space-y-5 w-full max-w-3xl mx-auto">
+        {[...Array(10).keys()].map((index) => (
+          <ProductCard
+            key={`productId-${index}`}
+            id={`productId-${index}`}
+            title="Product Title"
+            description="Product Description"
+            commentsCount={12}
+            viewsCount={12}
+            upvotesCount={120}
+          />
+        ))}
+      </div>
+      <ProductPagination totalPages={10} />
     </div>
   );
 }
