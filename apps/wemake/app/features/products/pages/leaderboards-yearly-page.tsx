@@ -41,15 +41,6 @@ export const loader = ({ params }: Route.LoaderArgs) => {
   };
 };
 
-const products = Array.from({ length: 11 }).map((_, index) => ({
-  id: `productId-${index}`,
-  title: "Product Title",
-  description: "Product Description",
-  commentsCount: 12,
-  viewsCount: 12,
-  upvotesCount: 120,
-}));
-
 export default function LeaderboardsYearlyPage({ loaderData }: Route.ComponentProps) {
   const urlDate = DateTime.fromObject(loaderData);
   const prevDate = urlDate.minus({ year: 1 });
@@ -73,8 +64,16 @@ export default function LeaderboardsYearlyPage({ loaderData }: Route.ComponentPr
         )}
       </div>
       <div className="space-y-5 w-full max-w-3xl mx-auto">
-        {products.map((product) => (
-          <ProductCard key={product.id} {...product} />
+        {[...Array(11).keys()].map((index) => (
+          <ProductCard
+            key={`productId-${index}`}
+            id={`productId-${index}`}
+            title={"Product Title"}
+            description={"Product Description"}
+            commentsCount={12}
+            viewsCount={12}
+            upvotesCount={120}
+          />
         ))}
       </div>
       <ProductPagination totalPages={10} />
