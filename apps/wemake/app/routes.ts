@@ -1,7 +1,7 @@
 import { index, layout, prefix, type RouteConfig, route } from "@react-router/dev/routes";
 
 export default [
-  index("common/pages/homepage.tsx"),
+  index("common/pages/home-page.tsx"),
   ...prefix("products", [
     index("features/products/pages/products-page.tsx"),
     ...prefix("leaderboards", [
