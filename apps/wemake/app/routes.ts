@@ -26,10 +26,7 @@ export default [
       index("features/products/pages/product-redirect-page.tsx"),
       layout("features/products/layouts/product-layout.tsx", [
         route("/overview", "features/products/pages/product-overview-page.tsx"),
-        ...prefix("/reviews", [
-          index("features/products/pages/product-reviews-page.tsx"),
-          route("/new", "features/products/pages/product-review-new-page.tsx"),
-        ]),
+        route("/reviews", "features/products/pages/product-reviews-page.tsx"),
       ]),
     ]),
   ]),
