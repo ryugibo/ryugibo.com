@@ -1,6 +1,7 @@
 import { Form, Link } from "react-router";
 import InputPair from "~/common/components/input-pair";
 import { Button } from "~/common/components/ui/button";
+import AuthButtons from "~/features/auth/components/auth-buttons";
 
 export const meta = () => {
   return [{ title: "Join | wemake" }];
@@ -55,6 +56,7 @@ export default function JoinPage() {
             Create an account
           </Button>
         </Form>
+        <AuthButtons />
       </div>
     </div>
   );
