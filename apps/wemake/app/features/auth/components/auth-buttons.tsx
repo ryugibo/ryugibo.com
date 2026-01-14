@@ -1,4 +1,5 @@
-import { GithubIcon, LockIcon, MessageCircleIcon } from "lucide-react";
+import { SiGithub } from "@icons-pack/react-simple-icons";
+import { LockIcon, MessageCircleIcon } from "lucide-react";
 import { Link } from "react-router";
 import { Button } from "~/common/components/ui/button";
 import { Separator } from "~/common/components/ui/separator";
@@ -22,7 +23,7 @@ export default function AuthButtons() {
         </Button>
         <Button variant="outline" className="w-full" asChild>
           <Link to="/auth/social/github/start">
-            <GithubIcon className="size-4" />
+            <SiGithub className="size-5" />
             Github
           </Link>
         </Button>
