@@ -5,12 +5,14 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLocation,
 } from "react-router";
 
 import type { Route } from "./+types/root";
 import "~/app.css";
 import { Settings } from "luxon";
 import Navigation from "~/common/components/navigation";
+import { cn } from "./lib/utils";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -29,6 +31,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
   Settings.defaultLocale = "ko";
   Settings.defaultZone = "Asia/Seoul";
 
+  const { pathname } = useLocation();
+
   return (
     <html lang="ko">
       <head>
@@ -38,9 +42,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <main className="px-20">
-          <div className="py-28">
-            <Navigation isLoggedIn={true} hasNotifications={true} hasMessages={true} />
+        <main>
+          <div className={cn(!pathname.startsWith("/auth") && "py-28 px-20")}>
+            {!pathname.startsWith("/auth") && (
+              <Navigation isLoggedIn={true} hasNotifications={true} hasMessages={true} />
+            )}
             {children}
           </div>
         </main>
