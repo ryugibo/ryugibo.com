@@ -12,7 +12,7 @@ export const meta = () => [
   { name: "description", content: "Share your product with the world" },
 ];
 
-export default function SubmitPage() {
+export default function ProductSubmitPage() {
   const [icon, setIcon] = useState<string | null>(null);
   const onChangeIcon = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) {
