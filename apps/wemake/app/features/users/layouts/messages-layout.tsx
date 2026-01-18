@@ -10,7 +10,7 @@ import { MessageCard } from "../components/message-card";
 
 export default function MessagesLayout() {
   return (
-    <SidebarProvider className="flex h-[calc(100vh-14rem)] max-h-[calc(100vh-14rem)] overflow-hidden">
+    <SidebarProvider className="flex h-[calc(100vh-14rem)] max-h-[calc(100vh-14rem)] overflow-hidden min-h-full">
       <Sidebar variant="floating" className="pt-16">
         <SidebarContent>
           <SidebarGroup>
