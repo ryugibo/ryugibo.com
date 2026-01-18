@@ -43,7 +43,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <main>
-          <div className={cn(!pathname.startsWith("/auth") && "py-28 px-20")}>
+          <div className={cn(!pathname.startsWith("/auth") && "py-28 px-5 lg:px-20")}>
             {!pathname.startsWith("/auth") && (
               <Navigation isLoggedIn={true} hasNotifications={true} hasMessages={true} />
             )}
