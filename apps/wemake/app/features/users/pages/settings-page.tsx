@@ -50,6 +50,15 @@ export default function SettingsPage() {
               placeholder="Select your role"
             />
             <InputPair
+              label="Headline"
+              description="An introdunction to your profile"
+              id="headline"
+              name="headline"
+              required
+              textarea
+              placeholder="Tell us about yourself"
+            />
+            <InputPair
               label="Bio"
               description="Your public bio"
               id="bio"
