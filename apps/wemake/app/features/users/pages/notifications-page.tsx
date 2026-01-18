@@ -1,4 +1,4 @@
-import { NotificationCard } from "../components/notification-card";
+import { NotificationCard } from "~/features/users/components/notification-card";
 
 export const meta = () => [
   { title: "Notifications | wemake" },

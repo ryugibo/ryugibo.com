@@ -1,5 +1,5 @@
 import { Hero } from "~/common/components/hero";
-import { TeamCard } from "../components/team-card";
+import { TeamCard } from "~/features/teams/components/team-card";
 
 export const meta = () => {
   return [{ title: "Teams | wemake" }, { description: "Find a team to work with" }];

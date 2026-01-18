@@ -12,7 +12,7 @@ import {
 } from "~/common/components/ui/breadcrumb";
 import { Button } from "~/common/components/ui/button";
 import { Textarea } from "~/common/components/ui/textarea";
-import { Reply } from "../components/reply";
+import { Reply } from "~/features/community/components/reply";
 
 export const meta = () => {
   return [{ title: "Post | wemake" }, { description: "View a specific post" }];

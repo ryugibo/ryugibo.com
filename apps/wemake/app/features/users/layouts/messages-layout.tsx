@@ -6,7 +6,7 @@ import {
   SidebarMenu,
   SidebarProvider,
 } from "~/common/components/ui/sidebar";
-import { MessageCard } from "../components/message-card";
+import { MessageCard } from "~/features/users/components/message-card";
 
 export default function MessagesLayout() {
   return (

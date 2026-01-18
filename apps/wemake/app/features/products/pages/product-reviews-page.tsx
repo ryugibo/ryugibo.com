@@ -1,7 +1,7 @@
 import CreateReviewDialog from "~/common/components/create-review-dialog";
 import { Button } from "~/common/components/ui/button";
 import { Dialog, DialogTrigger } from "~/common/components/ui/dialog";
-import { ReviewCard } from "../components/review-card";
+import { ReviewCard } from "~/features/products/components/review-card";
 
 export const meta = () => {
   return [{ title: "Product Reviews" }, { name: "description", content: "Product Reviews" }];
