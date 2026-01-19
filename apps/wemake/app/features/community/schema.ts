@@ -1,4 +1,4 @@
-import { bigint, primaryKey, text, timestamp, uuid, type AnyPgColumn } from "@ryugibo/db/core";
+import { type AnyPgColumn, bigint, primaryKey, text, timestamp, uuid } from "@ryugibo/db/core";
 import { schema } from "~/db";
 import { profiles } from "~/features/users/schema";
 
