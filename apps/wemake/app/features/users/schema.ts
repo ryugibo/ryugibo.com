@@ -1,7 +1,7 @@
-import { jsonb, text, timestamp, uuid } from "@ryugibo/db/core";
-import { authSchema, schema } from "~/db";
+import { jsonb, pgSchema, text, timestamp, uuid } from "@ryugibo/db/core";
+import { schema } from "~/db";
 
-const users = authSchema.table("users", {
+const users = pgSchema("auth").table("users", {
   id: uuid().primaryKey(),
 });
 

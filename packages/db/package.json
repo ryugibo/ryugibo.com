@@ -10,9 +10,9 @@
     "build": "tsc"
   },
   "exports": {
+    ".": "./src/index.ts",
     "./core": "./src/core.ts",
-    "./driver": "./src/driver.ts",
-    "./postgres": "./src/postgres.ts"
+    "./driver": "./src/driver.ts"
   },
   "devDependencies": {
     "drizzle-kit": "^0.31.8",
