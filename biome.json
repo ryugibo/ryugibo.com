@@ -11,7 +11,12 @@
   },
 
   "files": {
-    "includes": ["**", "!apps/*/.react-router/**/*.*", "!.turbo"]
+    "includes": [
+      "**",
+      "!apps/*/.react-router/**/*.*",
+      "!apps/wemake/app/migrations/**/*.*",
+      "!.turbo"
+    ]
   },
 
   "css": {
