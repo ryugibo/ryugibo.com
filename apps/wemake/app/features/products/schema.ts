@@ -14,7 +14,7 @@ export const products = schema.table("products", {
   stats: jsonb().notNull().default({ views: 0, reviews: 0 }),
   profile_id: uuid()
     .notNull()
-    .references(() => profiles.profile_id, { onDelete: "cascade" }),
+    .references(() => profiles.id, { onDelete: "cascade" }),
   category_id: bigint({ mode: "number" }).references(() => categories.id, { onDelete: "set null" }),
   created_at: timestamp().notNull().defaultNow(),
   updated_at: timestamp().notNull().defaultNow(),
@@ -36,7 +36,7 @@ export const product_upvotes = schema.table(
       .references(() => products.id, { onDelete: "cascade" }),
     profile_id: uuid()
       .notNull()
-      .references(() => profiles.profile_id, { onDelete: "cascade" }),
+      .references(() => profiles.id, { onDelete: "cascade" }),
     created_at: timestamp().notNull().defaultNow(),
   },
   (table) => [primaryKey({ columns: [table.product_id, table.profile_id] })],
@@ -51,7 +51,7 @@ export const reviews = schema.table(
       .references(() => products.id, { onDelete: "cascade" }),
     profile_id: uuid()
       .notNull()
-      .references(() => profiles.profile_id, { onDelete: "cascade" }),
+      .references(() => profiles.id, { onDelete: "cascade" }),
     rating: integer().notNull(),
     comment: text().notNull(),
     created_at: timestamp().notNull().defaultNow(),

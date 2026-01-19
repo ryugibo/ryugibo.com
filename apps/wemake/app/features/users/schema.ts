@@ -14,7 +14,7 @@ export const roles = schema.enum("role", [
 ]);
 
 export const profiles = schema.table("profiles", {
-  profile_id: uuid()
+  id: uuid()
     .primaryKey()
     .references(() => users.id, { onDelete: "cascade" }),
   avatar: text(),
@@ -32,7 +32,7 @@ export const profiles = schema.table("profiles", {
 });
 
 export const follows = schema.table("follows", {
-  follower_id: uuid().references(() => profiles.profile_id, { onDelete: "cascade" }),
-  following_id: uuid().references(() => profiles.profile_id, { onDelete: "cascade" }),
+  follower_id: uuid().references(() => profiles.id, { onDelete: "cascade" }),
+  following_id: uuid().references(() => profiles.id, { onDelete: "cascade" }),
   created_at: timestamp().notNull().defaultNow(),
 });
