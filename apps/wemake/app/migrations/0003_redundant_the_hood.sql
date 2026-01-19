@@ -1,0 +1,1 @@
+ALTER TABLE "wemake"."jobs" RENAME COLUMN "job_id" TO "id";
