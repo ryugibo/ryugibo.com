@@ -11,6 +11,9 @@ importers:
       '@biomejs/biome':
         specifier: 2.3.11
         version: 2.3.11
+      drizzle-kit:
+        specifier: ^0.31.8
+        version: 0.31.8
       tailwindcss:
         specifier: ^4.1.18
         version: 4.1.18
@@ -99,21 +102,18 @@ importers:
       '@react-router/serve':
         specifier: 7.12.0
         version: 7.12.0(react-router@7.12.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(typescript@5.9.2)
+      '@ryugibo/db':
+        specifier: workspace:*
+        version: link:../../packages/db
       '@ryugibo/ui':
         specifier: workspace:*
         version: link:../../packages/ui
-      drizzle-orm:
-        specifier: ^0.45.1
-        version: 0.45.1(postgres@3.4.8)
       isbot:
         specifier: ^5.1.31
         version: 5.1.32
       luxon:
         specifier: ^3.7.2
         version: 3.7.2
-      postgres:
-        specifier: ^3.4.8
-        version: 3.4.8
       react:
         specifier: ^19.2.3
         version: 19.2.3
@@ -145,9 +145,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.8)
-      drizzle-kit:
-        specifier: ^0.31.8
-        version: 0.31.8
       typescript:
         specifier: ^5.9.2
         version: 5.9.2
@@ -157,6 +154,22 @@ importers:
       vite-tsconfig-paths:
         specifier: ^5.1.4
         version: 5.1.4(typescript@5.9.2)(vite@7.3.1(@types/node@22.15.3)(jiti@2.6.1)(lightningcss@1.30.2))
+
+  packages/db:
+    dependencies:
+      drizzle-orm:
+        specifier: ^0.45.1
+        version: 0.45.1(postgres@3.4.8)
+      postgres:
+        specifier: ^3.4.8
+        version: 3.4.8
+    devDependencies:
+      drizzle-kit:
+        specifier: ^0.31.8
+        version: 0.31.8
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
 
   packages/ui:
     dependencies:
@@ -2610,6 +2623,11 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
+  typescript@5.9.3:
+    resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
   undici-types@6.21.0:
     resolution: {integrity: sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==}
 
@@ -4806,6 +4824,8 @@ snapshots:
       mime-types: 2.1.35
 
   typescript@5.9.2: {}
+
+  typescript@5.9.3: {}
 
   undici-types@6.21.0: {}
 
