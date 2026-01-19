@@ -1,5 +1,5 @@
+import { FlickeringGrid } from "@ryugibo/ui/flickering-grid";
 import { Outlet } from "react-router";
-import { FlickeringGrid } from "~/common/components/ui/flickering-grid";
 
 export default function AuthLayout() {
   return (

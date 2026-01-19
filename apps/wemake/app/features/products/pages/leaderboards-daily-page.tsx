@@ -1,9 +1,9 @@
+import { Button } from "@ryugibo/ui/button";
 import { DateTime } from "luxon";
 import { data, isRouteErrorResponse, Link } from "react-router";
 import { z } from "zod";
 import { Hero } from "~/common/components/hero";
 import { ProductPagination } from "~/common/components/product-pagination";
-import { Button } from "~/common/components/ui/button";
 import { ProductCard } from "~/features/products/components/product-card";
 import type { Route } from "./+types/leaderboards-daily-page";
 

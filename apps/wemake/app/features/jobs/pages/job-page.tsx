@@ -1,6 +1,6 @@
-import { DotIcon } from "lucide-react";
-import { Badge } from "~/common/components/ui/badge";
-import { Button } from "~/common/components/ui/button";
+import { Badge } from "@ryugibo/ui/badge";
+import { Button } from "@ryugibo/ui/button";
+import { DotIcon } from "@ryugibo/ui/icons";
 
 export const meta = () => {
   return [{ title: "Job Details | wemake" }, { name: "description", content: "Job details" }];

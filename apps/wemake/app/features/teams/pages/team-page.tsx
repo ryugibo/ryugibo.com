@@ -1,10 +1,10 @@
+import { Avatar, AvatarFallback, AvatarImage } from "@ryugibo/ui/avatar";
+import { Badge } from "@ryugibo/ui/badge";
+import { Button } from "@ryugibo/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@ryugibo/ui/card";
 import { Form } from "react-router";
 import { Hero } from "~/common/components/hero";
 import InputPair from "~/common/components/input-pair";
-import { Avatar, AvatarFallback, AvatarImage } from "~/common/components/ui/avatar";
-import { Badge } from "~/common/components/ui/badge";
-import { Button } from "~/common/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "~/common/components/ui/card";
 
 export const meta = () => {
   return [{ title: "Team Details | wemake" }, { description: "View team details" }];

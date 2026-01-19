@@ -1,16 +1,16 @@
-import { StarIcon } from "lucide-react";
-import { useState } from "react";
-import { Form } from "react-router";
-import InputPair from "~/common/components/input-pair";
-import { Button } from "~/common/components/ui/button";
+import { Button } from "@ryugibo/ui/button";
 import {
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "~/common/components/ui/dialog";
-import { Label } from "~/common/components/ui/label";
+} from "@ryugibo/ui/dialog";
+import { StarIcon } from "@ryugibo/ui/icons";
+import { Label } from "@ryugibo/ui/label";
+import { useState } from "react";
+import { Form } from "react-router";
+import InputPair from "~/common/components/input-pair";
 
 export default function CreateReviewDialog() {
   const [rating, setRating] = useState<number>(0);

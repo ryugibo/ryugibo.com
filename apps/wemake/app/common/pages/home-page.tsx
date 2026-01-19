@@ -1,5 +1,5 @@
+import { Button } from "@ryugibo/ui/button";
 import { Link } from "react-router";
-import { Button } from "~/common/components/ui/button";
 import { PostCard } from "~/features/community/components/post-card";
 import { IdeaCard } from "~/features/ideas/components/idea-card";
 import { JobCard } from "~/features/jobs/components/job-card";

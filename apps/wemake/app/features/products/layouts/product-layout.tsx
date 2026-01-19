@@ -1,7 +1,7 @@
-import { ChevronUpIcon, StarIcon } from "lucide-react";
+import { cn } from "@ryugibo/ui";
+import { Button, buttonVariants } from "@ryugibo/ui/button";
+import { ChevronUpIcon, StarIcon } from "@ryugibo/ui/icons";
 import { NavLink, Outlet } from "react-router";
-import { Button, buttonVariants } from "~/common/components/ui/button";
-import { cn } from "~/lib/utils";
 import type { Route } from "./+types/product-layout";
 
 export default function ProductLayout({ params }: Route.ComponentProps) {

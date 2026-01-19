@@ -1,11 +1,11 @@
-import { Outlet } from "react-router";
 import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
   SidebarMenu,
   SidebarProvider,
-} from "~/common/components/ui/sidebar";
+} from "@ryugibo/ui/sidebar";
+import { Outlet } from "react-router";
 import { MessageCard } from "~/features/users/components/message-card";
 
 export default function MessagesLayout() {

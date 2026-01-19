@@ -1,5 +1,5 @@
-import { StarIcon } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "~/common/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@ryugibo/ui/avatar";
+import { StarIcon } from "@ryugibo/ui/icons";
 
 interface ReviewCardProps {
   avatarUrl: string;

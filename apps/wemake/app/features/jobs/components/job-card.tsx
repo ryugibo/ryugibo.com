@@ -1,7 +1,7 @@
+import { Badge } from "@ryugibo/ui/badge";
+import { Button } from "@ryugibo/ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@ryugibo/ui/card";
 import { Link } from "react-router";
-import { Badge } from "~/common/components/ui/badge";
-import { Button } from "~/common/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "~/common/components/ui/card";
 
 interface JobCardProps {
   id: string;

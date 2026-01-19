@@ -1,9 +1,9 @@
+import { Button } from "@ryugibo/ui/button";
+import { Input } from "@ryugibo/ui/input";
 import { data, Form } from "react-router";
 import z from "zod";
 import { Hero } from "~/common/components/hero";
 import { ProductPagination } from "~/common/components/product-pagination";
-import { Button } from "~/common/components/ui/button";
-import { Input } from "~/common/components/ui/input";
 import { ProductCard } from "~/features/products/components/product-card";
 import type { Route } from "./+types/search-page";
 

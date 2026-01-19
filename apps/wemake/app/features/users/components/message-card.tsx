@@ -1,6 +1,6 @@
+import { Avatar, AvatarFallback, AvatarImage } from "@ryugibo/ui/avatar";
+import { SidebarMenuButton, SidebarMenuItem } from "@ryugibo/ui/sidebar";
 import { Link, useLocation } from "react-router";
-import { Avatar, AvatarFallback, AvatarImage } from "~/common/components/ui/avatar";
-import { SidebarMenuButton, SidebarMenuItem } from "~/common/components/ui/sidebar";
 
 interface MessageCardProps {
   avatarSrc: string;

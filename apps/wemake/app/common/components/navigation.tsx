@@ -1,14 +1,6 @@
-import {
-  BarChart3Icon,
-  BellIcon,
-  LogOutIcon,
-  MessageCircleIcon,
-  SettingsIcon,
-  UserIcon,
-} from "lucide-react";
-import { Link } from "react-router";
-import { Avatar, AvatarFallback, AvatarImage } from "~/common/components/ui/avatar";
-import { Button } from "~/common/components/ui/button";
+import { cn } from "@ryugibo/ui";
+import { Avatar, AvatarFallback, AvatarImage } from "@ryugibo/ui/avatar";
+import { Button } from "@ryugibo/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,7 +9,15 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "~/common/components/ui/dropdown-menu";
+} from "@ryugibo/ui/dropdown-menu";
+import {
+  BarChart3Icon,
+  BellIcon,
+  LogOutIcon,
+  MessageCircleIcon,
+  SettingsIcon,
+  UserIcon,
+} from "@ryugibo/ui/icons";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -26,9 +26,9 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
-} from "~/common/components/ui/navigation-menu";
-import { Separator } from "~/common/components/ui/separator";
-import { cn } from "~/lib/utils";
+} from "@ryugibo/ui/navigation-menu";
+import { Separator } from "@ryugibo/ui/separator";
+import { Link } from "react-router";
 
 const menus = [
   {

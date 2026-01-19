@@ -1,6 +1,6 @@
-import { ChevronRightIcon } from "lucide-react";
+import { Card, CardDescription, CardHeader, CardTitle } from "@ryugibo/ui/card";
+import { ChevronRightIcon } from "@ryugibo/ui/icons";
 import { Link } from "react-router";
-import { Card, CardDescription, CardHeader, CardTitle } from "~/common/components/ui/card";
 
 interface CategoryCardProps {
   id: string;

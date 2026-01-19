@@ -1,12 +1,6 @@
+import { Label } from "@ryugibo/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@ryugibo/ui/select";
 import { useState } from "react";
-import { Label } from "~/common/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "~/common/components/ui/select";
 
 interface SelectPairProps {
   name: string;

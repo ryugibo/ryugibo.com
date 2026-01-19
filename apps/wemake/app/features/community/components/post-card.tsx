@@ -1,9 +1,9 @@
-import { ChevronUpIcon, DotIcon } from "lucide-react";
+import { cn } from "@ryugibo/ui";
+import { Avatar, AvatarFallback, AvatarImage } from "@ryugibo/ui/avatar";
+import { Button } from "@ryugibo/ui/button";
+import { Card, CardFooter, CardHeader, CardTitle } from "@ryugibo/ui/card";
+import { ChevronUpIcon, DotIcon } from "@ryugibo/ui/icons";
 import { Link } from "react-router";
-import { Avatar, AvatarFallback, AvatarImage } from "~/common/components/ui/avatar";
-import { Button } from "~/common/components/ui/button";
-import { Card, CardFooter, CardHeader, CardTitle } from "~/common/components/ui/card";
-import { cn } from "~/lib/utils";
 
 interface PostCardProps {
   id: string;

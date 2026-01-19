@@ -1,4 +1,4 @@
-import { MessageCircleIcon } from "lucide-react";
+import { MessageCircleIcon } from "@ryugibo/ui/icons";
 import type { Route } from "./+types/messages-page";
 
 export const meta = (_: Route.MetaArgs) => [

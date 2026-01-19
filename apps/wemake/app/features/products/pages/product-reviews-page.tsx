@@ -1,6 +1,6 @@
+import { Button } from "@ryugibo/ui/button";
+import { Dialog, DialogTrigger } from "@ryugibo/ui/dialog";
 import CreateReviewDialog from "~/common/components/create-review-dialog";
-import { Button } from "~/common/components/ui/button";
-import { Dialog, DialogTrigger } from "~/common/components/ui/dialog";
 import { ReviewCard } from "~/features/products/components/review-card";
 
 export const meta = () => {

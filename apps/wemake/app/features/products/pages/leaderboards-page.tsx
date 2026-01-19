@@ -1,6 +1,6 @@
+import { Button } from "@ryugibo/ui/button";
 import { Link } from "react-router";
 import { Hero } from "~/common/components/hero";
-import { Button } from "~/common/components/ui/button";
 import { ProductCard } from "~/features/products/components/product-card";
 import type { Route } from "./+types/leaderboards-page";
 

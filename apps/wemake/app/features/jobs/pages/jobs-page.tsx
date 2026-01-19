@@ -1,9 +1,9 @@
+import { cn } from "@ryugibo/ui";
+import { Button } from "@ryugibo/ui/button";
 import { useSearchParams } from "react-router";
 import { Hero } from "~/common/components/hero";
-import { Button } from "~/common/components/ui/button";
 import { JobCard } from "~/features/jobs/components/job-card";
 import { JOB_TYPES, LOCATION_TYPES, SALARY_RANGE } from "~/features/jobs/constants";
-import { cn } from "~/lib/utils";
 
 export const meta = () => {
   return [

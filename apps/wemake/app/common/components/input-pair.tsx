@@ -1,7 +1,7 @@
+import { Input } from "@ryugibo/ui/input";
+import { Label } from "@ryugibo/ui/label";
+import { Textarea } from "@ryugibo/ui/textarea";
 import type { InputHTMLAttributes } from "react";
-import { Input } from "~/common/components/ui/input";
-import { Label } from "~/common/components/ui/label";
-import { Textarea } from "~/common/components/ui/textarea";
 
 export default function InputPair({
   label,

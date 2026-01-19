@@ -1,12 +1,12 @@
+import { Button } from "@ryugibo/ui/button";
+import { Calendar } from "@ryugibo/ui/calendar";
+import { Label } from "@ryugibo/ui/label";
+import type { DateRange } from "@ryugibo/ui/react-day-picker";
 import { DateTime } from "luxon";
 import { useState } from "react";
-import type { DateRange } from "react-day-picker";
 import { Form } from "react-router";
 import { Hero } from "~/common/components/hero";
 import SelectPair from "~/common/components/select-pair";
-import { Button } from "~/common/components/ui/button";
-import { Calendar } from "~/common/components/ui/calendar";
-import { Label } from "~/common/components/ui/label";
 
 export const meta = () => [
   { title: "Promote Product | wemake" },

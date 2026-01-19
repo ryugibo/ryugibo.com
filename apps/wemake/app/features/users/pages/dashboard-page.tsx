@@ -1,11 +1,11 @@
-import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
-import { Card, CardContent, CardHeader, CardTitle } from "~/common/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@ryugibo/ui/card";
 import {
   type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "~/common/components/ui/chart";
+} from "@ryugibo/ui/chart";
+import { CartesianGrid, Line, LineChart, XAxis } from "@ryugibo/ui/recharts";
 import type { Route } from "./+types/dashboard-page";
 
 export const meta = (_: Route.MetaArgs) => [

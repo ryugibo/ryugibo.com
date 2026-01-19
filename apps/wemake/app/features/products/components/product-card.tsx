@@ -1,13 +1,7 @@
-import { ChevronUpIcon, EyeIcon, MessageCircleIcon } from "lucide-react";
+import { Button } from "@ryugibo/ui/button";
+import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@ryugibo/ui/card";
+import { ChevronUpIcon, EyeIcon, MessageCircleIcon } from "@ryugibo/ui/icons";
 import { Link } from "react-router";
-import { Button } from "~/common/components/ui/button";
-import {
-  Card,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "~/common/components/ui/card";
 
 interface ProductCardProps {
   id: string;

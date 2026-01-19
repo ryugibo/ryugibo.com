@@ -1,8 +1,8 @@
-import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { cn } from "@ryugibo/ui";
+import { Button, buttonVariants } from "@ryugibo/ui/button";
+import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon } from "@ryugibo/ui/icons";
 import * as React from "react";
 import { type DayButton, DayPicker, getDefaultClassNames } from "react-day-picker";
-import { Button, buttonVariants } from "~/components/ui/button";
-import { cn } from "~/lib/utils";
 
 function Calendar({
   className,
@@ -106,7 +106,14 @@ function Calendar({
       }}
       components={{
         Root: ({ className, rootRef, ...props }) => {
-          return <div data-slot="calendar" ref={rootRef} className={cn(className)} {...props} />;
+          return (
+            <div
+              data-slot="calendar"
+              ref={rootRef as React.Ref<HTMLDivElement>}
+              className={cn(className)}
+              {...props}
+            />
+          );
         },
         Chevron: ({ className, orientation, ...props }) => {
           if (orientation === "left") {

@@ -1,5 +1,5 @@
-import { Avatar, AvatarFallback, AvatarImage } from "~/common/components/ui/avatar";
-import { cn } from "~/lib/utils";
+import { cn } from "@ryugibo/ui";
+import { Avatar, AvatarFallback, AvatarImage } from "@ryugibo/ui/avatar";
 
 interface MessageBubbleProps {
   avatarSrc: string;

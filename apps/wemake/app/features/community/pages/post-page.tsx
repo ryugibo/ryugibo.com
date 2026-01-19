@@ -1,7 +1,5 @@
-import { ChevronUpIcon, DotIcon } from "lucide-react";
-import { Form, Link } from "react-router";
-import { Avatar, AvatarFallback, AvatarImage } from "~/common/components/ui/avatar";
-import { Badge } from "~/common/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@ryugibo/ui/avatar";
+import { Badge } from "@ryugibo/ui/badge";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -9,9 +7,11 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "~/common/components/ui/breadcrumb";
-import { Button } from "~/common/components/ui/button";
-import { Textarea } from "~/common/components/ui/textarea";
+} from "@ryugibo/ui/breadcrumb";
+import { Button } from "@ryugibo/ui/button";
+import { ChevronUpIcon, DotIcon } from "@ryugibo/ui/icons";
+import { Textarea } from "@ryugibo/ui/textarea";
+import { Form, Link } from "react-router";
 import { Reply } from "~/features/community/components/reply";
 
 export const meta = () => {

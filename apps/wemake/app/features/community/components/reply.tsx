@@ -1,9 +1,9 @@
-import { DotIcon, MessageCircleIcon } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@ryugibo/ui/avatar";
+import { Button } from "@ryugibo/ui/button";
+import { DotIcon, MessageCircleIcon } from "@ryugibo/ui/icons";
+import { Textarea } from "@ryugibo/ui/textarea";
 import { useState } from "react";
 import { Form, Link } from "react-router";
-import { Avatar, AvatarFallback, AvatarImage } from "~/common/components/ui/avatar";
-import { Button } from "~/common/components/ui/button";
-import { Textarea } from "~/common/components/ui/textarea";
 
 interface ReplyProps {
   avatarUrl: string;

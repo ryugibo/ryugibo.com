@@ -1,9 +1,9 @@
-import { SendIcon } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@ryugibo/ui/avatar";
+import { Button } from "@ryugibo/ui/button";
+import { Card, CardDescription, CardHeader, CardTitle } from "@ryugibo/ui/card";
+import { SendIcon } from "@ryugibo/ui/icons";
+import { Textarea } from "@ryugibo/ui/textarea";
 import { Form } from "react-router";
-import { Avatar, AvatarFallback, AvatarImage } from "~/common/components/ui/avatar";
-import { Button } from "~/common/components/ui/button";
-import { Card, CardDescription, CardHeader, CardTitle } from "~/common/components/ui/card";
-import { Textarea } from "~/common/components/ui/textarea";
 import { MessageBubble } from "~/features/users/components/message-bubble";
 import type { Route } from "./+types/message-page";
 

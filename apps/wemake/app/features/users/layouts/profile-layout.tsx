@@ -1,7 +1,7 @@
-import { Form, Link, NavLink, Outlet } from "react-router";
-import { Avatar, AvatarFallback, AvatarImage } from "~/common/components/ui/avatar";
-import { Badge } from "~/common/components/ui/badge";
-import { Button, buttonVariants } from "~/common/components/ui/button";
+import { cn } from "@ryugibo/ui";
+import { Avatar, AvatarFallback, AvatarImage } from "@ryugibo/ui/avatar";
+import { Badge } from "@ryugibo/ui/badge";
+import { Button, buttonVariants } from "@ryugibo/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -9,9 +9,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "~/common/components/ui/dialog";
-import { Textarea } from "~/common/components/ui/textarea";
-import { cn } from "~/lib/utils";
+} from "@ryugibo/ui/dialog";
+import { Textarea } from "@ryugibo/ui/textarea";
+import { Form, Link, NavLink, Outlet } from "react-router";
 
 export default function ProfileLayout() {
   return (

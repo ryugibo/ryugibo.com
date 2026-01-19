@@ -1,8 +1,8 @@
+import { Button } from "@ryugibo/ui/button";
 import { Form } from "react-router";
 import { Hero } from "~/common/components/hero";
 import InputPair from "~/common/components/input-pair";
 import SelectPair from "~/common/components/select-pair";
-import { Button } from "~/common/components/ui/button";
 import { JOB_TYPES, LOCATION_TYPES, SALARY_RANGE } from "~/features/jobs/constants";
 
 export const meta = () => {

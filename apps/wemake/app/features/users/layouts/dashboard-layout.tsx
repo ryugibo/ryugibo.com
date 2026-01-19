@@ -1,5 +1,4 @@
-import { HomeIcon, PackageIcon, SparkleIcon } from "lucide-react";
-import { Link, Outlet, useLocation } from "react-router";
+import { HomeIcon, PackageIcon, SparkleIcon } from "@ryugibo/ui/icons";
 import {
   Sidebar,
   SidebarContent,
@@ -9,7 +8,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarProvider,
-} from "~/common/components/ui/sidebar";
+} from "@ryugibo/ui/sidebar";
+import { Link, Outlet, useLocation } from "react-router";
 
 export default function DashboardLayout() {
   const location = useLocation();

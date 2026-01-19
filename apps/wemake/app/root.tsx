@@ -10,9 +10,9 @@ import {
 
 import type { Route } from "./+types/root";
 import "~/app.css";
+import { cn } from "@ryugibo/ui";
 import { Settings } from "luxon";
 import Navigation from "~/common/components/navigation";
-import { cn } from "./lib/utils";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },

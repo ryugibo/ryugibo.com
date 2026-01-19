@@ -1,16 +1,15 @@
 import * as NavigationMenuPrimitive from "@radix-ui/react-navigation-menu";
+import { cn } from "@ryugibo/ui";
 import { cva } from "class-variance-authority";
 import { ChevronDownIcon } from "lucide-react";
-import type { ComponentProps } from "react";
-
-import { cn } from "~/lib/utils";
+import type * as React from "react";
 
 function NavigationMenu({
   className,
   children,
   viewport = true,
   ...props
-}: ComponentProps<typeof NavigationMenuPrimitive.Root> & {
+}: React.ComponentProps<typeof NavigationMenuPrimitive.Root> & {
   viewport?: boolean;
 }) {
   return (
@@ -32,7 +31,7 @@ function NavigationMenu({
 function NavigationMenuList({
   className,
   ...props
-}: ComponentProps<typeof NavigationMenuPrimitive.List>) {
+}: React.ComponentProps<typeof NavigationMenuPrimitive.List>) {
   return (
     <NavigationMenuPrimitive.List
       data-slot="navigation-menu-list"
@@ -45,7 +44,7 @@ function NavigationMenuList({
 function NavigationMenuItem({
   className,
   ...props
-}: ComponentProps<typeof NavigationMenuPrimitive.Item>) {
+}: React.ComponentProps<typeof NavigationMenuPrimitive.Item>) {
   return (
     <NavigationMenuPrimitive.Item
       data-slot="navigation-menu-item"
@@ -63,7 +62,7 @@ function NavigationMenuTrigger({
   className,
   children,
   ...props
-}: ComponentProps<typeof NavigationMenuPrimitive.Trigger>) {
+}: React.ComponentProps<typeof NavigationMenuPrimitive.Trigger>) {
   return (
     <NavigationMenuPrimitive.Trigger
       data-slot="navigation-menu-trigger"
@@ -72,7 +71,7 @@ function NavigationMenuTrigger({
     >
       {children}{" "}
       <ChevronDownIcon
-        className="relative top-px ml-1 size-3 transition duration-300 group-data-[state=open]:rotate-180"
+        className="relative top-[1px] ml-1 size-3 transition duration-300 group-data-[state=open]:rotate-180"
         aria-hidden="true"
       />
     </NavigationMenuPrimitive.Trigger>
@@ -82,7 +81,7 @@ function NavigationMenuTrigger({
 function NavigationMenuContent({
   className,
   ...props
-}: ComponentProps<typeof NavigationMenuPrimitive.Content>) {
+}: React.ComponentProps<typeof NavigationMenuPrimitive.Content>) {
   return (
     <NavigationMenuPrimitive.Content
       data-slot="navigation-menu-content"
@@ -99,13 +98,13 @@ function NavigationMenuContent({
 function NavigationMenuViewport({
   className,
   ...props
-}: ComponentProps<typeof NavigationMenuPrimitive.Viewport>) {
+}: React.ComponentProps<typeof NavigationMenuPrimitive.Viewport>) {
   return (
     <div className={cn("absolute top-full left-0 isolate z-50 flex justify-center")}>
       <NavigationMenuPrimitive.Viewport
         data-slot="navigation-menu-viewport"
         className={cn(
-          "origin-top-center bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-90 relative mt-1.5 h-(--radix-navigation-menu-viewport-height) w-full overflow-hidden rounded-md border shadow md:w-(--radix-navigation-menu-viewport-width)",
+          "origin-top-center bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-90 relative mt-1.5 h-[var(--radix-navigation-menu-viewport-height)] w-full overflow-hidden rounded-md border shadow md:w-[var(--radix-navigation-menu-viewport-width)]",
           className,
         )}
         {...props}
@@ -117,7 +116,7 @@ function NavigationMenuViewport({
 function NavigationMenuLink({
   className,
   ...props
-}: ComponentProps<typeof NavigationMenuPrimitive.Link>) {
+}: React.ComponentProps<typeof NavigationMenuPrimitive.Link>) {
   return (
     <NavigationMenuPrimitive.Link
       data-slot="navigation-menu-link"
@@ -133,12 +132,12 @@ function NavigationMenuLink({
 function NavigationMenuIndicator({
   className,
   ...props
-}: ComponentProps<typeof NavigationMenuPrimitive.Indicator>) {
+}: React.ComponentProps<typeof NavigationMenuPrimitive.Indicator>) {
   return (
     <NavigationMenuPrimitive.Indicator
       data-slot="navigation-menu-indicator"
       className={cn(
-        "data-[state=visible]:animate-in data-[state=hidden]:animate-out data-[state=hidden]:fade-out data-[state=visible]:fade-in top-full z-1 flex h-1.5 items-end justify-center overflow-hidden",
+        "data-[state=visible]:animate-in data-[state=hidden]:animate-out data-[state=hidden]:fade-out data-[state=visible]:fade-in top-full z-[1] flex h-1.5 items-end justify-center overflow-hidden",
         className,
       )}
       {...props}

@@ -1,8 +1,8 @@
-import { DotIcon, EyeIcon, HeartIcon, LockIcon } from "lucide-react";
+import { cn } from "@ryugibo/ui";
+import { Button } from "@ryugibo/ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@ryugibo/ui/card";
+import { DotIcon, EyeIcon, HeartIcon, LockIcon } from "@ryugibo/ui/icons";
 import { Link } from "react-router";
-import { Button } from "~/common/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "~/common/components/ui/card";
-import { cn } from "~/lib/utils";
 
 interface IdeaCardProps {
   id: string;

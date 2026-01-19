@@ -1,4 +1,3 @@
-import { useSearchParams } from "react-router";
 import {
   Pagination,
   PaginationContent,
@@ -7,7 +6,8 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "./ui/pagination";
+} from "@ryugibo/ui/pagination";
+import { useSearchParams } from "react-router";
 
 type ProductPaginationProps = {
   totalPages: number;

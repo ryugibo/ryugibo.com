@@ -1,6 +1,6 @@
-import { DotIcon, EyeIcon, HeartIcon } from "lucide-react";
+import { Button } from "@ryugibo/ui/button";
+import { DotIcon, EyeIcon, HeartIcon } from "@ryugibo/ui/icons";
 import { Hero } from "~/common/components/hero";
-import { Button } from "~/common/components/ui/button";
 
 export const meta = () => {
   return [{ title: "Idea Details | wemake" }, { name: "description", content: "Idea details" }];

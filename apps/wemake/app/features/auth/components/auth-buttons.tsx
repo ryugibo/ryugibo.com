@@ -1,8 +1,8 @@
 import { SiGithub } from "@icons-pack/react-simple-icons";
-import { LockIcon, MessageCircleIcon } from "lucide-react";
+import { Button } from "@ryugibo/ui/button";
+import { LockIcon, MessageCircleIcon } from "@ryugibo/ui/icons";
+import { Separator } from "@ryugibo/ui/separator";
 import { Link } from "react-router";
-import { Button } from "~/common/components/ui/button";
-import { Separator } from "~/common/components/ui/separator";
 
 export default function AuthButtons() {
   return (
