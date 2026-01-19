@@ -14,7 +14,7 @@
     "includes": [
       "**",
       "!apps/*/.react-router/**/*.*",
-      "!apps/wemake/app/migrations/**/*.*",
+      "!apps/wemake/app/sql/migrations/**/*.*",
       "!.turbo"
     ]
   },
