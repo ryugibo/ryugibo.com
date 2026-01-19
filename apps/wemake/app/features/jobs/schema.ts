@@ -15,7 +15,7 @@ export const locations = schema.enum(
 export const salaryRanges = schema.enum("salary_range", SALARY_RANGE);
 
 export const jobs = schema.table("jobs", {
-  job_id: bigint({ mode: "number" }).primaryKey().generatedAlwaysAsIdentity(),
+  id: bigint({ mode: "number" }).primaryKey().generatedAlwaysAsIdentity(),
   position: text().notNull(),
   overview: text().notNull(),
   responsibilities: text().notNull(),
