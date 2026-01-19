@@ -15,6 +15,13 @@
       "when": 1768831760931,
       "tag": "0001_yielding_shatterstar",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1768833884064,
+      "tag": "0002_open_firebird",
+      "breakpoints": true
     }
   ]
 }
