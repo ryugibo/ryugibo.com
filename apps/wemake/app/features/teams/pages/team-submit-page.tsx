@@ -3,6 +3,7 @@ import { Form } from "react-router";
 import { Hero } from "~/common/components/hero";
 import InputPair from "~/common/components/input-pair";
 import SelectPair from "~/common/components/select-pair";
+import { PRODUCT_STAGE } from "~/features/teams/constant";
 
 export const meta = () => {
   return [{ title: "Create Team | wemake" }, { description: "Create a team to find a team mate." }];
@@ -30,12 +31,7 @@ export default function TeamSubmitPage() {
             name="stage"
             required
             placeholder="Select the stage of your product"
-            options={[
-              { label: "Idea", value: "idea" },
-              { label: "Prototype", value: "prototype" },
-              { label: "MVP", value: "mvp" },
-              { label: "Production", value: "production" },
-            ]}
+            options={PRODUCT_STAGE}
           />
           <InputPair
             label="What is the size of yout team?"
