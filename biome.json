@@ -15,6 +15,7 @@
       "**",
       "!apps/*/.react-router/**/*.*",
       "!apps/wemake/app/sql/migrations/**/*.*",
+      "!apps/den/app/sql/migrations/**/*.*",
       "!.turbo"
     ]
   },
