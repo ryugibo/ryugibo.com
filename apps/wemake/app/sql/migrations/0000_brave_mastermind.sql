@@ -1,3 +1,5 @@
+CREATE SCHEMA IF NOT EXISTS "wemake";
+--> statement-breakpoint
 CREATE TYPE "wemake"."job_type" AS ENUM('full-time', 'part-time', 'contract', 'internship', 'freelance');--> statement-breakpoint
 CREATE TYPE "wemake"."location" AS ENUM('remote', 'in-person', 'hybrid');--> statement-breakpoint
 CREATE TYPE "wemake"."salary_range" AS ENUM('$0 - $50,000', '$50,000 - $70,000', '$70,000 - $100,000', '$100,000 - $120,000', '$120,000 - $150,000', '$150,000 - $250,000', '$250,000+');--> statement-breakpoint
