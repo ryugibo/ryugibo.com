@@ -1,3 +1,5 @@
+CREATE SCHEMA IF NOT EXISTS "den";
+--> statement-breakpoint
 CREATE TYPE "den"."book_sources" AS ENUM('kyobo', 'aladin', 'yes24', 'ridibooks', 'etc');--> statement-breakpoint
 CREATE TABLE "den"."profile" (
 	"id" uuid PRIMARY KEY NOT NULL,
