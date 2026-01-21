@@ -62,7 +62,7 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
         </div>
         {[...Array(11).keys()].map((index) => (
           <PostCard
-            key={`postId-${index}`}
+            key={index}
             id={index}
             title={"What is the best productivity tool?"}
             authorName={"Wemake"}

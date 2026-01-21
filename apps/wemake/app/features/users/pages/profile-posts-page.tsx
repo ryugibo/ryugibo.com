@@ -5,8 +5,8 @@ export default function ProfilePostsPage() {
     <div className="flex flex-col gap-5">
       {[...Array(5).keys()].map((index) => (
         <PostCard
-          key={`postId-${index}`}
-          id={`postId-${index}`}
+          key={index}
+          id={index}
           title={"What is the best productivity tool?"}
           authorName={"Wemake"}
           authorAvatarUrl={"https://github.com/shadcn.png"}

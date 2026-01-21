@@ -69,13 +69,13 @@ export default function LeaderboardsWeeklyPage({ loaderData }: Route.ComponentPr
       <div className="space-y-5 w-full max-w-3xl mx-auto">
         {[...Array(11).keys()].map((index) => (
           <ProductCard
-            key={`productId-${index}`}
-            id={`productId-${index}`}
+            key={`${index}`}
+            id={`${index}`}
             title={"Product Title"}
             description={"Product Description"}
-            commentsCount={12}
-            viewsCount={12}
-            upvotesCount={120}
+            reviewsCount="12"
+            viewsCount="12"
+            upvotesCount="120"
           />
         ))}
       </div>
