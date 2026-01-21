@@ -14,6 +14,7 @@
       "dependsOn": ["^check-types"]
     },
     "dev": {
+      "dependsOn": ["^build:css"],
       "cache": false,
       "persistent": true
     }

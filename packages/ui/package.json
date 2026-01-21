@@ -7,10 +7,12 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && pnpm build:css",
+    "build:css": "tailwindcss -i ./src/index.css -o ./dist/index.css --minify",
     "check-types": "tsc --noEmit"
   },
   "exports": {
+    "./style.css": "./dist/index.css",
     ".": "./src/index.ts",
     "./*": "./src/components/ui/*.tsx",
     "./icons": "./src/icons.ts",

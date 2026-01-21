@@ -1,7 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-
-@source "../../../packages/ui/src/**/*.{ts,tsx}";
+@import "@ryugibo/ui/style.css";
 
 @custom-variant dark (&:is(.dark *));
 
