@@ -3,15 +3,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "@ryugibo/ui/avatar";
 import { Button } from "@ryugibo/ui/button";
 import { Card, CardFooter, CardHeader, CardTitle } from "@ryugibo/ui/card";
 import { ChevronUpIcon, DotIcon } from "@ryugibo/ui/icons";
+import { DateTime } from "luxon";
 import { Link } from "react-router";
 
 interface PostCardProps {
-  id: string;
+  id: number;
   title: string;
   authorName: string;
-  authorAvatarUrl: string;
+  authorAvatarUrl: string | null;
   category: string;
-  postedAt: string;
+  postedAt: Date;
   expanded?: boolean;
   upvotesCount?: number;
 }
@@ -36,7 +37,7 @@ export function PostCard({
       >
         <CardHeader className="flex flex-row items-center gap-2">
           <Avatar className="size-14">
-            <AvatarImage src={authorAvatarUrl} />
+            {authorAvatarUrl && <AvatarImage src={authorAvatarUrl} />}
             <AvatarFallback>{authorName[0]}</AvatarFallback>
           </Avatar>
           <div className="space-y-2">
@@ -45,7 +46,7 @@ export function PostCard({
               <span>{authorName} on</span>
               <span>{category}</span>
               <DotIcon className="size-4" />
-              <span>{postedAt}</span>
+              <span>{DateTime.fromJSDate(postedAt).toRelative()}</span>
             </div>
           </div>
         </CardHeader>

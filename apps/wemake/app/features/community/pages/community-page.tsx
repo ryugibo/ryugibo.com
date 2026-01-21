@@ -11,6 +11,8 @@ import { Form, Link, useSearchParams } from "react-router";
 import { Hero } from "~/common/components/hero";
 import { PostCard } from "~/features/community/components/post-card";
 import { PERIOD_OPTIONS, SORT_OPTIONS } from "~/features/community/constant";
+import { getPosts, getTopics } from "~/features/community/queries";
+import type { Route } from "./+types/community-page";
 
 export const meta = () => [
   {
@@ -22,7 +24,13 @@ export const meta = () => [
   },
 ];
 
-export default function CommunityPage() {
+export const loader = async () => {
+  const topics = await getTopics();
+  const posts = await getPosts();
+  return { topics, posts };
+};
+
+export default function CommunityPage({ loaderData }: Route.ComponentProps) {
   const [searchParams, setSearchParams] = useSearchParams();
   const sorting = searchParams.get("sorting") || "newest";
   const period = searchParams.get("period") || "all-time";
@@ -93,16 +101,17 @@ export default function CommunityPage() {
             </Button>
           </div>
           <div className="space-y-5">
-            {[...Array(11).keys()].map((index) => (
+            {loaderData.posts.map((post) => (
               <PostCard
-                key={`postId-${index}`}
-                id={`postId-${index}`}
-                title={"What is the best productivity tool?"}
-                authorName={"Wemake"}
-                authorAvatarUrl={"https://github.com/shadcn.png"}
-                category={"Productivity"}
-                postedAt={"12 hours ago"}
+                key={post.id}
+                id={post.id}
+                title={post.title}
+                authorName={post.author}
+                authorAvatarUrl={post.avatar}
+                category={post.topic}
+                postedAt={post.createdAt}
                 expanded
+                upvotesCount={post.upvotes}
               />
             ))}
           </div>
@@ -110,20 +119,10 @@ export default function CommunityPage() {
         <aside className="col-span-2 space-y-5 flex flex-col">
           <span className="text-sm font-bold text-muted-foreground uppercase">topics</span>
           <div className="flex flex-col gap-4 items-start">
-            {[
-              "AI Tools",
-              "Design Tools",
-              "Dev Tools",
-              "Note Taking Apps",
-              "Productivity Tools",
-              "Security Tools",
-              "System Tools",
-              "Web Tools",
-              "Work Tools",
-            ].map((category) => (
-              <Button asChild variant="link" key={category} className="pl-0">
-                <Link to={`?topic=${category}`} className="font-semibold">
-                  {category}
+            {loaderData.topics.map((topic) => (
+              <Button asChild variant="link" key={topic.slug} className="pl-0">
+                <Link to={`?topic=${topic.slug}`} className="font-semibold">
+                  {topic.name}
                 </Link>
               </Button>
             ))}
