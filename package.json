@@ -5,6 +5,8 @@
     "prepare": "is-ci || husky",
     "build": "turbo run build",
     "dev": "turbo run dev",
+    "dev:den": "turbo run dev --filter=den",
+    "dev:wemake": "turbo run dev --filter=wemake",
     "lint": "turbo run lint",
     "format": "biome check .",
     "format:fix": "biome check . --write",
