@@ -1,0 +1,2 @@
+pnpm turbo check-types --filter=[HEAD]... --summarize
+
