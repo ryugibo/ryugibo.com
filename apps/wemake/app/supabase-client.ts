@@ -1,6 +1,24 @@
 import { createClient } from "@supabase/supabase-js";
-import type { Database } from "database.types";
+import type { Database as SupabaseDatabase } from "database.types";
+import type { MergeDeep, SetFieldType, SetNonNullable } from "type-fest";
 import { env } from "./env";
+
+type Database = MergeDeep<
+  SupabaseDatabase,
+  {
+    wemake: {
+      Views: {
+        community_post_list_view: {
+          Row: SetFieldType<
+            SetNonNullable<SupabaseDatabase["wemake"]["Views"]["community_post_list_view"]["Row"]>,
+            "author_avatar",
+            string | null
+          >;
+        };
+      };
+    };
+  }
+>;
 
 const supabase = createClient<Database>(
   env.VITE_SUPABASE_URL,

@@ -106,12 +106,12 @@ export default function CommunityPage({ loaderData }: Route.ComponentProps) {
                 key={post.id}
                 id={post.id}
                 title={post.title}
-                authorName={post.author.name}
-                authorAvatarUrl={post.author.avatar}
-                category={post.topic.name}
+                authorName={post.author}
+                authorAvatarUrl={post.author_avatar}
+                category={post.topic}
                 postedAt={post.created_at}
                 expanded
-                upvotesCount={post.post_upvotes[0].count}
+                upvotesCount={post.upvotes}
               />
             ))}
           </div>

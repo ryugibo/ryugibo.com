@@ -316,6 +316,13 @@ export type Database = {
             foreignKeyName: "notifications_post_id_posts_id_fk"
             columns: ["post_id"]
             isOneToOne: false
+            referencedRelation: "community_post_list_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_post_id_posts_id_fk"
+            columns: ["post_id"]
+            isOneToOne: false
             referencedRelation: "posts"
             referencedColumns: ["id"]
           },
@@ -382,6 +389,13 @@ export type Database = {
             foreignKeyName: "post_replies_post_id_posts_id_fk"
             columns: ["post_id"]
             isOneToOne: false
+            referencedRelation: "community_post_list_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "post_replies_post_id_posts_id_fk"
+            columns: ["post_id"]
+            isOneToOne: false
             referencedRelation: "posts"
             referencedColumns: ["id"]
           },
@@ -408,6 +422,13 @@ export type Database = {
           profile_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "post_upvotes_post_id_posts_id_fk"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "community_post_list_view"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "post_upvotes_post_id_posts_id_fk"
             columns: ["post_id"]
@@ -708,7 +729,19 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      community_post_list_view: {
+        Row: {
+          author: string | null
+          author_avatar: string | null
+          author_username: string | null
+          created_at: string | null
+          id: number | null
+          title: string | null
+          topic: string | null
+          upvotes: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never
