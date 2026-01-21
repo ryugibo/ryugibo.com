@@ -1,16 +1,15 @@
 import { asc, count, eq } from "@ryugibo/db";
 import db from "~/db";
+import supabase from "~/supabase-client";
 import { profiles } from "../users/schema";
 import { posts, postUpvotes, topics } from "./schema";
 
 export const getTopics = async () => {
-  const allTopics = await db
-    .select({
-      name: topics.name,
-      slug: topics.slug,
-    })
-    .from(topics);
-  return allTopics;
+  const { data, error } = await supabase.from("topics").select("name, slug");
+  if (error) {
+    throw error;
+  }
+  return data;
 };
 
 export const getPosts = async () => {
