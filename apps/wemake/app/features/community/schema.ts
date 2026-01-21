@@ -13,6 +13,7 @@ export const posts = pg.table("posts", {
   id: bigint({ mode: "number" }).primaryKey().generatedAlwaysAsIdentity(),
   title: text().notNull(),
   content: text().notNull(),
+  upvotes: bigint({ mode: "number" }).notNull().default(0),
   topic_id: bigint({ mode: "number" })
     .notNull()
     .references(() => topics.id, { onDelete: "cascade" }),
