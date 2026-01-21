@@ -12,7 +12,7 @@ interface PostCardProps {
   authorName: string;
   authorAvatarUrl: string | null;
   category: string;
-  postedAt: Date;
+  postedAt: string;
   expanded?: boolean;
   upvotesCount?: number;
 }
@@ -46,7 +46,7 @@ export function PostCard({
               <span>{authorName} on</span>
               <span>{category}</span>
               <DotIcon className="size-4" />
-              <span>{DateTime.fromJSDate(postedAt).toRelative()}</span>
+              <span>{DateTime.fromISO(postedAt).toRelative()}</span>
             </div>
           </div>
         </CardHeader>
