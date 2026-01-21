@@ -1,7 +1,9 @@
 import { Button } from "@ryugibo/ui/button";
+import { DateTime } from "luxon";
 import { Link } from "react-router";
 import { Hero } from "~/common/components/hero";
 import { ProductCard } from "~/features/products/components/product-card";
+import { getProductsByDateRange } from "../queries";
 import type { Route } from "./+types/leaderboards-page";
 
 export const meta: Route.MetaFunction = () => [
@@ -9,7 +11,34 @@ export const meta: Route.MetaFunction = () => [
   { name: "description", content: "Product Leaderboards" },
 ];
 
-export default function LeaderboardsPage() {
+export const loader = async () => {
+  const [dailyProducts, weeklyProducts, monthlyProducts, yearlyProducts] = await Promise.all([
+    getProductsByDateRange({
+      startDate: DateTime.now().startOf("day"),
+      endDate: DateTime.now().endOf("day"),
+      limit: 7,
+    }),
+    getProductsByDateRange({
+      startDate: DateTime.now().startOf("week"),
+      endDate: DateTime.now().endOf("week"),
+      limit: 7,
+    }),
+    getProductsByDateRange({
+      startDate: DateTime.now().startOf("month"),
+      endDate: DateTime.now().endOf("month"),
+      limit: 7,
+    }),
+    getProductsByDateRange({
+      startDate: DateTime.now().startOf("year"),
+      endDate: DateTime.now().endOf("year"),
+      limit: 7,
+    }),
+  ]);
+
+  return { dailyProducts, weeklyProducts, monthlyProducts, yearlyProducts };
+};
+
+export default function LeaderboardsPage({ loaderData }: Route.ComponentProps) {
   return (
     <div className="space-y-20">
       <Hero title="Leaderboards" description="The most popular products on wemake" />
@@ -20,15 +49,15 @@ export default function LeaderboardsPage() {
             The most popular products on wemake by day.
           </p>
         </div>
-        {[...Array(10).keys()].map((index) => (
+        {loaderData.dailyProducts.map((product) => (
           <ProductCard
-            key={`productId-${index}`}
-            id={`productId-${index}`}
-            title={"Product Title"}
-            description={"Product Description"}
-            commentsCount={12}
-            viewsCount={12}
-            upvotesCount={120}
+            key={`${product.id}`}
+            id={`${product.id}`}
+            title={product.name}
+            description={product.description}
+            reviewsCount={product.reviews}
+            viewsCount={product.views}
+            upvotesCount={product.upvotes}
           />
         ))}
         <Button variant="link" asChild className="text-lg self-center">
@@ -42,15 +71,15 @@ export default function LeaderboardsPage() {
             The most popular products on wemake by week.
           </p>
         </div>
-        {[...Array(10).keys()].map((index) => (
+        {loaderData.weeklyProducts.map((product) => (
           <ProductCard
-            key={`productId-${index}`}
-            id={`productId-${index}`}
-            title={"Product Title"}
-            description={"Product Description"}
-            commentsCount={12}
-            viewsCount={12}
-            upvotesCount={120}
+            key={`${product.id}`}
+            id={`${product.id}`}
+            title={product.name}
+            description={product.description}
+            reviewsCount={product.reviews}
+            viewsCount={product.views}
+            upvotesCount={product.upvotes}
           />
         ))}
         <Button variant="link" asChild className="text-lg self-center">
@@ -64,15 +93,15 @@ export default function LeaderboardsPage() {
             The most popular products on wemake by month.
           </p>
         </div>
-        {[...Array(10).keys()].map((index) => (
+        {loaderData.monthlyProducts.map((product) => (
           <ProductCard
-            key={`productId-${index}`}
-            id={`productId-${index}`}
-            title={"Product Title"}
-            description={"Product Description"}
-            commentsCount={12}
-            viewsCount={12}
-            upvotesCount={120}
+            key={`${product.id}`}
+            id={`${product.id}`}
+            title={product.name}
+            description={product.description}
+            reviewsCount={product.reviews}
+            viewsCount={product.views}
+            upvotesCount={product.upvotes}
           />
         ))}
         <Button variant="link" asChild className="text-lg self-center">
@@ -86,15 +115,15 @@ export default function LeaderboardsPage() {
             The most popular products on wemake by year.
           </p>
         </div>
-        {[...Array(10).keys()].map((index) => (
+        {loaderData.yearlyProducts.map((product) => (
           <ProductCard
-            key={`productId-${index}`}
-            id={`productId-${index}`}
-            title={"Product Title"}
-            description={"Product Description"}
-            commentsCount={12}
-            viewsCount={12}
-            upvotesCount={120}
+            key={`${product.id}`}
+            id={`${product.id}`}
+            title={product.name}
+            description={product.description}
+            reviewsCount={product.reviews}
+            viewsCount={product.views}
+            upvotesCount={product.upvotes}
           />
         ))}
         <Button variant="link" asChild className="text-lg self-center">
