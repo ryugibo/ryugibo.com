@@ -71,6 +71,13 @@
       "when": 1768976508369,
       "tag": "0009_skinny_sheva_callister",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1768985265445,
+      "tag": "0010_big_franklin_storm",
+      "breakpoints": true
     }
   ]
 }
