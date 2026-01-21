@@ -1,0 +1,1 @@
+ALTER TABLE "wemake"."posts" ADD COLUMN "upvotes" bigint DEFAULT 0 NOT NULL;
