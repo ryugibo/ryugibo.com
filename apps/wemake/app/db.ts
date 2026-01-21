@@ -2,7 +2,8 @@ import { postgres } from "@ryugibo/db";
 import { pgSchema } from "@ryugibo/db/core";
 import { drizzle } from "@ryugibo/db/driver";
 
-export const schema = pgSchema("wemake");
+export const schema = "wemake";
+export const pg = pgSchema(schema);
 
 const client = postgres(process.env.DATABASE_URL || "", { prepare: false });
 const db = drizzle(client);

@@ -1,20 +1,20 @@
 import { bigint, text, timestamp } from "@ryugibo/db/core";
-import { schema } from "~/db";
+import { pg } from "~/db";
 import { JOB_TYPES, LOCATION_TYPES, SALARY_RANGE } from "./constants";
 
-export const jobTypes = schema.enum(
+export const jobTypes = pg.enum(
   "job_type",
   JOB_TYPES.map((type) => type.value) as [string, ...string[]],
 );
 
-export const locations = schema.enum(
+export const locations = pg.enum(
   "location",
   LOCATION_TYPES.map((location) => location.value) as [string, ...string[]],
 );
 
-export const salaryRanges = schema.enum("salary_range", SALARY_RANGE);
+export const salaryRanges = pg.enum("salary_range", SALARY_RANGE);
 
-export const jobs = schema.table("jobs", {
+export const jobs = pg.table("jobs", {
   id: bigint({ mode: "number" }).primaryKey().generatedAlwaysAsIdentity(),
   position: text().notNull(),
   overview: text().notNull(),

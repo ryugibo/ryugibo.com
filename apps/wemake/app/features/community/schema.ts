@@ -1,15 +1,15 @@
 import { type AnyPgColumn, bigint, primaryKey, text, timestamp, uuid } from "@ryugibo/db/core";
-import { schema } from "~/db";
+import { pg } from "~/db";
 import { profiles } from "~/features/users/schema";
 
-export const topics = schema.table("topics", {
+export const topics = pg.table("topics", {
   id: bigint({ mode: "number" }).primaryKey().generatedAlwaysAsIdentity(),
   name: text().notNull(),
   slug: text().notNull(),
   created_at: timestamp().notNull().defaultNow(),
 });
 
-export const posts = schema.table("posts", {
+export const posts = pg.table("posts", {
   id: bigint({ mode: "number" }).primaryKey().generatedAlwaysAsIdentity(),
   title: text().notNull(),
   content: text().notNull(),
@@ -21,7 +21,7 @@ export const posts = schema.table("posts", {
   updated_at: timestamp().notNull().defaultNow(),
 });
 
-export const postUpvotes = schema.table(
+export const postUpvotes = pg.table(
   "post_upvotes",
   {
     post_id: bigint({ mode: "number" })
@@ -34,7 +34,7 @@ export const postUpvotes = schema.table(
   (table) => [primaryKey({ columns: [table.post_id, table.profile_id] })],
 );
 
-export const postReplies = schema.table("post_replies", {
+export const postReplies = pg.table("post_replies", {
   id: bigint({ mode: "number" }).primaryKey().generatedAlwaysAsIdentity(),
   content: text().notNull(),
   post_id: bigint({ mode: "number" })

@@ -1,8 +1,8 @@
 import { bigint, integer, primaryKey, text, timestamp, uuid } from "@ryugibo/db/core";
-import { schema } from "~/db";
+import { pg } from "~/db";
 import { profiles } from "~/features/users/schema";
 
-export const ideas = schema.table("ideas", {
+export const ideas = pg.table("ideas", {
   id: bigint({ mode: "number" }).primaryKey().generatedAlwaysAsIdentity(),
   idea: text().notNull(),
   views: integer().notNull().default(0),
@@ -11,7 +11,7 @@ export const ideas = schema.table("ideas", {
   created_at: timestamp().notNull().defaultNow(),
 });
 
-export const ideaLikes = schema.table(
+export const ideaLikes = pg.table(
   "idea_likes",
   {
     idea_id: bigint({ mode: "number" })

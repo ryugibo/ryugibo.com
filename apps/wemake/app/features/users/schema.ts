@@ -8,7 +8,7 @@ import {
   timestamp,
   uuid,
 } from "@ryugibo/db/core";
-import { schema } from "~/db";
+import { pg } from "~/db";
 import { posts } from "~/features/community/schema";
 import { products } from "~/features/products/schema";
 
@@ -16,7 +16,7 @@ const users = pgSchema("auth").table("users", {
   id: uuid().primaryKey(),
 });
 
-export const roles = schema.enum("role", [
+export const roles = pg.enum("role", [
   "developer",
   "designer",
   "marketer",
@@ -24,7 +24,7 @@ export const roles = schema.enum("role", [
   "product-manager",
 ]);
 
-export const profiles = schema.table("profiles", {
+export const profiles = pg.table("profiles", {
   id: uuid()
     .primaryKey()
     .references(() => users.id, { onDelete: "cascade" }),
@@ -42,20 +42,20 @@ export const profiles = schema.table("profiles", {
   updated_at: timestamp().notNull().defaultNow(),
 });
 
-export const follows = schema.table("follows", {
+export const follows = pg.table("follows", {
   follower_id: uuid().references(() => profiles.id, { onDelete: "cascade" }),
   following_id: uuid().references(() => profiles.id, { onDelete: "cascade" }),
   created_at: timestamp().notNull().defaultNow(),
 });
 
-export const notificationTypes = schema.enum("notification_type", [
+export const notificationTypes = pg.enum("notification_type", [
   "follow",
   "review",
   "reply",
   "mention",
 ]);
 
-export const notifications = schema.table("notifications", {
+export const notifications = pg.table("notifications", {
   id: uuid().primaryKey(),
   target_id: uuid()
     .notNull()
@@ -67,12 +67,12 @@ export const notifications = schema.table("notifications", {
   created_at: timestamp().notNull().defaultNow(),
 });
 
-export const messageRooms = schema.table("message_rooms", {
+export const messageRooms = pg.table("message_rooms", {
   id: bigint({ mode: "number" }).primaryKey().generatedAlwaysAsIdentity(),
   created_at: timestamp().notNull().defaultNow(),
 });
 
-export const messageRoomMembers = schema.table(
+export const messageRoomMembers = pg.table(
   "message_room_members",
   {
     message_room_id: bigint({ mode: "number" }).references(() => messageRooms.id, {
@@ -84,7 +84,7 @@ export const messageRoomMembers = schema.table(
   (table) => [primaryKey({ columns: [table.message_room_id, table.profile_id] })],
 );
 
-export const messages = schema.table("messages", {
+export const messages = pg.table("messages", {
   id: bigint({ mode: "number" }).primaryKey().generatedAlwaysAsIdentity(),
   message_room_id: bigint({ mode: "number" })
     .notNull()

@@ -1,14 +1,14 @@
 import { sql } from "@ryugibo/db";
 import { bigint, check, integer, text, timestamp } from "@ryugibo/db/core";
-import { schema } from "~/db";
+import { pg } from "~/db";
 import { PRODUCT_STAGE } from "./constant";
 
-export const productStages = schema.enum(
+export const productStages = pg.enum(
   "product_stage",
   PRODUCT_STAGE.map((stage) => stage.value) as [string, ...string[]],
 );
 
-export const teams = schema.table(
+export const teams = pg.table(
   "teams",
   {
     id: bigint({ mode: "number" }).primaryKey().generatedAlwaysAsIdentity(),

@@ -1,9 +1,9 @@
 import { sql } from "@ryugibo/db";
 import { bigint, check, integer, jsonb, primaryKey, text, timestamp, uuid } from "@ryugibo/db/core";
-import { schema } from "~/db";
+import { pg } from "~/db";
 import { profiles } from "~/features/users/schema";
 
-export const products = schema.table("products", {
+export const products = pg.table("products", {
   id: bigint({ mode: "number" }).primaryKey().generatedAlwaysAsIdentity(),
   name: text().notNull(),
   tagline: text().notNull(),
@@ -20,7 +20,7 @@ export const products = schema.table("products", {
   updated_at: timestamp().notNull().defaultNow(),
 });
 
-export const categories = schema.table("categories", {
+export const categories = pg.table("categories", {
   id: bigint({ mode: "number" }).primaryKey().generatedAlwaysAsIdentity(),
   name: text().notNull(),
   description: text().notNull(),
@@ -28,7 +28,7 @@ export const categories = schema.table("categories", {
   updated_at: timestamp().notNull().defaultNow(),
 });
 
-export const product_upvotes = schema.table(
+export const product_upvotes = pg.table(
   "product_upvotes",
   {
     product_id: bigint({ mode: "number" })
@@ -42,7 +42,7 @@ export const product_upvotes = schema.table(
   (table) => [primaryKey({ columns: [table.product_id, table.profile_id] })],
 );
 
-export const reviews = schema.table(
+export const reviews = pg.table(
   "reviews",
   {
     id: bigint({ mode: "number" }).primaryKey().generatedAlwaysAsIdentity(),
