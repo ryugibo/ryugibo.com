@@ -9,7 +9,8 @@
     "typecheck": "react-router typegen && tsc",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "db:typegen": "dotenv -e .env -- sh -c 'pnpm supabase gen types typescript --project-id \"$VITE_SUPABASE_ID\" --schema \"$DATABASE_SCHEMA\" > database.types.ts'"
   },
   "dependencies": {
     "@icons-pack/react-simple-icons": "^13.8.0",
@@ -32,6 +33,7 @@
     "@types/node": "^22",
     "@types/react": "^19.2.8",
     "@types/react-dom": "^19.2.3",
+    "dotenv-cli": "^11.0.0",
     "supabase": "^2.72.8",
     "typescript": "^5.9.2",
     "vite": "^7.1.7",
