@@ -1,5 +1,5 @@
 import * as SliderPrimitive from "@radix-ui/react-slider";
-import { cn } from "@ui/lib/utils";
+import { cn } from "@ryugibo/ui";
 import * as React from "react";
 
 function Slider({

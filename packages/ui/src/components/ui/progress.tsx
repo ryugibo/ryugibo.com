@@ -1,7 +1,7 @@
 "use client";
 
 import * as ProgressPrimitive from "@radix-ui/react-progress";
-import { cn } from "@ui/lib/utils";
+import { cn } from "@ryugibo/ui";
 import type * as React from "react";
 
 function Progress({
