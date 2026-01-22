@@ -8,6 +8,9 @@
     "jsx": "react-jsx",
     "rootDirs": ["."],
     "baseUrl": ".",
+    "paths": {
+      "@ui/*": ["./src/*"]
+    },
     "esModuleInterop": true,
     "verbatimModuleSyntax": true,
     "noEmit": true,
