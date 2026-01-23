@@ -5,13 +5,15 @@ import { z } from "zod";
 import { Hero } from "~/common/components/hero";
 import { ProductPagination } from "~/common/components/product-pagination";
 import { ProductCard } from "~/features/products/components/product-card";
+import { getProductPagesByDateRange, getProductsByDateRange } from "../queries";
 import type { Route } from "./+types/leaderboards-daily-page";
 
 export const meta = ({ loaderData }: Route.MetaArgs) => {
   if (!loaderData) {
     return [{ title: "The best products | wemake" }];
   }
-  const date = DateTime.fromObject(loaderData);
+  const { dateObject } = loaderData;
+  const date = DateTime.fromObject(dateObject);
   return [{ title: `The best products of ${date.toLocaleString(DateTime.DATE_MED)} | wemake` }];
 };
 
@@ -21,12 +23,12 @@ const paramsSchema = z.object({
   day: z.coerce.number(),
 });
 
-export const loader = ({ params }: Route.LoaderArgs) => {
-  const { success, data: parsedData } = paramsSchema.safeParse(params);
-  if (!success) {
+export const loader = async ({ params, request }: Route.LoaderArgs) => {
+  const { success: successDate, data: dataDate } = paramsSchema.safeParse(params);
+  if (!successDate) {
     throw data({ error_code: "invalid_date", message: "invalid date" }, { status: 400 });
   }
-  const date = DateTime.fromObject(parsedData);
+  const date = DateTime.fromObject(dataDate);
   if (!date.isValid) {
     throw data({ error_code: "invalid_date", message: "invalid date" }, { status: 400 });
   }
@@ -34,13 +36,26 @@ export const loader = ({ params }: Route.LoaderArgs) => {
   if (date > today) {
     throw data({ error_code: "future_date", message: "future date" }, { status: 400 });
   }
+  const url = new URL(request.url);
+  const products = await getProductsByDateRange({
+    startDate: date.startOf("day"),
+    endDate: date.endOf("day"),
+    page: Number(url.searchParams.get("page")) || 1,
+  });
+  const totalPages = await getProductPagesByDateRange({
+    startDate: date.startOf("day"),
+    endDate: date.endOf("day"),
+  });
   return {
-    ...parsedData,
+    dateObject: dataDate,
+    products,
+    totalPages,
   };
 };
 
 export default function LeaderboardsDailyPage({ loaderData }: Route.ComponentProps) {
-  const urlDate = DateTime.fromObject(loaderData);
+  const { dateObject, products, totalPages } = loaderData;
+  const urlDate = DateTime.fromObject(dateObject);
   const prevDate = urlDate.minus({ days: 1 });
   const nextDate = urlDate.plus({ days: 1 });
   const isToday = urlDate.equals(DateTime.now().startOf("day"));
@@ -66,19 +81,19 @@ export default function LeaderboardsDailyPage({ loaderData }: Route.ComponentPro
         )}
       </div>
       <div className="space-y-5 w-full max-w-3xl mx-auto">
-        {[...Array(11).keys()].map((index) => (
+        {products.map((product) => (
           <ProductCard
-            key={`${index}`}
-            id={`${index}`}
-            title={"Product Title"}
-            description={"Product Description"}
-            reviewsCount="12"
-            viewsCount="12"
-            upvotesCount="120"
+            key={`${product.id}`}
+            id={`${product.id}`}
+            title={product.name}
+            description={product.description}
+            reviewsCount={product.reviews}
+            viewsCount={product.views}
+            upvotesCount={product.upvotes}
           />
         ))}
       </div>
-      <ProductPagination totalPages={10} />
+      <ProductPagination totalPages={totalPages} />
     </div>
   );
 }

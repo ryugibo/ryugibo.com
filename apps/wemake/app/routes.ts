@@ -4,16 +4,18 @@ export default [
   index("common/pages/home-page.tsx"),
   ...prefix("products", [
     index("features/products/pages/products-page.tsx"),
-    ...prefix("leaderboards", [
-      index("features/products/pages/leaderboards-page.tsx"),
-      route("/yearly/:year", "features/products/pages/leaderboards-yearly-page.tsx"),
-      route("/monthly/:year/:month", "features/products/pages/leaderboards-monthly-page.tsx"),
-      route(
-        "/weekly/:weekYear/:weekNumber",
-        "features/products/pages/leaderboards-weekly-page.tsx",
-      ),
-      route("/daily/:year/:month/:day", "features/products/pages/leaderboards-daily-page.tsx"),
-      route("/:period", "features/products/pages/leaderboards-redirection-page.tsx"),
+    layout("features/products/layouts/leaderboards-layout.tsx", [
+      ...prefix("leaderboards", [
+        index("features/products/pages/leaderboards-page.tsx"),
+        route("/yearly/:year", "features/products/pages/leaderboards-yearly-page.tsx"),
+        route("/monthly/:year/:month", "features/products/pages/leaderboards-monthly-page.tsx"),
+        route(
+          "/weekly/:weekYear/:weekNumber",
+          "features/products/pages/leaderboards-weekly-page.tsx",
+        ),
+        route("/daily/:year/:month/:day", "features/products/pages/leaderboards-daily-page.tsx"),
+        route("/:period", "features/products/pages/leaderboards-redirection-page.tsx"),
+      ]),
     ]),
     ...prefix("categories", [
       index("features/products/pages/categories-page.tsx"),
