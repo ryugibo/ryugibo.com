@@ -3,5 +3,6 @@ packages:
   - packages/*
 
 onlyBuiltDependencies:
+  - '@parcel/watcher'
   - esbuild
   - supabase
