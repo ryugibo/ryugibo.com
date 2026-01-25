@@ -12,24 +12,24 @@ import { Toaster } from "@ryugibo/ui/sonner";
 import { BookOpen } from "lucide-react";
 import { Link, useLocation } from "react-router";
 import { AppSidebar } from "../components/app-sidebar";
-
 import { BottomNav } from "../components/bottom-nav";
+import { useTranslation } from "../hooks/use-translation";
 
 interface AppLayoutProps {
   children: React.ReactNode;
 }
 
-// Map path segments to Korean display names
-const breadcrumbMap: Record<string, string> = {
-  library: "서재",
-  collections: "컬렉션",
-  settings: "설정",
-  books: "책",
-  search: "검색",
-  add: "추가",
+const segmentTranslationMap: Record<string, string> = {
+  library: "nav.library",
+  collections: "nav.collections",
+  settings: "nav.settings",
+  books: "nav.books",
+  search: "nav.search",
+  add: "nav.add",
 };
 
 export default function AppLayout({ children }: AppLayoutProps) {
+  const { t } = useTranslation();
   const location = useLocation();
   const pathSegments = location.pathname.split("/").filter(Boolean);
 
@@ -68,9 +68,11 @@ export default function AppLayout({ children }: AppLayoutProps) {
                   // Construct URL for this segment
                   const to = `/${pathSegments.slice(0, index + 1).join("/")}`;
 
-                  // Use mapped name or default capitalization
-                  const title =
-                    breadcrumbMap[segment] || segment.charAt(0).toUpperCase() + segment.slice(1);
+                  // Use mapped translation key or default capitalization
+                  const translationKey = segmentTranslationMap[segment];
+                  const title = translationKey
+                    ? t(translationKey)
+                    : segment.charAt(0).toUpperCase() + segment.slice(1);
 
                   return (
                     <div key={to} className="flex items-center gap-1.5 sm:gap-2.5">
