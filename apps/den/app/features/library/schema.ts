@@ -1,18 +1,10 @@
 import { bigint, text, timestamp, uuid } from "@ryugibo/db/core";
 import { schema } from "db";
-import { BOOK_SOURCES } from "~/features/library/constant";
+import { books } from "~/features/book/schema";
+import { BOOK_SOURCES, READ_STATE } from "~/features/library/constant";
 import { profiles } from "~/features/profile/schema";
 
-export const books = schema.table("books", {
-  id: bigint({ mode: "number" }).primaryKey().generatedAlwaysAsIdentity(),
-  isbn: text(),
-  title: text().notNull(),
-  author: text().notNull(),
-  cover: text(),
-  description: text(),
-  created_at: timestamp().notNull().defaultNow(),
-  updated_at: timestamp().notNull().defaultNow(),
-});
+export const readState = schema.enum("read_state", READ_STATE);
 
 export const bookSources = schema.enum(
   "book_sources",
@@ -24,6 +16,7 @@ export const profileBooks = schema.table("profile_books", {
   book_id: bigint({ mode: "number" }).references(() => books.id, { onDelete: "cascade" }),
   source: bookSources().notNull(),
   source_etc: text(),
+  read_state: readState().notNull().default("toread"),
   comment: text().notNull(),
   created_at: timestamp().notNull().defaultNow(),
   updated_at: timestamp().notNull().defaultNow(),

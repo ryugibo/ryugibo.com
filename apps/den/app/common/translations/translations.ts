@@ -16,6 +16,8 @@ const defaultTranslations = {
   "nav.den": "Den",
   "nav.libraryManager": "Library Manager",
   "nav.search": "Search",
+  "nav.books": "Books",
+  "nav.add": "Add",
 
   // --- Dashboard ---
   "dashboard.welcome": "Welcome back, {name}",
@@ -172,6 +174,8 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     "nav.den": "Den",
     "nav.libraryManager": "도서 관리자",
     "nav.search": "검색",
+    "nav.books": "책",
+    "nav.add": "추가",
 
     "dashboard.welcome": "환영합니다, {name}님",
     "dashboard.subtitle": "오늘의 서재 현황입니다.",

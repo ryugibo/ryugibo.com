@@ -1,0 +1,293 @@
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
+
+export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.1";
+  };
+  den: {
+    Tables: {
+      books: {
+        Row: {
+          author: string;
+          cover: string | null;
+          created_at: string;
+          description: string | null;
+          id: number;
+          isbn: string | null;
+          title: string;
+          updated_at: string;
+        };
+        Insert: {
+          author: string;
+          cover?: string | null;
+          created_at?: string;
+          description?: string | null;
+          id?: never;
+          isbn?: string | null;
+          title: string;
+          updated_at?: string;
+        };
+        Update: {
+          author?: string;
+          cover?: string | null;
+          created_at?: string;
+          description?: string | null;
+          id?: never;
+          isbn?: string | null;
+          title?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      profile: {
+        Row: {
+          avatar: string | null;
+          bio: string | null;
+          created_at: string;
+          id: string;
+          name: string;
+          updated_at: string;
+          username: string;
+        };
+        Insert: {
+          avatar?: string | null;
+          bio?: string | null;
+          created_at?: string;
+          id: string;
+          name: string;
+          updated_at?: string;
+          username: string;
+        };
+        Update: {
+          avatar?: string | null;
+          bio?: string | null;
+          created_at?: string;
+          id?: string;
+          name?: string;
+          updated_at?: string;
+          username?: string;
+        };
+        Relationships: [];
+      };
+      profile_books: {
+        Row: {
+          book_id: number | null;
+          comment: string;
+          created_at: string;
+          profile_id: string | null;
+          read_state: Database["den"]["Enums"]["read_state"];
+          source: Database["den"]["Enums"]["book_sources"];
+          source_etc: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          book_id?: number | null;
+          comment: string;
+          created_at?: string;
+          profile_id?: string | null;
+          read_state?: Database["den"]["Enums"]["read_state"];
+          source: Database["den"]["Enums"]["book_sources"];
+          source_etc?: string | null;
+          updated_at?: string;
+        };
+        Update: {
+          book_id?: number | null;
+          comment?: string;
+          created_at?: string;
+          profile_id?: string | null;
+          read_state?: Database["den"]["Enums"]["read_state"];
+          source?: Database["den"]["Enums"]["book_sources"];
+          source_etc?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "profile_books_book_id_books_id_fk";
+            columns: ["book_id"];
+            isOneToOne: false;
+            referencedRelation: "books";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "profile_books_profile_id_profile_id_fk";
+            columns: ["profile_id"];
+            isOneToOne: false;
+            referencedRelation: "profile";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+    };
+    Views: {
+      profile_books_list_view: {
+        Row: {
+          author: string | null;
+          book_id: number | null;
+          comment: string | null;
+          cover: string | null;
+          created_at: string | null;
+          description: string | null;
+          isbn: string | null;
+          profile_id: string | null;
+          read_state: Database["den"]["Enums"]["read_state"] | null;
+          source: Database["den"]["Enums"]["book_sources"] | null;
+          source_etc: string | null;
+          title: string | null;
+          updated_at: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "profile_books_book_id_books_id_fk";
+            columns: ["book_id"];
+            isOneToOne: false;
+            referencedRelation: "books";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "profile_books_profile_id_profile_id_fk";
+            columns: ["profile_id"];
+            isOneToOne: false;
+            referencedRelation: "profile";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+    };
+    Functions: {
+      [_ in never]: never;
+    };
+    Enums: {
+      book_sources: "kyobo" | "aladin" | "yes24" | "ridibooks" | "etc";
+      read_state: "reading" | "toread" | "completed";
+    };
+    CompositeTypes: {
+      [_ in never]: never;
+    };
+  };
+};
+
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">;
+
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">];
+
+export type Tables<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals;
+  }
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R;
+    }
+    ? R
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] & DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R;
+      }
+      ? R
+      : never
+    : never;
+
+export type TablesInsert<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals;
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I;
+    }
+    ? I
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I;
+      }
+      ? I
+      : never
+    : never;
+
+export type TablesUpdate<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals;
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U;
+    }
+    ? U
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U;
+      }
+      ? U
+      : never
+    : never;
+
+export type Enums<
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals;
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    : never = never,
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+    : never;
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof DatabaseWithoutInternals },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals;
+  }
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never;
+
+export const Constants = {
+  den: {
+    Enums: {
+      book_sources: ["kyobo", "aladin", "yes24", "ridibooks", "etc"],
+      read_state: ["reading", "toread", "completed"],
+    },
+  },
+} as const;

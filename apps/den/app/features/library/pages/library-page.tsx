@@ -1,67 +1,53 @@
+import { cn } from "@ryugibo/ui";
 import { Badge } from "@ryugibo/ui/badge";
+import { Button } from "@ryugibo/ui/button";
 import { Input } from "@ryugibo/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ryugibo/ui/tabs";
 import { Search } from "lucide-react";
-import { Link } from "react-router";
+import { data, Form, Link, useSearchParams } from "react-router";
+import z from "zod";
 import { useTranslation } from "../../../common/hooks/use-translation";
 import AppLayout from "../../../common/layouts/app-layout";
 import { BookCover } from "../../book/components/book-cover";
+import { READ_STATE } from "../constant";
+import { getLibrary } from "../queries";
+import type { Route } from "./+types/library-page";
 
-export default function LibraryPage() {
+const searchParamsSchema = z.object({
+  keyword: z.string().optional(),
+  read_state: z.enum(READ_STATE).optional(),
+});
+
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const url = new URL(request.url);
+  const { success, data: dataQuery } = searchParamsSchema.safeParse(
+    Object.fromEntries(url.searchParams),
+  );
+  if (!success) {
+    throw data({
+      error_code: "invalid_search_params",
+      message: "Invalid search parameters",
+    });
+  }
+  const books = await getLibrary({ keyword: dataQuery.keyword, read_state: dataQuery.read_state });
+  return {
+    books,
+    read_state: dataQuery.read_state,
+  };
+};
+
+export default function LibraryPage({ loaderData }: Route.ComponentProps) {
+  const [searchParams, setSearchParams] = useSearchParams();
   const { t } = useTranslation();
+  const { books, read_state } = loaderData;
 
-  const books = [
-    {
-      id: 1,
-      title: "The Design of Everyday Things",
-      author: "Don Norman",
-      cover:
-        "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&q=80&w=300&h=450",
-      status: "reading",
-    },
-    {
-      id: 2,
-      title: "Refactoring UI",
-      author: "Adam Wathan",
-      cover:
-        "https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=300&h=450",
-      status: "completed",
-    },
-    {
-      id: 3,
-      title: "Clean Code",
-      author: "Robert C. Martin",
-      cover:
-        "https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&q=80&w=300&h=450",
-      status: "toread",
-    },
-    {
-      id: 4,
-      title: "Zero to One",
-      author: "Peter Thiel",
-      cover:
-        "https://images.unsplash.com/photo-1555239167-a22ff5d3be9e?auto=format&fit=crop&q=80&w=300&h=450",
-      status: "reading",
-    },
-    {
-      id: 5,
-      title: "Atomic Habits",
-      author: "James Clear",
-      cover:
-        "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&q=80&w=300&h=450",
-      status: "toread",
-    },
-    {
-      id: 6,
-      title: "Deep Work",
-      author: "Cal Newport",
-      cover:
-        "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?auto=format&fit=crop&q=80&w=300&h=450",
-      status: "completed",
-    },
-  ];
-
-  const categories = ["all", "reading", "toread", "completed"];
+  const onClickFilter = (key: string, value: string) => {
+    if (searchParams.get(key) === value) {
+      searchParams.delete(key);
+    } else {
+      searchParams.set(key, value);
+    }
+    setSearchParams(searchParams);
+  };
 
   return (
     <AppLayout>
@@ -74,57 +60,55 @@ export default function LibraryPage() {
             <p className="text-muted-foreground mt-1">{t("library.subtitle")}</p>
           </div>
           <div className="relative w-full md:w-64">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input type="search" placeholder={t("library.searchPlaceholder")} className="pl-8" />
+            <Form>
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input type="hidden" name="read_state" value={read_state} />
+              <Input
+                type="text"
+                name="keyword"
+                placeholder={t("library.searchPlaceholder")}
+                className="pl-8"
+              />
+            </Form>
           </div>
         </div>
-
-        <Tabs defaultValue="all" className="w-full">
-          <TabsList className="mb-4">
-            {categories.map((cat) => (
-              <TabsTrigger key={cat} value={cat}>
-                {t(`library.filter.${cat}`)}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-
-          {categories.map((cat) => (
-            <TabsContent key={cat} value={cat} className="space-y-4">
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
-                {books
-                  .filter((book) => cat === "all" || book.status === cat)
-                  .map((book) => (
-                    <Link
-                      key={book.id}
-                      to={`/library/${book.id}`}
-                      className="group relative block transition-all hover:-translate-y-1"
-                    >
-                      <BookCover src={book.cover} alt={book.title} className="mb-3" />
-                      <div className="space-y-1">
-                        <div className="flex justify-between items-start">
-                          <h3 className="text-sm font-semibold text-foreground truncate flex-1 pr-2 group-hover:text-primary transition-colors">
-                            {book.title}
-                          </h3>
-                          <Badge
-                            variant={book.status === "reading" ? "default" : "secondary"}
-                            className="text-[10px] px-1.5 h-5"
-                          >
-                            {t(`library.filter.${book.status}`)}
-                          </Badge>
-                        </div>
-                        <p className="text-xs text-muted-foreground truncate">{book.author}</p>
-                      </div>
-                    </Link>
-                  ))}
-              </div>
-              {books.filter((book) => cat === "all" || book.status === cat).length === 0 && (
-                <div className="text-center py-12 text-muted-foreground">
-                  {t("library.noBooks")}
-                </div>
-              )}
-            </TabsContent>
+        <div className="flex flex-wrap gap-2">
+          {READ_STATE.map((type) => (
+            <Button
+              key={type}
+              variant="secondary"
+              onClick={() => onClickFilter("read_state", type)}
+              className={cn(read_state === type && "bg-primary text-primary-foreground")}
+            >
+              {t(`library.filter.${type}`)}
+            </Button>
           ))}
-        </Tabs>
+        </div>
+        <div className="flex flex-col">
+          {books.map((book) => (
+            <Link
+              key={book.book_id}
+              to={`/library/${book.book_id}`}
+              className="group relative block transition-all hover:-translate-y-1"
+            >
+              {book.cover && <BookCover src={book.cover} alt={book.title} className="mb-3" />}
+              <div className="space-y-1">
+                <div className="flex justify-between items-start">
+                  <h3 className="text-sm font-semibold text-foreground truncate flex-1 pr-2 group-hover:text-primary transition-colors">
+                    {book.title}
+                  </h3>
+                  <Badge
+                    variant={book.read_state === "reading" ? "default" : "secondary"}
+                    className="text-[10px] px-1.5 h-5"
+                  >
+                    {t(`library.filter.${book.read_state}`)}
+                  </Badge>
+                </div>
+                <p className="text-xs text-muted-foreground truncate">{book.author}</p>
+              </div>
+            </Link>
+          ))}
+        </div>
       </div>
     </AppLayout>
   );
