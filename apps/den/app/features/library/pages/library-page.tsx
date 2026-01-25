@@ -84,14 +84,14 @@ export default function LibraryPage({ loaderData }: Route.ComponentProps) {
             </Button>
           ))}
         </div>
-        <div className="flex flex-col">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
           {books.map((book) => (
             <Link
               key={book.book_id}
               to={`/books/${book.book_id}`}
               className="group relative block transition-all hover:-translate-y-1"
             >
-              {book.cover && <BookCover src={book.cover} alt={book.title} className="mb-3" />}
+              <BookCover src={book.cover} alt={book.title} className="mb-3" />
               <div className="space-y-1">
                 <div className="flex justify-between items-start">
                   <h3 className="text-sm font-semibold text-foreground truncate flex-1 pr-2 group-hover:text-primary transition-colors">
