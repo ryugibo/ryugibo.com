@@ -9,7 +9,8 @@
     "check-types": "react-router typegen && tsc --noEmit",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "db:typegen": "dotenv -e .env -- sh -c 'pnpm supabase gen types typescript --project-id \"$VITE_SUPABASE_ID\" --schema \"$DATABASE_SCHEMA\" > database.types.ts'"
   },
   "dependencies": {
     "@react-router/node": "7.12.0",
