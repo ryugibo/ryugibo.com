@@ -1,8 +1,9 @@
+import { cn } from "@ryugibo/ui";
 import { Badge } from "@ryugibo/ui/badge";
+import { Button } from "@ryugibo/ui/button";
 import { Input } from "@ryugibo/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ryugibo/ui/tabs";
 import { Search } from "lucide-react";
-import { data, Form, Link } from "react-router";
+import { data, Form, Link, useSearchParams } from "react-router";
 import z from "zod";
 import { useTranslation } from "../../../common/hooks/use-translation";
 import AppLayout from "../../../common/layouts/app-layout";
@@ -13,11 +14,12 @@ import type { Route } from "./+types/library-page";
 
 const searchParamsSchema = z.object({
   keyword: z.string().optional(),
+  read_state: z.enum(READ_STATE).optional(),
 });
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
   const url = new URL(request.url);
-  const { success, data: dataKeyword } = searchParamsSchema.safeParse(
+  const { success, data: dataQuery } = searchParamsSchema.safeParse(
     Object.fromEntries(url.searchParams),
   );
   if (!success) {
@@ -26,17 +28,26 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
       message: "Invalid search parameters",
     });
   }
-  const books = await getLibrary({ keyword: dataKeyword.keyword });
+  const books = await getLibrary({ keyword: dataQuery.keyword, read_state: dataQuery.read_state });
   return {
     books,
+    read_state: dataQuery.read_state,
   };
 };
 
 export default function LibraryPage({ loaderData }: Route.ComponentProps) {
+  const [searchParams, setSearchParams] = useSearchParams();
   const { t } = useTranslation();
-  const { books } = loaderData;
+  const { books, read_state } = loaderData;
 
-  const categories = ["all", ...READ_STATE];
+  const onClickFilter = (key: string, value: string) => {
+    if (searchParams.get(key) === value) {
+      searchParams.delete(key);
+    } else {
+      searchParams.set(key, value);
+    }
+    setSearchParams(searchParams);
+  };
 
   return (
     <AppLayout>
@@ -51,6 +62,7 @@ export default function LibraryPage({ loaderData }: Route.ComponentProps) {
           <div className="relative w-full md:w-64">
             <Form>
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input type="hidden" name="read_state" value={read_state} />
               <Input
                 type="text"
                 name="keyword"
@@ -60,55 +72,43 @@ export default function LibraryPage({ loaderData }: Route.ComponentProps) {
             </Form>
           </div>
         </div>
-
-        <Tabs defaultValue="all" className="w-full">
-          <TabsList className="mb-4">
-            {categories.map((cat) => (
-              <TabsTrigger key={cat} value={cat}>
-                {t(`library.filter.${cat}`)}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-
-          {categories.map((cat) => (
-            <TabsContent key={cat} value={cat} className="space-y-4">
-              <div className="flex flex-col">
-                {books
-                  .filter((book) => cat === "all" || book.read_state === cat)
-                  .map((book) => (
-                    <Link
-                      key={book.book_id}
-                      to={`/library/${book.book_id}`}
-                      className="group relative block transition-all hover:-translate-y-1"
-                    >
-                      {book.cover && (
-                        <BookCover src={book.cover} alt={book.title} className="mb-3" />
-                      )}
-                      <div className="space-y-1">
-                        <div className="flex justify-between items-start">
-                          <h3 className="text-sm font-semibold text-foreground truncate flex-1 pr-2 group-hover:text-primary transition-colors">
-                            {book.title}
-                          </h3>
-                          <Badge
-                            variant={book.read_state === "reading" ? "default" : "secondary"}
-                            className="text-[10px] px-1.5 h-5"
-                          >
-                            {t(`library.filter.${book.read_state}`)}
-                          </Badge>
-                        </div>
-                        <p className="text-xs text-muted-foreground truncate">{book.author}</p>
-                      </div>
-                    </Link>
-                  ))}
-              </div>
-              {books.filter((book) => cat === "all" || book.read_state === cat).length === 0 && (
-                <div className="text-center py-12 text-muted-foreground">
-                  {t("library.noBooks")}
-                </div>
-              )}
-            </TabsContent>
+        <div className="flex flex-wrap gap-2">
+          {READ_STATE.map((type) => (
+            <Button
+              key={type}
+              variant="secondary"
+              onClick={() => onClickFilter("read_state", type)}
+              className={cn(read_state === type && "bg-primary text-primary-foreground")}
+            >
+              {t(`library.filter.${type}`)}
+            </Button>
           ))}
-        </Tabs>
+        </div>
+        <div className="flex flex-col">
+          {books.map((book) => (
+            <Link
+              key={book.book_id}
+              to={`/library/${book.book_id}`}
+              className="group relative block transition-all hover:-translate-y-1"
+            >
+              {book.cover && <BookCover src={book.cover} alt={book.title} className="mb-3" />}
+              <div className="space-y-1">
+                <div className="flex justify-between items-start">
+                  <h3 className="text-sm font-semibold text-foreground truncate flex-1 pr-2 group-hover:text-primary transition-colors">
+                    {book.title}
+                  </h3>
+                  <Badge
+                    variant={book.read_state === "reading" ? "default" : "secondary"}
+                    className="text-[10px] px-1.5 h-5"
+                  >
+                    {t(`library.filter.${book.read_state}`)}
+                  </Badge>
+                </div>
+                <p className="text-xs text-muted-foreground truncate">{book.author}</p>
+              </div>
+            </Link>
+          ))}
+        </div>
       </div>
     </AppLayout>
   );
