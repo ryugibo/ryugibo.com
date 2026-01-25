@@ -7,7 +7,8 @@ import {
 } from "@ryugibo/ui/dropdown-menu";
 import { ChevronDownIcon } from "@ryugibo/ui/icons";
 import { Input } from "@ryugibo/ui/input";
-import { Form, Link, useSearchParams } from "react-router";
+import { data, Form, Link, useSearchParams } from "react-router";
+import { z } from "zod";
 import { Hero } from "~/common/components/hero";
 import { PostCard } from "~/features/community/components/post-card";
 import { PERIOD_OPTIONS, SORT_OPTIONS } from "~/features/community/constant";
@@ -24,16 +25,43 @@ export const meta = () => [
   },
 ];
 
-export const loader = async () => {
-  const topics = await getTopics();
-  const posts = await getPosts();
+const searchParamsSchema = z.object({
+  sorting: z.enum(SORT_OPTIONS).optional().default("newest"),
+  period: z.enum(PERIOD_OPTIONS).optional().default("all"),
+  keyword: z.string().optional().default(""),
+  topic: z.string().optional(),
+});
+
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const url = new URL(request.url);
+  const { success: successSort, data: dataSort } = searchParamsSchema.safeParse(
+    Object.fromEntries(url.searchParams),
+  );
+  if (!successSort) {
+    throw data(
+      {
+        error_code: "invalid_search_params",
+        message: "Invalid search parameters",
+      },
+      { status: 400 },
+    );
+  }
+  const [topics, posts] = await Promise.all([
+    getTopics(),
+    getPosts({
+      limit: 20,
+      sorting: dataSort.sorting,
+      period: dataSort.period,
+      keyword: dataSort.keyword,
+      topic: dataSort.topic,
+    }),
+  ]);
   return { topics, posts };
 };
 
 export default function CommunityPage({ loaderData }: Route.ComponentProps) {
   const [searchParams, setSearchParams] = useSearchParams();
-  const sorting = searchParams.get("sorting") || "newest";
-  const period = searchParams.get("period") || "all-time";
+  const { sorting, period } = searchParamsSchema.parse(Object.fromEntries(searchParams));
   return (
     <div>
       <Hero
@@ -93,7 +121,9 @@ export default function CommunityPage({ loaderData }: Route.ComponentProps) {
                 )}
               </div>
               <Form className="w-2/3">
-                <Input type="text" name="search" placeholder="Search for discussions" />
+                <Input type="hidden" name="sorting" value={sorting} />
+                <Input type="hidden" name="period" value={period} />
+                <Input type="text" name="keyword" placeholder="Search for discussions" />
               </Form>
             </div>
             <Button asChild>

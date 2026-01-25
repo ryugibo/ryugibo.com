@@ -2,6 +2,7 @@ import { Button } from "@ryugibo/ui/button";
 import { DateTime } from "luxon";
 import { Link } from "react-router";
 import { PostCard } from "~/features/community/components/post-card";
+import { getPosts } from "~/features/community/queries";
 import { IdeaCard } from "~/features/ideas/components/idea-card";
 import { JobCard } from "~/features/jobs/components/job-card";
 import { ProductCard } from "~/features/products/components/product-card";
@@ -22,7 +23,12 @@ export const loader = async () => {
     endDate: DateTime.now().endOf("day"),
     limit: 7,
   });
-  return { products };
+  const posts = await getPosts({
+    limit: 7,
+    sorting: "newest",
+    period: "all",
+  });
+  return { products, posts };
 };
 
 export default function HomePage({ loaderData }: Route.ComponentProps) {
@@ -60,15 +66,16 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
             <Link to="/community">Explore all discussions &rarr;</Link>
           </Button>
         </div>
-        {[...Array(11).keys()].map((index) => (
+        {loaderData.posts.map((post) => (
           <PostCard
-            key={index}
-            id={index}
-            title={"What is the best productivity tool?"}
-            authorName={"Wemake"}
-            authorAvatarUrl={"https://github.com/shadcn.png"}
-            category={"Productivity"}
-            postedAt={"12 hours ago"}
+            key={post.id}
+            id={post.id}
+            title={post.title}
+            authorName={post.author}
+            authorAvatarUrl={post.author_avatar}
+            category={post.topic}
+            postedAt={post.created_at}
+            upvotesCount={post.upvotes}
           />
         ))}
       </div>
