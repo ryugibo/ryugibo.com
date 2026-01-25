@@ -36,7 +36,11 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 export default function JobsPage({ loaderData }: Route.ComponentProps) {
   const [searchParams, setSearchParams] = useSearchParams();
   const onClickFilter = (key: string, value: string) => {
-    searchParams.set(key, value);
+    if (searchParams.get(key) === value) {
+      searchParams.delete(key);
+    } else {
+      searchParams.set(key, value);
+    }
     setSearchParams(searchParams);
   };
   return (
