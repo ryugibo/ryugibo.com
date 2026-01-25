@@ -88,7 +88,7 @@ export default function LibraryPage({ loaderData }: Route.ComponentProps) {
           {books.map((book) => (
             <Link
               key={book.book_id}
-              to={`/library/${book.book_id}`}
+              to={`/books/${book.book_id}`}
               className="group relative block transition-all hover:-translate-y-1"
             >
               {book.cover && <BookCover src={book.cover} alt={book.title} className="mb-3" />}
