@@ -1,9 +1,12 @@
 import { cn } from "@ryugibo/ui";
 import { Button } from "@ryugibo/ui/button";
-import { useSearchParams } from "react-router";
+import { data, useSearchParams } from "react-router";
+import z from "zod";
 import { Hero } from "~/common/components/hero";
 import { JobCard } from "~/features/jobs/components/job-card";
 import { JOB_TYPES, LOCATION_TYPES, SALARY_RANGE } from "~/features/jobs/constants";
+import { getJobs } from "../queries";
+import type { Route } from "./+types/jobs-page";
 
 export const meta = () => {
   return [
@@ -12,7 +15,25 @@ export const meta = () => {
   ];
 };
 
-export default function JobsPage() {
+const searchParamsSchema = z.object({
+  type: z.enum(JOB_TYPES.map((type) => type.value)).optional(),
+  location: z.enum(LOCATION_TYPES.map((type) => type.value)).optional(),
+  salary: z.enum(SALARY_RANGE).optional(),
+});
+
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const url = new URL(request.url);
+  const { success, data: dataFilter } = searchParamsSchema.safeParse(
+    Object.fromEntries(url.searchParams),
+  );
+  if (!success) {
+    throw data({ error_code: "invalid_params", message: "invalid params" }, { status: 400 });
+  }
+  const jobs = await getJobs({ limit: 11, ...dataFilter });
+  return { jobs };
+};
+
+export default function JobsPage({ loaderData }: Route.ComponentProps) {
   const [searchParams, setSearchParams] = useSearchParams();
   const onClickFilter = (key: string, value: string) => {
     searchParams.set(key, value);
@@ -23,18 +44,18 @@ export default function JobsPage() {
       <Hero title="Jobs" description="Companies looking for makers" />
       <div className="grid grid-cols-1 xl:grid-cols-6 gap-20 items-start">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:col-span-4 gap-5">
-          {[...Array(11).keys()].map((index) => (
+          {loaderData.jobs.map((job) => (
             <JobCard
-              key={`jobId-${index}`}
-              id={`jobId-${index}`}
-              companyName={"Tesla Motors"}
-              companyLogoUrl={"https://github.com/teslamotors.png"}
-              title={"Software Engineer"}
-              postedAt={"12 hours ago"}
-              type={"Full-time"}
-              locationType={"Remote"}
-              salary={"$100,000 - $150,000"}
-              location={"San Francisco, CA"}
+              key={job.id}
+              id={job.id}
+              companyName={job.company_name}
+              companyLogoUrl={job.company_logo}
+              title={job.position}
+              postedAt={job.created_at}
+              type={job.job_type}
+              locationType={job.location}
+              salary={job.salary_range}
+              location={job.company_location}
             />
           ))}
         </div>

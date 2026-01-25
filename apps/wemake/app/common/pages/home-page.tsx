@@ -6,6 +6,7 @@ import { getPosts } from "~/features/community/queries";
 import { IdeaCard } from "~/features/ideas/components/idea-card";
 import { getIdeas } from "~/features/ideas/queries";
 import { JobCard } from "~/features/jobs/components/job-card";
+import { getJobs } from "~/features/jobs/queries";
 import { ProductCard } from "~/features/products/components/product-card";
 import { getProductsByDateRange } from "~/features/products/queries";
 import { TeamCard } from "~/features/teams/components/team-card";
@@ -30,7 +31,8 @@ export const loader = async () => {
     period: "all",
   });
   const ideas = await getIdeas({ limit: 7 });
-  return { products, posts, ideas };
+  const jobs = await getJobs({ limit: 11 });
+  return { products, posts, ideas, jobs };
 };
 
 export default function HomePage({ loaderData }: Route.ComponentProps) {
@@ -109,18 +111,18 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
             <Link to="/jobs">Explore all jobs &rarr;</Link>
           </Button>
         </div>
-        {[...Array(11).keys()].map((index) => (
+        {loaderData.jobs.map((job) => (
           <JobCard
-            key={`jobId-${index}`}
-            id={`jobId-${index}`}
-            companyName={"Tesla Motors"}
-            companyLogoUrl={"https://github.com/teslamotors.png"}
-            title={"Software Engineer"}
-            postedAt={"12 hours ago"}
-            type={"Full-time"}
-            locationType={"Remote"}
-            salary={"$100,000 - $150,000"}
-            location={"San Francisco, CA"}
+            key={job.id}
+            id={job.id}
+            companyName={job.company_name}
+            companyLogoUrl={job.company_logo}
+            title={job.position}
+            postedAt={job.created_at}
+            type={job.job_type}
+            locationType={job.location}
+            salary={job.salary_range}
+            location={job.company_location}
           />
         ))}
       </div>

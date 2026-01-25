@@ -1,10 +1,11 @@
 import { Badge } from "@ryugibo/ui/badge";
 import { Button } from "@ryugibo/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@ryugibo/ui/card";
+import { DateTime } from "luxon";
 import { Link } from "react-router";
 
 interface JobCardProps {
-  id: string;
+  id: number;
   companyName: string;
   companyLogoUrl: string;
   title: string;
@@ -38,14 +39,20 @@ export function JobCard({
             />
             <div className="space-x-2">
               <span className="text-accent-foreground">{companyName}</span>
-              <span className="text-xs text-muted-foreground">{postedAt}</span>
+              <span className="text-xs text-muted-foreground">
+                {DateTime.fromISO(postedAt).toRelative()}
+              </span>
             </div>
           </div>
           <CardTitle>{title}</CardTitle>
         </CardHeader>
         <CardContent className="flex gap-2">
-          <Badge variant="outline">{type}</Badge>
-          <Badge variant="outline">{locationType}</Badge>
+          <Badge variant="outline" className="capitalize">
+            {type}
+          </Badge>
+          <Badge variant="outline" className="capitalize">
+            {locationType}
+          </Badge>
         </CardContent>
         <CardFooter className="flex justify-between">
           <div className="flex flex-col">
