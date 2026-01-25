@@ -2,10 +2,11 @@ import { cn } from "@ryugibo/ui";
 import { Button } from "@ryugibo/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@ryugibo/ui/card";
 import { DotIcon, EyeIcon, HeartIcon, LockIcon } from "@ryugibo/ui/icons";
+import { DateTime } from "luxon";
 import { Link } from "react-router";
 
 interface IdeaCardProps {
-  id: string;
+  id: number;
   title: string;
   viewCount: number;
   createdAt: string;
@@ -44,7 +45,7 @@ export function IdeaCard({
           <span>{viewCount}</span>
         </div>
         <DotIcon className="size-4" />
-        <span>{createdAt}</span>
+        <span>{DateTime.fromISO(createdAt).toRelative()}</span>
       </CardContent>
       <CardFooter className="flex justify-end gap-2">
         <Button variant="outline">

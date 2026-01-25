@@ -1,5 +1,7 @@
 import { Hero } from "~/common/components/hero";
 import { IdeaCard } from "~/features/ideas/components/idea-card";
+import { getIdeas } from "../queries";
+import type { Route } from "./+types/ideas-page";
 
 export const meta = () => {
   return [
@@ -8,20 +10,26 @@ export const meta = () => {
   ];
 };
 
-export default function IdeasPage() {
+export const loader = async () => {
+  const ideas = await getIdeas({ limit: 20 });
+
+  return { ideas };
+};
+
+export default function IdeasPage({ loaderData }: Route.ComponentProps) {
   return (
     <div className="space-y-20">
       <Hero title="IdeasGPT" description="Find ideas for your next project" />
       <div className="grid grid-cols-4 gap-4">
-        {[...Array(10).keys()].map((index) => (
+        {loaderData.ideas.map((idea) => (
           <IdeaCard
-            key={`ideaId-${index}`}
-            id={`ideaId-${index}`}
-            title="A startup that creates an AI-powered generated personal trainer, delivering customized fitness recommendations and tracking of progress using a mobile app to track workouts and progress as well as a website to manage the business."
-            viewCount={123}
-            createdAt={"12 hours ago"}
-            likesCount={12}
-            claimed={index % 2 === 0}
+            key={idea.id}
+            id={idea.id}
+            title={idea.idea}
+            viewCount={idea.views}
+            createdAt={idea.created_at}
+            likesCount={idea.likes}
+            claimed={idea.is_claimed}
           />
         ))}
       </div>

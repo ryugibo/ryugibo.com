@@ -1,32 +1,53 @@
 import { Button } from "@ryugibo/ui/button";
 import { DotIcon, EyeIcon, HeartIcon } from "@ryugibo/ui/icons";
+import { DateTime } from "luxon";
+import { data } from "react-router";
+import { z } from "zod";
 import { Hero } from "~/common/components/hero";
+import { getIdea } from "../queries";
+import type { Route } from "./+types/idea-page";
 
-export const meta = () => {
-  return [{ title: "Idea Details | wemake" }, { name: "description", content: "Idea details" }];
+export const meta = ({
+  loaderData: {
+    idea: { id, idea },
+  },
+}: Route.MetaArgs) => {
+  return [{ title: `Idea #${id}: ${idea} | wemake` }, { name: "description", content: idea }];
 };
 
-export default function IdeaPage() {
+const paramsSchema = z.object({
+  ideaId: z.coerce.number(),
+});
+
+export const loader = async ({ params }: Route.LoaderArgs) => {
+  const { success: successId, data: dataId } = paramsSchema.safeParse(params);
+  if (!successId) {
+    throw data({ error_code: "idea_not_found", message: "Idea not found" }, { status: 404 });
+  }
+  const idea = await getIdea({ id: dataId.ideaId });
+  if (!idea) {
+    throw data({ error_code: "idea_not_found", message: "Idea not found" }, { status: 404 });
+  }
+  return { idea };
+};
+export default function IdeaPage({ loaderData }: Route.ComponentProps) {
+  const { idea } = loaderData;
   return (
     <div>
-      <Hero title="Idea #123123" />
+      <Hero title={`Idea #${idea.id}`} />
       <div className="max-w-screen-sm mx-auto flex flex-col items-center gap-10">
-        <p className="italic text-center">
-          A startup that creates an AI-powered generated personal trainer, delivering customized
-          fitness recommendations and tracking of progress using a mobile app to track workouts and
-          progress as well as a website to manage the business.
-        </p>
+        <p className="italic text-center">{idea.idea}</p>
         <div className="flex items-center text-sm">
           <div className="flex items-center gap-1">
             <EyeIcon className="size-4" />
-            <span>123</span>
+            <span>{idea.views}</span>
           </div>
           <DotIcon className="size-4" />
-          <span>12 hours ago</span>
+          <span>{DateTime.fromISO(idea.created_at).toRelative()}</span>
           <DotIcon className="size-4" />
           <Button variant="outline">
             <HeartIcon className="size-4" />
-            <span>12</span>
+            <span>{idea.likes}</span>
           </Button>
         </div>
         <Button size="lg">Claim idea now &rarr;</Button>

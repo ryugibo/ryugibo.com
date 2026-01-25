@@ -15,6 +15,9 @@ type Database = MergeDeep<
             string | null
           >;
         };
+        ideas_view: {
+          Row: SetNonNullable<SupabaseDatabase["wemake"]["Views"]["ideas_view"]["Row"]>;
+        };
       };
     };
   }
