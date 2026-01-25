@@ -6,62 +6,22 @@ import { Link } from "react-router";
 import { useTranslation } from "../../../common/hooks/use-translation";
 import AppLayout from "../../../common/layouts/app-layout";
 import { BookCover } from "../../book/components/book-cover";
+import { READ_STATE } from "../constant";
+import { getLibrary } from "../queries";
+import type { Route } from "./+types/library-page";
 
-export default function LibraryPage() {
+export const loader = async () => {
+  const books = await getLibrary();
+  return {
+    books,
+  };
+};
+
+export default function LibraryPage({ loaderData }: Route.ComponentProps) {
   const { t } = useTranslation();
+  const { books } = loaderData;
 
-  const books = [
-    {
-      id: 1,
-      title: "The Design of Everyday Things",
-      author: "Don Norman",
-      cover:
-        "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&q=80&w=300&h=450",
-      status: "reading",
-    },
-    {
-      id: 2,
-      title: "Refactoring UI",
-      author: "Adam Wathan",
-      cover:
-        "https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=300&h=450",
-      status: "completed",
-    },
-    {
-      id: 3,
-      title: "Clean Code",
-      author: "Robert C. Martin",
-      cover:
-        "https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&q=80&w=300&h=450",
-      status: "toread",
-    },
-    {
-      id: 4,
-      title: "Zero to One",
-      author: "Peter Thiel",
-      cover:
-        "https://images.unsplash.com/photo-1555239167-a22ff5d3be9e?auto=format&fit=crop&q=80&w=300&h=450",
-      status: "reading",
-    },
-    {
-      id: 5,
-      title: "Atomic Habits",
-      author: "James Clear",
-      cover:
-        "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&q=80&w=300&h=450",
-      status: "toread",
-    },
-    {
-      id: 6,
-      title: "Deep Work",
-      author: "Cal Newport",
-      cover:
-        "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?auto=format&fit=crop&q=80&w=300&h=450",
-      status: "completed",
-    },
-  ];
-
-  const categories = ["all", "reading", "toread", "completed"];
+  const categories = ["all", ...READ_STATE];
 
   return (
     <AppLayout>
@@ -90,26 +50,28 @@ export default function LibraryPage() {
 
           {categories.map((cat) => (
             <TabsContent key={cat} value={cat} className="space-y-4">
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+              <div className="flex flex-col">
                 {books
-                  .filter((book) => cat === "all" || book.status === cat)
+                  .filter((book) => cat === "all" || book.read_state === cat)
                   .map((book) => (
                     <Link
-                      key={book.id}
-                      to={`/library/${book.id}`}
+                      key={book.book_id}
+                      to={`/library/${book.book_id}`}
                       className="group relative block transition-all hover:-translate-y-1"
                     >
-                      <BookCover src={book.cover} alt={book.title} className="mb-3" />
+                      {book.cover && (
+                        <BookCover src={book.cover} alt={book.title} className="mb-3" />
+                      )}
                       <div className="space-y-1">
                         <div className="flex justify-between items-start">
                           <h3 className="text-sm font-semibold text-foreground truncate flex-1 pr-2 group-hover:text-primary transition-colors">
                             {book.title}
                           </h3>
                           <Badge
-                            variant={book.status === "reading" ? "default" : "secondary"}
+                            variant={book.read_state === "reading" ? "default" : "secondary"}
                             className="text-[10px] px-1.5 h-5"
                           >
-                            {t(`library.filter.${book.status}`)}
+                            {t(`library.filter.${book.read_state}`)}
                           </Badge>
                         </div>
                         <p className="text-xs text-muted-foreground truncate">{book.author}</p>
@@ -117,7 +79,7 @@ export default function LibraryPage() {
                     </Link>
                   ))}
               </div>
-              {books.filter((book) => cat === "all" || book.status === cat).length === 0 && (
+              {books.filter((book) => cat === "all" || book.read_state === cat).length === 0 && (
                 <div className="text-center py-12 text-muted-foreground">
                   {t("library.noBooks")}
                 </div>
