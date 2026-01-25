@@ -2,7 +2,8 @@ import { Badge } from "@ryugibo/ui/badge";
 import { Input } from "@ryugibo/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ryugibo/ui/tabs";
 import { Search } from "lucide-react";
-import { Link } from "react-router";
+import { data, Form, Link } from "react-router";
+import z from "zod";
 import { useTranslation } from "../../../common/hooks/use-translation";
 import AppLayout from "../../../common/layouts/app-layout";
 import { BookCover } from "../../book/components/book-cover";
@@ -10,8 +11,22 @@ import { READ_STATE } from "../constant";
 import { getLibrary } from "../queries";
 import type { Route } from "./+types/library-page";
 
-export const loader = async () => {
-  const books = await getLibrary();
+const searchParamsSchema = z.object({
+  keyword: z.string().optional(),
+});
+
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const url = new URL(request.url);
+  const { success, data: dataKeyword } = searchParamsSchema.safeParse(
+    Object.fromEntries(url.searchParams),
+  );
+  if (!success) {
+    throw data({
+      error_code: "invalid_search_params",
+      message: "Invalid search parameters",
+    });
+  }
+  const books = await getLibrary({ keyword: dataKeyword.keyword });
   return {
     books,
   };
@@ -34,8 +49,15 @@ export default function LibraryPage({ loaderData }: Route.ComponentProps) {
             <p className="text-muted-foreground mt-1">{t("library.subtitle")}</p>
           </div>
           <div className="relative w-full md:w-64">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input type="search" placeholder={t("library.searchPlaceholder")} className="pl-8" />
+            <Form>
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="text"
+                name="keyword"
+                placeholder={t("library.searchPlaceholder")}
+                className="pl-8"
+              />
+            </Form>
           </div>
         </div>
 
