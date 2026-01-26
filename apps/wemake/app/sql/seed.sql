@@ -26,12 +26,12 @@ INSERT INTO "wemake"."jobs" ("position", "overview", "responsibilities", "qualif
 ('DevOps Engineer', 'Maintain our infrastructure.', 'Manage AWS resources and CI/CD pipelines.', 'AWS certification preferred.', 'Stock options.', 'AWS, Docker, Kubernetes', 'CloudInfra', 'https://github.com/amazon.png', 'Seattle, WA', 'https://cloudinfra.com/jobs/devops', 'full-time', 'remote', '$150,000 - $250,000');
 
 -- 4. Teams
-INSERT INTO "wemake"."teams" ("team_size", "equity_split", "roles", "product_name", "product_stage", "product_description") VALUES
-(3, 33, 'Developer, Designer, Marketer', 'SuperApp', 'mvp', 'An app that does everything.'),
-(2, 50, 'Developer, Developer', 'CodeTool', 'prototype', 'A tool for writing better code.'),
-(5, 20, '2 Developers, 1 Designer, 2 Sales', 'SalesBot', 'production', 'AI bot for sales automation.'),
-(1, 100, 'Solo Founder', 'IndieProduct', 'idea', 'A niche product for hobbyists.'),
-(4, 25, 'Developer, Designer, PM, Marketer', 'CollabPlatform', 'mvp', 'Platform for remote collaboration.');
+INSERT INTO "wemake"."teams" ("team_size", "equity_split", "roles", "product_name", "product_stage", "product_description", "team_leader_id") VALUES
+(3, 33, 'Developer, Designer, Marketer', 'SuperApp', 'mvp', 'An app that does everything.', 'a00e9af2-116b-42c8-bec5-e44ab7fd4402'),
+(2, 50, 'Developer, Developer', 'CodeTool', 'prototype', 'A tool for writing better code.', 'a00e9af2-116b-42c8-bec5-e44ab7fd4402'),
+(5, 20, '2 Developers, 1 Designer, 2 Sales', 'SalesBot', 'production', 'AI bot for sales automation.', 'a00e9af2-116b-42c8-bec5-e44ab7fd4402'),
+(1, 100, 'Solo Founder', 'IndieProduct', 'idea', 'A niche product for hobbyists.', 'a00e9af2-116b-42c8-bec5-e44ab7fd4402'),
+(4, 25, 'Developer, Designer, PM, Marketer', 'CollabPlatform', 'mvp', 'Platform for remote collaboration.', 'a00e9af2-116b-42c8-bec5-e44ab7fd4402');
 
 -- 5. Message Rooms
 INSERT INTO "wemake"."message_rooms" DEFAULT VALUES;
