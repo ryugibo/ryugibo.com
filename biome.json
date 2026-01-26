@@ -10,16 +10,19 @@
     "expand": "auto"
   },
 
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+
   "files": {
     "includes": [
       "**",
-      "!apps/*/.react-router/**/*.*",
       "!apps/wemake/app/sql/migrations/**/*.*",
       "!apps/wemake/database.types.ts",
       "!apps/den/app/sql/migrations/**/*.*",
-      "!apps/den/database.types.ts",
-      "!packages/ui/dist/**/*.*",
-      "!.turbo"
+      "!apps/den/database.types.ts"
     ]
   },
 
