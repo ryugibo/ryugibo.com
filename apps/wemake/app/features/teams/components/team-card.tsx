@@ -5,9 +5,9 @@ import { Card, CardFooter, CardHeader, CardTitle } from "@ryugibo/ui/card";
 import { Link } from "react-router";
 
 interface TeamCardProps {
-  id: string;
+  id: number;
   leaderName: string;
-  leaderAvatarUrl: string;
+  leaderAvatarUrl: string | null;
   positions: string[];
   projectDescription: string;
 }
@@ -20,14 +20,14 @@ export function TeamCard({
   projectDescription,
 }: TeamCardProps) {
   return (
-    <Link to={`/teams/${id}`}>
-      <Card className="bg-transparent hover:bg-card/50 transition-colors">
+    <Link to={`/teams/${id}`} className="block">
+      <Card className="bg-transparent hover:bg-card/50 transition-colors flex flex-col justify-between h-full">
         <CardHeader className="flex flex-row items-center">
           <CardTitle className="text-base leading-none">
             <Badge variant="secondary" className="inline-flex shadow-sm items-center text-base">
               <span>@{leaderName}</span>
               <Avatar className="size-5">
-                <AvatarImage src={leaderAvatarUrl} />
+                {leaderAvatarUrl && <AvatarImage src={leaderAvatarUrl} />}
                 <AvatarFallback>{leaderName[0]}</AvatarFallback>
               </Avatar>
             </Badge>
