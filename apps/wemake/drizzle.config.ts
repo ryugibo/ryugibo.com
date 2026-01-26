@@ -6,5 +6,5 @@ export default defineConfig({
   out: "./app/sql/migrations",
   dialect: "postgresql",
   dbCredentials: { url: env.DATABASE_URL },
-  schemaFilter: [env.DATABASE_SCHEMA],
+  schemaFilter: [__APP_NAME__],
 });

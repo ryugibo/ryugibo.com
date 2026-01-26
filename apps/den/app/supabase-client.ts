@@ -21,7 +21,7 @@ const supabase = createClient<Database>(
   env.VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY,
   {
     db: {
-      schema: env.DATABASE_SCHEMA,
+      schema: __APP_NAME__,
     },
   },
 );
