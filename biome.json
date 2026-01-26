@@ -26,5 +26,14 @@
     "parser": {
       "tailwindDirectives": true
     }
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "correctness": {
+        "useImportExtensions": "error"
+      }
+    }
   }
 }
