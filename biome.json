@@ -17,6 +17,7 @@
       "!apps/wemake/app/sql/migrations/**/*.*",
       "!apps/wemake/database.types.ts",
       "!apps/den/app/sql/migrations/**/*.*",
+      "!apps/den/database.types.ts",
       "!packages/ui/dist/**/*.*",
       "!.turbo"
     ]
