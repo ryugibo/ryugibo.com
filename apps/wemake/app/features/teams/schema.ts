@@ -1,7 +1,8 @@
 import { sql } from "@ryugibo/db";
-import { bigint, check, integer, text, timestamp } from "@ryugibo/db/core";
+import { bigint, check, integer, text, timestamp, uuid } from "@ryugibo/db/core";
 import { pg } from "~/db";
-import { PRODUCT_STAGE } from "./constant";
+import { PRODUCT_STAGE } from "~/features/teams/constant";
+import { profiles } from "~/features/users/schema";
 
 export const productStages = pg.enum(
   "product_stage",
@@ -20,6 +21,9 @@ export const teams = pg.table(
     product_description: text().notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
+    team_leader_id: uuid()
+      .notNull()
+      .references(() => profiles.id, { onDelete: "cascade" }),
   },
   (table) => [
     check("team_size_check", sql`${table.team_size} BETWEEN 1 AND 100`),
