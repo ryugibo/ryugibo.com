@@ -1,0 +1,2 @@
+ALTER TABLE "wemake"."teams" ADD COLUMN "team_leader_id" uuid NOT NULL;--> statement-breakpoint
+ALTER TABLE "wemake"."teams" ADD CONSTRAINT "teams_team_leader_id_profiles_id_fk" FOREIGN KEY ("team_leader_id") REFERENCES "wemake"."profiles"("id") ON DELETE cascade ON UPDATE no action;
