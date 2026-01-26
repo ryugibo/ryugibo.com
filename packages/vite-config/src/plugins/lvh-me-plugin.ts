@@ -2,7 +2,7 @@ import type { Plugin } from "vite";
 
 export function lvhMePlugin(subDomain: string): Plugin {
   return {
-    name: "vite-plugin-lvh-me",
+    name: "ryugibo:lvh-me",
     configureServer(server) {
       server.httpServer?.once("listening", () => {
         const address = server.httpServer?.address();
