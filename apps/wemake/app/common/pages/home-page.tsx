@@ -1,16 +1,16 @@
 import { Button } from "@ryugibo/ui/button";
 import { DateTime } from "luxon";
 import { Link } from "react-router";
-import { PostCard } from "~/features/community/components/post-card";
-import { getPosts } from "~/features/community/queries";
-import { IdeaCard } from "~/features/ideas/components/idea-card";
-import { getIdeas } from "~/features/ideas/queries";
-import { JobCard } from "~/features/jobs/components/job-card";
-import { getJobs } from "~/features/jobs/queries";
-import { ProductCard } from "~/features/products/components/product-card";
-import { getProductsByDateRange } from "~/features/products/queries";
-import { TeamCard } from "~/features/teams/components/team-card";
-import { getTeams } from "~/features/teams/queries";
+import { PostCard } from "~/features/community/components/post-card.tsx";
+import { getPosts } from "~/features/community/queries.ts";
+import { IdeaCard } from "~/features/ideas/components/idea-card.tsx";
+import { getIdeas } from "~/features/ideas/queries.ts";
+import { JobCard } from "~/features/jobs/components/job-card.tsx";
+import { getJobs } from "~/features/jobs/queries.ts";
+import { ProductCard } from "~/features/products/components/product-card.tsx";
+import { getProductsByDateRange } from "~/features/products/queries.ts";
+import { TeamCard } from "~/features/teams/components/team-card.tsx";
+import { getTeams } from "~/features/teams/queries.ts";
 import type { Route } from "./+types/home-page";
 
 export const meta: Route.MetaFunction = () => [

@@ -4,7 +4,7 @@ import { Card, CardDescription, CardHeader, CardTitle } from "@ryugibo/ui/card";
 import { SendIcon } from "@ryugibo/ui/icons";
 import { Textarea } from "@ryugibo/ui/textarea";
 import { Form } from "react-router";
-import { MessageBubble } from "~/features/users/components/message-bubble";
+import { MessageBubble } from "~/features/users/components/message-bubble.tsx";
 import type { Route } from "./+types/message-page";
 
 export const meta: Route.MetaFunction = () => [

@@ -1,7 +1,7 @@
 import { sql } from "@ryugibo/db";
 import { bigint, check, integer, jsonb, primaryKey, text, timestamp, uuid } from "@ryugibo/db/core";
-import { pg } from "~/db";
-import { profiles } from "~/features/users/schema";
+import { pg } from "~/db.ts";
+import { profiles } from "~/features/users/schema.ts";
 
 export const products = pg.table("products", {
   id: bigint({ mode: "number" }).primaryKey().generatedAlwaysAsIdentity(),

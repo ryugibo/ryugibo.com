@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import type { Language } from "../translations/translations";
-import { translations } from "../translations/translations";
+import type { Language } from "../translations/translations.ts";
+import { translations } from "../translations/translations.ts";
 
 type LanguageContextType = {
   language: Language;

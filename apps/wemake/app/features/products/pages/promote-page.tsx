@@ -5,8 +5,8 @@ import type { DateRange } from "@ryugibo/ui/react-day-picker";
 import { DateTime } from "luxon";
 import { useState } from "react";
 import { Form } from "react-router";
-import { Hero } from "~/common/components/hero";
-import SelectPair from "~/common/components/select-pair";
+import { Hero } from "~/common/components/hero.tsx";
+import SelectPair from "~/common/components/select-pair.tsx";
 
 export const meta = () => [
   { title: "Promote Product | wemake" },

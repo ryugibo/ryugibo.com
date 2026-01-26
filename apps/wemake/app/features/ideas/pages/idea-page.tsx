@@ -3,8 +3,8 @@ import { DotIcon, EyeIcon, HeartIcon } from "@ryugibo/ui/icons";
 import { DateTime } from "luxon";
 import { data } from "react-router";
 import { z } from "zod";
-import { Hero } from "~/common/components/hero";
-import { getIdea } from "../queries";
+import { Hero } from "~/common/components/hero.tsx";
+import { getIdea } from "../queries.ts";
 import type { Route } from "./+types/idea-page";
 
 export const meta = ({

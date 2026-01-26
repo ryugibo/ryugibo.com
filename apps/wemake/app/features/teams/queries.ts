@@ -1,4 +1,4 @@
-import supabase from "~/supabase-client";
+import supabase from "~/supabase-client.ts";
 
 export const getTeams = async ({ limit }: { limit: number }) => {
   const { data, error } = await supabase

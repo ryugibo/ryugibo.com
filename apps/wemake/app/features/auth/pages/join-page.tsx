@@ -1,7 +1,7 @@
 import { Button } from "@ryugibo/ui/button";
 import { Form, Link } from "react-router";
-import InputPair from "~/common/components/input-pair";
-import AuthButtons from "~/features/auth/components/auth-buttons";
+import InputPair from "~/common/components/input-pair.tsx";
+import AuthButtons from "~/features/auth/components/auth-buttons.tsx";
 
 export const meta = () => {
   return [{ title: "Join | wemake" }];

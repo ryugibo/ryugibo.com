@@ -1,6 +1,6 @@
 import { Button } from "@ryugibo/ui/button";
 import { Form, Link } from "react-router";
-import InputPair from "~/common/components/input-pair";
+import InputPair from "~/common/components/input-pair.tsx";
 
 export const meta = () => {
   return [{ title: "Verify OTP | wemake" }];

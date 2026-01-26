@@ -1,7 +1,7 @@
 import { Button } from "@ryugibo/ui/button";
 import { Dialog, DialogTrigger } from "@ryugibo/ui/dialog";
-import CreateReviewDialog from "~/common/components/create-review-dialog";
-import { ReviewCard } from "~/features/products/components/review-card";
+import CreateReviewDialog from "~/common/components/create-review-dialog.tsx";
+import { ReviewCard } from "~/features/products/components/review-card.tsx";
 
 export const meta = () => {
   return [{ title: "Product Reviews" }, { name: "description", content: "Product Reviews" }];

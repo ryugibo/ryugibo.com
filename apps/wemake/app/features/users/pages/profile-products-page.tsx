@@ -1,4 +1,4 @@
-import { ProductCard } from "~/features/products/components/product-card";
+import { ProductCard } from "~/features/products/components/product-card.tsx";
 
 export default function ProfileProductsPage() {
   return (

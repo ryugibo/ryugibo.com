@@ -1,9 +1,9 @@
 import { Button } from "@ryugibo/ui/button";
 import { Form } from "react-router";
-import { Hero } from "~/common/components/hero";
-import InputPair from "~/common/components/input-pair";
-import SelectPair from "~/common/components/select-pair";
-import { PRODUCT_STAGE } from "~/features/teams/constant";
+import { Hero } from "~/common/components/hero.tsx";
+import InputPair from "~/common/components/input-pair.tsx";
+import SelectPair from "~/common/components/select-pair.tsx";
+import { PRODUCT_STAGE } from "~/features/teams/constant.ts";
 
 export const meta = () => {
   return [{ title: "Create Team | wemake" }, { description: "Create a team to find a team mate." }];

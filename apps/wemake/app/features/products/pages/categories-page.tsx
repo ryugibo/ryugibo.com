@@ -1,5 +1,5 @@
-import { Hero } from "~/common/components/hero";
-import { CategoryCard } from "~/features/products/components/category-card";
+import { Hero } from "~/common/components/hero.tsx";
+import { CategoryCard } from "~/features/products/components/category-card.tsx";
 import type { Route } from "./+types/categories-page";
 
 export const meta = (_: Route.MetaArgs) => [

@@ -1,9 +1,9 @@
 import { Button } from "@ryugibo/ui/button";
 import { ArrowLeft, Edit, Plus, Trash2 } from "lucide-react";
 import { Link, useParams } from "react-router";
-import { useTranslation } from "../../../common/hooks/use-translation";
-import AppLayout from "../../../common/layouts/app-layout";
-import { BookCover } from "../../book/components/book-cover";
+import { useTranslation } from "../../../common/hooks/use-translation.ts";
+import AppLayout from "../../../common/layouts/app-layout.tsx";
+import { BookCover } from "../../book/components/book-cover.tsx";
 
 export default function CollectionDetailsPage() {
   const { collectionId } = useParams();

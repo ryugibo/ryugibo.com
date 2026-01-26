@@ -10,7 +10,7 @@ import {
 import { Input } from "@ryugibo/ui/input";
 import { Label } from "@ryugibo/ui/label";
 import { Link, useNavigate } from "react-router";
-import { useTranslation } from "../../../common/hooks/use-translation";
+import { useTranslation } from "../../../common/hooks/use-translation.ts";
 
 export default function SignupPage() {
   const navigate = useNavigate();

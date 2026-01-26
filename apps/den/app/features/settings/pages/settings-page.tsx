@@ -10,9 +10,9 @@ import { Switch } from "@ryugibo/ui/switch";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { useTranslation } from "../../../common/hooks/use-translation";
-import AppLayout from "../../../common/layouts/app-layout";
-import { translations } from "../../../common/translations/translations";
+import { useTranslation } from "../../../common/hooks/use-translation.ts";
+import AppLayout from "../../../common/layouts/app-layout.tsx";
+import { translations } from "../../../common/translations/translations.ts";
 
 export default function SettingsPage() {
   const { t, language, setLanguage } = useTranslation();

@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
-import type { PeriodOption, SortOption } from "~/features/community/constant";
-import supabase from "~/supabase-client";
+import type { PeriodOption, SortOption } from "~/features/community/constant.ts";
+import supabase from "~/supabase-client.ts";
 
 export const getTopics = async () => {
   const { data, error } = await supabase.from("topics").select("name, slug");

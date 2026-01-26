@@ -1,6 +1,6 @@
 import { bigint, text, timestamp } from "@ryugibo/db/core";
-import { pg } from "~/db";
-import { JOB_TYPES, LOCATION_TYPES, SALARY_RANGE } from "./constants";
+import { pg } from "~/db.ts";
+import { JOB_TYPES, LOCATION_TYPES, SALARY_RANGE } from "./constants.ts";
 
 export const jobTypes = pg.enum(
   "job_type",

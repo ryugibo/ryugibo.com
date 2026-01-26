@@ -1,6 +1,6 @@
 import type { DateTime } from "luxon";
-import supabase from "~/supabase-client";
-import { PAGE_SIZE } from "./constants";
+import supabase from "~/supabase-client.ts";
+import { PAGE_SIZE } from "./constants.ts";
 
 export const getProductsByDateRange = async ({
   startDate,

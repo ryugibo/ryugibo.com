@@ -11,9 +11,9 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from "@ryugibo/ui/sideb
 import { Toaster } from "@ryugibo/ui/sonner";
 import { BookOpen } from "lucide-react";
 import { Link, useLocation } from "react-router";
-import { AppSidebar } from "../components/app-sidebar";
-import { BottomNav } from "../components/bottom-nav";
-import { useTranslation } from "../hooks/use-translation";
+import { AppSidebar } from "../components/app-sidebar.tsx";
+import { BottomNav } from "../components/bottom-nav.tsx";
+import { useTranslation } from "../hooks/use-translation.ts";
 
 interface AppLayoutProps {
   children: React.ReactNode;

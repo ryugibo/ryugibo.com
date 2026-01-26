@@ -1,9 +1,9 @@
 import { Button } from "@ryugibo/ui/button";
 import { Form } from "react-router";
-import { Hero } from "~/common/components/hero";
-import InputPair from "~/common/components/input-pair";
-import SelectPair from "~/common/components/select-pair";
-import { JOB_TYPES, LOCATION_TYPES, SALARY_RANGE } from "~/features/jobs/constants";
+import { Hero } from "~/common/components/hero.tsx";
+import InputPair from "~/common/components/input-pair.tsx";
+import SelectPair from "~/common/components/select-pair.tsx";
+import { JOB_TYPES, LOCATION_TYPES, SALARY_RANGE } from "~/features/jobs/constants.ts";
 
 export const meta = () => {
   return [

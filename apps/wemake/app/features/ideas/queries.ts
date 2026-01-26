@@ -1,4 +1,4 @@
-import supabase from "~/supabase-client";
+import supabase from "~/supabase-client.ts";
 
 export const getIdeas = async ({ limit }: { limit: number }) => {
   const { data, error } = await supabase.from("ideas_view").select("*").limit(limit);

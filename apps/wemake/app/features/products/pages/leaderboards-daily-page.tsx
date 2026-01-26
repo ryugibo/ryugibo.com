@@ -2,10 +2,10 @@ import { Button } from "@ryugibo/ui/button";
 import { DateTime } from "luxon";
 import { data, isRouteErrorResponse, Link } from "react-router";
 import { z } from "zod";
-import { Hero } from "~/common/components/hero";
-import { ProductPagination } from "~/common/components/product-pagination";
-import { ProductCard } from "~/features/products/components/product-card";
-import { getProductPagesByDateRange, getProductsByDateRange } from "../queries";
+import { Hero } from "~/common/components/hero.tsx";
+import { ProductPagination } from "~/common/components/product-pagination.tsx";
+import { ProductCard } from "~/features/products/components/product-card.tsx";
+import { getProductPagesByDateRange, getProductsByDateRange } from "../queries.ts";
 import type { Route } from "./+types/leaderboards-daily-page";
 
 export const meta = ({ loaderData }: Route.MetaArgs) => {

@@ -9,10 +9,10 @@ import { ChevronDownIcon } from "@ryugibo/ui/icons";
 import { Input } from "@ryugibo/ui/input";
 import { data, Form, Link, useSearchParams } from "react-router";
 import { z } from "zod";
-import { Hero } from "~/common/components/hero";
-import { PostCard } from "~/features/community/components/post-card";
-import { PERIOD_OPTIONS, SORT_OPTIONS } from "~/features/community/constant";
-import { getPosts, getTopics } from "~/features/community/queries";
+import { Hero } from "~/common/components/hero.tsx";
+import { PostCard } from "~/features/community/components/post-card.tsx";
+import { PERIOD_OPTIONS, SORT_OPTIONS } from "~/features/community/constant.ts";
+import { getPosts, getTopics } from "~/features/community/queries.ts";
 import type { Route } from "./+types/community-page";
 
 export const meta = () => [

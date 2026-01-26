@@ -2,9 +2,9 @@ import { Button } from "@ryugibo/ui/button";
 import { Input } from "@ryugibo/ui/input";
 import { data, Form } from "react-router";
 import z from "zod";
-import { Hero } from "~/common/components/hero";
-import { ProductPagination } from "~/common/components/product-pagination";
-import { ProductCard } from "~/features/products/components/product-card";
+import { Hero } from "~/common/components/hero.tsx";
+import { ProductPagination } from "~/common/components/product-pagination.tsx";
+import { ProductCard } from "~/features/products/components/product-card.tsx";
 import type { Route } from "./+types/search-page";
 
 export const meta: Route.MetaFunction = () => [

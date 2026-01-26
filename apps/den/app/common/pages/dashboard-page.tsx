@@ -2,9 +2,9 @@ import { Button } from "@ryugibo/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@ryugibo/ui/card";
 import { Plus } from "lucide-react";
 import { Link } from "react-router";
-import { BookCover } from "../../features/book/components/book-cover";
-import { useTranslation } from "../hooks/use-translation";
-import AppLayout from "../layouts/app-layout";
+import { BookCover } from "../../features/book/components/book-cover.tsx";
+import { useTranslation } from "../hooks/use-translation.ts";
+import AppLayout from "../layouts/app-layout.tsx";
 
 export default function DashboardPage() {
   const { t } = useTranslation();

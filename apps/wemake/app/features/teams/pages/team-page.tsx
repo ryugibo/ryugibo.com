@@ -3,8 +3,8 @@ import { Badge } from "@ryugibo/ui/badge";
 import { Button } from "@ryugibo/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@ryugibo/ui/card";
 import { Form } from "react-router";
-import { Hero } from "~/common/components/hero";
-import InputPair from "~/common/components/input-pair";
+import { Hero } from "~/common/components/hero.tsx";
+import InputPair from "~/common/components/input-pair.tsx";
 
 export const meta = () => {
   return [{ title: "Team Details | wemake" }, { description: "View team details" }];

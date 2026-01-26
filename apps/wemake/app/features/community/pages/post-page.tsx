@@ -12,7 +12,7 @@ import { Button } from "@ryugibo/ui/button";
 import { ChevronUpIcon, DotIcon } from "@ryugibo/ui/icons";
 import { Textarea } from "@ryugibo/ui/textarea";
 import { Form, Link } from "react-router";
-import { Reply } from "~/features/community/components/reply";
+import { Reply } from "~/features/community/components/reply.tsx";
 
 export const meta = () => {
   return [{ title: "Post | wemake" }, { description: "View a specific post" }];

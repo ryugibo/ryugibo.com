@@ -1,2 +1,2 @@
-export * from "./hooks/use-mobile";
-export * from "./lib/utils";
+export * from "./hooks/use-mobile.ts";
+export * from "./lib/utils.ts";

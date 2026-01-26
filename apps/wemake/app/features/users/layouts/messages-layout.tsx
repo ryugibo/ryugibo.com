@@ -6,7 +6,7 @@ import {
   SidebarProvider,
 } from "@ryugibo/ui/sidebar";
 import { Outlet } from "react-router";
-import { MessageCard } from "~/features/users/components/message-card";
+import { MessageCard } from "~/features/users/components/message-card.tsx";
 
 export default function MessagesLayout() {
   return (

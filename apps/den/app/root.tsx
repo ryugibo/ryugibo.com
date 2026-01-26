@@ -23,9 +23,9 @@ export const links: Route.LinksFunction = () => [
   },
 ];
 
-import { ThemeProvider } from "./common/components/theme-provider";
+import { ThemeProvider } from "./common/components/theme-provider.tsx";
 
-import { LanguageProvider, useLanguage } from "./common/contexts/language-context";
+import { LanguageProvider, useLanguage } from "./common/contexts/language-context.tsx";
 
 function Html({ children }: { children: React.ReactNode }) {
   const { language } = useLanguage();

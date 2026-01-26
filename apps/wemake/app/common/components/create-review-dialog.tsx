@@ -10,7 +10,7 @@ import { StarIcon } from "@ryugibo/ui/icons";
 import { Label } from "@ryugibo/ui/label";
 import { useState } from "react";
 import { Form } from "react-router";
-import InputPair from "~/common/components/input-pair";
+import InputPair from "~/common/components/input-pair.tsx";
 
 export default function CreateReviewDialog() {
   const [rating, setRating] = useState<number>(0);

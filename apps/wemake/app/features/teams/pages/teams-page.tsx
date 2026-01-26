@@ -1,6 +1,6 @@
-import { Hero } from "~/common/components/hero";
-import { TeamCard } from "~/features/teams/components/team-card";
-import { getTeams } from "~/features/teams/queries";
+import { Hero } from "~/common/components/hero.tsx";
+import { TeamCard } from "~/features/teams/components/team-card.tsx";
+import { getTeams } from "~/features/teams/queries.ts";
 import type { Route } from "./+types/teams-page";
 
 export const meta = () => {

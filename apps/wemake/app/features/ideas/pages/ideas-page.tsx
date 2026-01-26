@@ -1,6 +1,6 @@
-import { Hero } from "~/common/components/hero";
-import { IdeaCard } from "~/features/ideas/components/idea-card";
-import { getIdeas } from "../queries";
+import { Hero } from "~/common/components/hero.tsx";
+import { IdeaCard } from "~/features/ideas/components/idea-card.tsx";
+import { getIdeas } from "../queries.ts";
 import type { Route } from "./+types/ideas-page";
 
 export const meta = () => {

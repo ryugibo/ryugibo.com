@@ -3,8 +3,8 @@ import { Button } from "@ryugibo/ui/button";
 import { Card } from "@ryugibo/ui/card";
 import { Plus } from "lucide-react";
 import { Link } from "react-router";
-import { useTranslation } from "../../../common/hooks/use-translation";
-import AppLayout from "../../../common/layouts/app-layout";
+import { useTranslation } from "../../../common/hooks/use-translation.ts";
+import AppLayout from "../../../common/layouts/app-layout.tsx";
 
 export default function CollectionsPage() {
   const { t } = useTranslation();

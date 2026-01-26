@@ -2,10 +2,10 @@ import { cn } from "@ryugibo/ui";
 import { Button } from "@ryugibo/ui/button";
 import { data, useSearchParams } from "react-router";
 import z from "zod";
-import { Hero } from "~/common/components/hero";
-import { JobCard } from "~/features/jobs/components/job-card";
-import { JOB_TYPES, LOCATION_TYPES, SALARY_RANGE } from "~/features/jobs/constants";
-import { getJobs } from "../queries";
+import { Hero } from "~/common/components/hero.tsx";
+import { JobCard } from "~/features/jobs/components/job-card.tsx";
+import { JOB_TYPES, LOCATION_TYPES, SALARY_RANGE } from "~/features/jobs/constants.ts";
+import { getJobs } from "../queries.ts";
 import type { Route } from "./+types/jobs-page";
 
 export const meta = () => {
@@ -22,6 +22,7 @@ const searchParamsSchema = z.object({
 });
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
+  import.meta.env.VITE_APP_ENV;
   const url = new URL(request.url);
   const { success, data: dataFilter } = searchParamsSchema.safeParse(
     Object.fromEntries(url.searchParams),

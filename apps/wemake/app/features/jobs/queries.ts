@@ -1,5 +1,5 @@
-import supabase from "~/supabase-client";
-import type { JobType, LocationType, SalaryOption } from "./constants";
+import supabase from "~/supabase-client.ts";
+import type { JobType, LocationType, SalaryOption } from "./constants.ts";
 
 export const getJobs = async ({
   limit,

@@ -5,11 +5,11 @@ import { Input } from "@ryugibo/ui/input";
 import { Search } from "lucide-react";
 import { data, Form, Link, useSearchParams } from "react-router";
 import z from "zod";
-import { useTranslation } from "../../../common/hooks/use-translation";
-import AppLayout from "../../../common/layouts/app-layout";
-import { BookCover } from "../../book/components/book-cover";
-import { READ_STATE } from "../constant";
-import { getLibrary } from "../queries";
+import { useTranslation } from "../../../common/hooks/use-translation.ts";
+import AppLayout from "../../../common/layouts/app-layout.tsx";
+import { BookCover } from "../../book/components/book-cover.tsx";
+import { READ_STATE } from "../constant.ts";
+import { getLibrary } from "../queries.ts";
 import type { Route } from "./+types/library-page";
 
 const searchParamsSchema = z.object({

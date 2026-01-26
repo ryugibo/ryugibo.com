@@ -4,9 +4,9 @@ import { ArrowRight, Plus, Search } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router";
 import { toast } from "sonner";
-import { useTranslation } from "../../../common/hooks/use-translation";
-import AppLayout from "../../../common/layouts/app-layout";
-import { BookCover } from "../components/book-cover";
+import { useTranslation } from "../../../common/hooks/use-translation.ts";
+import AppLayout from "../../../common/layouts/app-layout.tsx";
+import { BookCover } from "../components/book-cover.tsx";
 
 export default function SearchBooksPage() {
   const [query, setQuery] = useState("");

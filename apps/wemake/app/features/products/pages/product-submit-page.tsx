@@ -3,9 +3,9 @@ import { Input } from "@ryugibo/ui/input";
 import { Label } from "@ryugibo/ui/label";
 import { useState } from "react";
 import { Form } from "react-router";
-import { Hero } from "~/common/components/hero";
-import InputPair from "~/common/components/input-pair";
-import SelectPair from "~/common/components/select-pair";
+import { Hero } from "~/common/components/hero.tsx";
+import InputPair from "~/common/components/input-pair.tsx";
+import SelectPair from "~/common/components/select-pair.tsx";
 
 export const meta = () => [
   { title: "Submit Product | wemake" },

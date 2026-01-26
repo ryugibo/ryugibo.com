@@ -8,9 +8,9 @@ import {
   timestamp,
   uuid,
 } from "@ryugibo/db/core";
-import { pg } from "~/db";
-import { posts } from "~/features/community/schema";
-import { products } from "~/features/products/schema";
+import { pg } from "~/db.ts";
+import { posts } from "~/features/community/schema.ts";
+import { products } from "~/features/products/schema.ts";
 
 const users = pgSchema("auth").table("users", {
   id: uuid().primaryKey(),

@@ -1,6 +1,6 @@
 import { bigint, integer, primaryKey, text, timestamp, uuid } from "@ryugibo/db/core";
-import { pg } from "~/db";
-import { profiles } from "~/features/users/schema";
+import { pg } from "~/db.ts";
+import { profiles } from "~/features/users/schema.ts";
 
 export const ideas = pg.table("ideas", {
   id: bigint({ mode: "number" }).primaryKey().generatedAlwaysAsIdentity(),

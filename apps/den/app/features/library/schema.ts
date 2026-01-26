@@ -1,8 +1,8 @@
 import { bigint, text, timestamp, uuid } from "@ryugibo/db/core";
 import { schema } from "db";
-import { books } from "~/features/book/schema";
-import { BOOK_SOURCES, READ_STATE } from "~/features/library/constant";
-import { profiles } from "~/features/profile/schema";
+import { books } from "~/features/book/schema.ts";
+import { BOOK_SOURCES, READ_STATE } from "~/features/library/constant.ts";
+import { profiles } from "~/features/profile/schema.ts";
 
 export const readState = schema.enum("read_state", READ_STATE);
 

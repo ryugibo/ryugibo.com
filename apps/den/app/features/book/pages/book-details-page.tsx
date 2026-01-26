@@ -2,10 +2,10 @@ import { Button } from "@ryugibo/ui/button";
 import { Separator } from "@ryugibo/ui/separator";
 import { ArrowLeft, Bookmark, Trash2 } from "lucide-react";
 import { Link } from "react-router";
-import { useTranslation } from "../../../common/hooks/use-translation";
-import AppLayout from "../../../common/layouts/app-layout";
-import { BookCover } from "../components/book-cover";
-import { getBook } from "../queries";
+import { useTranslation } from "../../../common/hooks/use-translation.ts";
+import AppLayout from "../../../common/layouts/app-layout.tsx";
+import { BookCover } from "../components/book-cover.tsx";
+import { getBook } from "../queries.ts";
 import type { Route } from "./+types/book-details-page";
 
 export const loader = async ({ params }: Route.LoaderArgs) => {

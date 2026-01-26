@@ -2,7 +2,7 @@ import { cn } from "@ryugibo/ui";
 import { Home, Layers, Library, Search, Settings } from "lucide-react";
 import { Link, useLocation } from "react-router";
 
-import { useTranslation } from "../hooks/use-translation";
+import { useTranslation } from "../hooks/use-translation.ts";
 
 export function BottomNav() {
   const location = useLocation();

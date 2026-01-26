@@ -1,5 +1,5 @@
-import supabase from "~/supabase-client";
-import type { ReadState } from "./constant";
+import supabase from "~/supabase-client.ts";
+import type { ReadState } from "./constant.ts";
 
 export const getLibrary = async ({
   keyword,

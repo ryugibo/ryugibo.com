@@ -1,9 +1,9 @@
 import { Button } from "@ryugibo/ui/button";
 import { DateTime } from "luxon";
 import { Link } from "react-router";
-import { Hero } from "~/common/components/hero";
-import { ProductCard } from "~/features/products/components/product-card";
-import { getProductsByDateRange } from "../queries";
+import { Hero } from "~/common/components/hero.tsx";
+import { ProductCard } from "~/features/products/components/product-card.tsx";
+import { getProductsByDateRange } from "../queries.ts";
 import type { Route } from "./+types/leaderboards-page";
 
 export const meta: Route.MetaFunction = () => [

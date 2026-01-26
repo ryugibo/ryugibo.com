@@ -14,7 +14,7 @@ import {
 import { BookOpen, Home, Layers, Library, Settings } from "lucide-react";
 import { Link, useLocation } from "react-router";
 
-import { useTranslation } from "../hooks/use-translation";
+import { useTranslation } from "../hooks/use-translation.ts";
 
 export function AppSidebar() {
   const location = useLocation();

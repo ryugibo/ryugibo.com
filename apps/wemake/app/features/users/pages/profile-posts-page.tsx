@@ -1,4 +1,4 @@
-import { PostCard } from "~/features/community/components/post-card";
+import { PostCard } from "~/features/community/components/post-card.tsx";
 
 export default function ProfilePostsPage() {
   return (

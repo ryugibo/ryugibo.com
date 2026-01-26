@@ -1,6 +1,6 @@
-import { Hero } from "~/common/components/hero";
-import { ProductPagination } from "~/common/components/product-pagination";
-import { ProductCard } from "~/features/products/components/product-card";
+import { Hero } from "~/common/components/hero.tsx";
+import { ProductPagination } from "~/common/components/product-pagination.tsx";
+import { ProductCard } from "~/features/products/components/product-card.tsx";
 
 export const meta = () => [
   { title: "Developer Tools | wemake" },
