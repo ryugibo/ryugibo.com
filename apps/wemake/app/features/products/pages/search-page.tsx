@@ -5,6 +5,7 @@ import z from "zod";
 import { Hero } from "~/common/components/hero.tsx";
 import { ProductPagination } from "~/common/components/product-pagination.tsx";
 import { ProductCard } from "~/features/products/components/product-card.tsx";
+import { getPagesByKeyword, getProductsByKeyword } from "../queries.ts";
 import type { Route } from "./+types/search-page";
 
 export const meta: Route.MetaFunction = () => [
@@ -13,44 +14,47 @@ export const meta: Route.MetaFunction = () => [
 ];
 
 const paramsSchema = z.object({
-  query: z.string().optional().default(""),
+  keyword: z.string().optional().default(""),
   page: z.coerce.number().default(1),
 });
 
-export const loader = ({ request }: Route.LoaderArgs) => {
+export const loader = async ({ request }: Route.LoaderArgs) => {
   const url = new URL(request.url);
   const params = Object.fromEntries(url.searchParams);
-  const { success, data: parsedData } = paramsSchema.safeParse(params);
+  const { success, data: dataParams } = paramsSchema.safeParse(params);
   if (!success) {
     throw data({ error_code: "invalid_params", message: "invalid params" }, { status: 400 });
   }
-  return {
-    ...parsedData,
-  };
+  if (dataParams.keyword === "") {
+    return { products: [], totalPages: 1 };
+  }
+  const products = await getProductsByKeyword(dataParams);
+  const totalPages = await getPagesByKeyword(dataParams);
+  return { products, totalPages };
 };
 
-export default function SearchPage() {
+export default function SearchPage({ loaderData }: Route.ComponentProps) {
   return (
     <div className="space-y-10">
       <Hero title="Search" description="Search for products by title or description" />
       <Form className="flex justify-center max-w-screen-sm items-center mx-auto gap-2">
-        <Input name="query" placeholder="Search for products" className="text-lg" />
+        <Input name="keyword" placeholder="Search for products" className="text-lg" />
         <Button type="submit">Search</Button>
       </Form>
       <div className="space-y-5 w-full max-w-3xl mx-auto">
-        {[...Array(11).keys()].map((index) => (
+        {loaderData.products.map((product) => (
           <ProductCard
-            key={`${index}`}
-            id={`${index}`}
-            title={"Product Title"}
-            description={"Product Description"}
-            reviewsCount="12"
-            viewsCount="12"
-            upvotesCount="120"
+            key={product.id}
+            id={product.id}
+            title={product.name}
+            description={product.tagline}
+            reviewsCount={product.reviews}
+            viewsCount={product.views}
+            upvotesCount={product.upvotes}
           />
         ))}
       </div>
-      <ProductPagination totalPages={10} />
+      <ProductPagination totalPages={loaderData.totalPages} />
     </div>
   );
 }

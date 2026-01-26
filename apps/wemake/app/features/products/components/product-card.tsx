@@ -4,7 +4,7 @@ import { ChevronUpIcon, EyeIcon, MessageCircleIcon } from "@ryugibo/ui/icons";
 import { Link } from "react-router";
 
 interface ProductCardProps {
-  id: string;
+  id: number;
   title: string;
   description: string;
   reviewsCount: string;

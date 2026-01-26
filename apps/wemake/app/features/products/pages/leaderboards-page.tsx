@@ -51,10 +51,10 @@ export default function LeaderboardsPage({ loaderData }: Route.ComponentProps) {
         </div>
         {loaderData.dailyProducts.map((product) => (
           <ProductCard
-            key={`${product.id}`}
-            id={`${product.id}`}
+            key={product.id}
+            id={product.id}
             title={product.name}
-            description={product.description}
+            description={product.tagline}
             reviewsCount={product.reviews}
             viewsCount={product.views}
             upvotesCount={product.upvotes}
@@ -73,10 +73,10 @@ export default function LeaderboardsPage({ loaderData }: Route.ComponentProps) {
         </div>
         {loaderData.weeklyProducts.map((product) => (
           <ProductCard
-            key={`${product.id}`}
-            id={`${product.id}`}
+            key={product.id}
+            id={product.id}
             title={product.name}
-            description={product.description}
+            description={product.tagline}
             reviewsCount={product.reviews}
             viewsCount={product.views}
             upvotesCount={product.upvotes}
@@ -95,10 +95,10 @@ export default function LeaderboardsPage({ loaderData }: Route.ComponentProps) {
         </div>
         {loaderData.monthlyProducts.map((product) => (
           <ProductCard
-            key={`${product.id}`}
-            id={`${product.id}`}
+            key={product.id}
+            id={product.id}
             title={product.name}
-            description={product.description}
+            description={product.tagline}
             reviewsCount={product.reviews}
             viewsCount={product.views}
             upvotesCount={product.upvotes}
@@ -117,10 +117,10 @@ export default function LeaderboardsPage({ loaderData }: Route.ComponentProps) {
         </div>
         {loaderData.yearlyProducts.map((product) => (
           <ProductCard
-            key={`${product.id}`}
-            id={`${product.id}`}
+            key={product.id}
+            id={product.id}
             title={product.name}
-            description={product.description}
+            description={product.tagline}
             reviewsCount={product.reviews}
             viewsCount={product.views}
             upvotesCount={product.upvotes}

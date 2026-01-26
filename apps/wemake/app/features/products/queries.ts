@@ -5,7 +5,7 @@ import { PAGE_SIZE } from "./constants.ts";
 const PRODUCT_SELECTS = `
       id,
       name,
-      description,
+      tagline,
       stats->>upvotes,
       stats->>views,
       stats->>reviews
@@ -116,6 +116,45 @@ export const getCategoryPages = async (id: number) => {
   if (error) {
     throw error;
   }
+  if (!count) {
+    return 1;
+  }
+
+  return Math.ceil(count / PAGE_SIZE);
+};
+
+export const getProductsByKeyword = async ({
+  keyword,
+  page = 1,
+  limit = PAGE_SIZE,
+}: {
+  keyword: string;
+  page?: number;
+  limit?: number;
+}) => {
+  const { data, error } = await supabase
+    .from("products")
+    .select(PRODUCT_SELECTS)
+    .or(`name.ilike.%${keyword}%, tagline.ilike.%${keyword}%`)
+    .range((page - 1) * limit, page * limit - 1);
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+};
+
+export const getPagesByKeyword = async ({ keyword }: { keyword: string }) => {
+  const { count, error } = await supabase
+    .from("products")
+    .select("id", { count: "exact", head: true })
+    .or(`name.ilike.%${keyword}%, tagline.ilike.%${keyword}%`);
+
+  if (error) {
+    throw error;
+  }
+
   if (!count) {
     return 1;
   }

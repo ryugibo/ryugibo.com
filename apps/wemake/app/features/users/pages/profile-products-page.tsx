@@ -5,8 +5,8 @@ export default function ProfileProductsPage() {
     <div className="flex flex-col gap-5">
       {[...Array(5).keys()].map((index) => (
         <ProductCard
-          key={`productId-${index}`}
-          id={`productId-${index}`}
+          key={index}
+          id={index}
           title="Product Title"
           description="Product Description"
           reviewsCount="12"

@@ -81,10 +81,10 @@ export default function LeaderboardsYearlyPage({ loaderData }: Route.ComponentPr
       <div className="space-y-5 w-full max-w-3xl mx-auto">
         {products.map((product) => (
           <ProductCard
-            key={`${product.id}`}
-            id={`${product.id}`}
+            key={product.id}
+            id={product.id}
             title={product.name}
-            description={product.description}
+            description={product.tagline}
             reviewsCount={product.reviews}
             viewsCount={product.views}
             upvotesCount={product.upvotes}
