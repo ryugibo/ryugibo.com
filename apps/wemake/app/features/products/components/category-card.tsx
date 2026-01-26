@@ -3,7 +3,7 @@ import { ChevronRightIcon } from "@ryugibo/ui/icons";
 import { Link } from "react-router";
 
 interface CategoryCardProps {
-  id: string;
+  id: number;
   name: string;
   description: string;
 }

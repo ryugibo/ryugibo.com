@@ -1,23 +1,29 @@
 import { Hero } from "~/common/components/hero.tsx";
 import { CategoryCard } from "~/features/products/components/category-card.tsx";
-import type { Route } from "./+types/categories-page";
+import { getCategories } from "../queries.ts";
+import type { Route } from "./+types/categories-page.ts";
 
 export const meta = (_: Route.MetaArgs) => [
   { title: "Categories | wemake" },
   { name: "description", content: "Product Categories" },
 ];
 
-export default function CategoriesPage() {
+export const loader = async () => {
+  const categories = await getCategories();
+  return { categories };
+};
+
+export default function CategoriesPage({ loaderData }: Route.ComponentProps) {
   return (
     <div className="space-y-10">
       <Hero title="Categories" description="Browse products by category" />
       <div className="grid grid-cols-4 gap-10">
-        {[...Array(10).keys()].map((index) => (
+        {loaderData.categories.map((category) => (
           <CategoryCard
-            key={`${index}`}
-            id={`categoryId-${index}`}
-            name="Category Name"
-            description="Category Description"
+            key={category.id}
+            id={category.id}
+            name={category.name}
+            description={category.description}
           />
         ))}
       </div>

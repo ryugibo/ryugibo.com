@@ -2,6 +2,15 @@ import type { DateTime } from "luxon";
 import supabase from "~/supabase-client.ts";
 import { PAGE_SIZE } from "./constants.ts";
 
+const PRODUCT_SELECTS = `
+      id,
+      name,
+      description,
+      stats->>upvotes,
+      stats->>views,
+      stats->>reviews
+` as const;
+
 export const getProductsByDateRange = async ({
   startDate,
   endDate,
@@ -15,14 +24,7 @@ export const getProductsByDateRange = async ({
 }) => {
   const { data, error } = await supabase
     .from("products")
-    .select(`
-      id,
-      name,
-      description,
-      stats->>upvotes,
-      stats->>views,
-      stats->>reviews
-    `)
+    .select(PRODUCT_SELECTS)
     .order("stats->>upvotes", { ascending: false })
     .gte("created_at", startDate.toISO())
     .lte("created_at", endDate.toISO())
@@ -47,6 +49,69 @@ export const getProductPagesByDateRange = async ({
     .select("id", { count: "exact", head: true })
     .gte("created_at", startDate.toISO())
     .lte("created_at", endDate.toISO());
+
+  if (error) {
+    throw error;
+  }
+  if (!count) {
+    return 1;
+  }
+
+  return Math.ceil(count / PAGE_SIZE);
+};
+
+export const getCategories = async () => {
+  const { data, error } = await supabase.from("categories").select("id, name, description");
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+};
+
+export const getCategoryById = async (id: number) => {
+  const { data, error } = await supabase
+    .from("categories")
+    .select("id, name, description")
+    .eq("id", id)
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+};
+
+export const getProductsByCategory = async ({
+  id,
+  page = 1,
+  limit = PAGE_SIZE,
+}: {
+  id: number;
+  page?: number;
+  limit?: number;
+}) => {
+  const { data, error } = await supabase
+    .from("products")
+    .select(PRODUCT_SELECTS)
+    .eq("category_id", id)
+    .order("stats->>upvotes", { ascending: false })
+    .range((page - 1) * limit, page * limit - 1);
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+};
+
+export const getCategoryPages = async (id: number) => {
+  const { count, error } = await supabase
+    .from("products")
+    .select("id", { count: "exact", head: true })
+    .eq("category_id", id);
 
   if (error) {
     throw error;
