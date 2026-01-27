@@ -12,6 +12,7 @@
     "rr-kit": "./dist/index.js"
   },
   "scripts": {
+    "prepare": "pnpm run build",
     "build": "tsc",
     "dev": "tsc -w"
   },
