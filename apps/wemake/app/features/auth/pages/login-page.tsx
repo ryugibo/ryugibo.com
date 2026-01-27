@@ -28,10 +28,10 @@ export const action = async ({ request }: Route.ActionArgs) => {
         if (!acc[key]) {
           acc[key] = [];
         }
-        acc[key].push({ index: acc[key].length, message: issue.message });
+        acc[key].push({ key: acc[key].length, message: issue.message });
         return acc;
       },
-      {} as Record<string, { index: number; message: string }[]>,
+      {} as Record<string, { key: number; message: string }[]>,
     );
     return { formError };
   }
@@ -66,8 +66,8 @@ export default function LoginPage({ actionData }: Route.ComponentProps) {
             type="email"
             placeholder="Enter your email"
           />
-          {actionData?.formError?.email?.map(({ index, message }) => (
-            <p key={`${index}`} className="text-sm text-red-500">
+          {actionData?.formError?.email?.map(({ key, message }) => (
+            <p key={key} className="text-sm text-red-500">
               {message}
             </p>
           ))}
@@ -80,8 +80,8 @@ export default function LoginPage({ actionData }: Route.ComponentProps) {
             type="password"
             placeholder="Enter your password"
           />
-          {actionData?.formError?.password?.map(({ index, message }) => (
-            <p key={`${index}`} className="text-sm text-red-500">
+          {actionData?.formError?.password?.map(({ key, message }) => (
+            <p key={key} className="text-sm text-red-500">
               {message}
             </p>
           ))}
