@@ -11,4 +11,5 @@ export default defineConfig({
   dialect: "postgresql",
   dbCredentials: { url: env.DATABASE_URL },
   schemaFilter: [__APP_NAME__],
+  migrations: { table: `__${__APP_NAME__}_migrations` },
 });
