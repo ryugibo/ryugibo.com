@@ -103,39 +103,59 @@ program
 
       const content = await fs.readFile(routeFile, "utf-8");
 
-      const hasRouteImport = /import\s+type\s+\{\s*Route/.test(content);
-      const hasRouteExport = /export\s+type\s+\{\s*Route/.test(content);
+      const routeImportRegex = /(import|export)\s+type\s+\{\s*Route\s*\}\s+from\s+['"](.+?)['"]/;
+      const match = content.match(routeImportRegex);
+
       const hasCorrectSource = content.includes(`./+types/${fileName}`);
 
-      if ((hasRouteImport || hasRouteExport) && hasCorrectSource) {
+      if (match && hasCorrectSource) {
         // Good
       } else {
         if (shouldFix) {
-          const importStmt = `import type { Route } from "./+types/${fileName}";\n`;
+          let newContent = content;
+          const importStmt = `import type { Route } from "./+types/${fileName}";`; // No newline here, handle later
 
-          const directiveMatch = content.match(/^(\s*['"]use (client|server)['"];?\s*)+/);
+          if (match) {
+            // We have an import but wrong source, replace it
+            // match[1] is import or export
+            const typeKeyword = match[1];
+            const replacement = `${typeKeyword} type { Route } from "./+types/${fileName}"`;
 
-          let newContent = "";
-          if (directiveMatch) {
-            const insertIdx = directiveMatch[0].length;
-            newContent = `${content.slice(0, insertIdx)}\n${importStmt}${content.slice(insertIdx)}`;
+            // We replace the specific instance we found
+            newContent = content.replace(routeImportRegex, replacement);
           } else {
-            newContent = importStmt + content;
+            // Missing entirely, add it
+            const importLine = `${importStmt}\n`;
+            const directiveMatch = content.match(/^(\s*['"]use (client|server)['"];?\s*)+/);
+
+            if (directiveMatch) {
+              const insertIdx = directiveMatch[0].length;
+              newContent = `${content.slice(0, insertIdx)}\n${importLine}${content.slice(insertIdx)}`;
+            } else {
+              newContent = importLine + content;
+            }
           }
 
-          await fs.writeFile(routeFile, newContent, "utf-8");
-          console.log(
-            chalk.green(`✅ Fixed import in: ${path.relative(process.cwd(), routeFile)}`),
-          );
-          fixedCount++;
+          if (newContent !== content) {
+            await fs.writeFile(routeFile, newContent, "utf-8");
+            console.log(
+              chalk.green(`✅ Fixed import in: ${path.relative(process.cwd(), routeFile)}`),
+            );
+            fixedCount++;
+          }
         } else {
+          // Display error log
           console.log(
             chalk.red(
-              `❌ Missing Route type import in: ${path.relative(process.cwd(), routeFile)}`,
+              `❌ Missing or incorrect Route type import in: ${path.relative(process.cwd(), routeFile)}`,
             ),
           );
           console.log(chalk.dim(`   Expected: import type { Route } from "./+types/${fileName}"`));
-          console.log(chalk.dim(`   Or:       export type { Route } from "./+types/${fileName}"`));
+
+          if (match) {
+            console.log(chalk.dim(`   Found:    ${match[0]}`));
+          }
+
           errorCount++;
         }
       }
