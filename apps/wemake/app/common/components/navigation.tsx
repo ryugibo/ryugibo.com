@@ -257,7 +257,7 @@ export default function Navigation({
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild className="cursor-pointer">
-                  <Link to="/my/logout">
+                  <Link to="/auth/logout">
                     <LogOutIcon className="size-4 mr-2" />
                     Logout
                   </Link>

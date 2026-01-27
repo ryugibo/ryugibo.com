@@ -1,27 +1,54 @@
 import { Button } from "@ryugibo/ui/button";
 import { LoaderCircleIcon } from "@ryugibo/ui/icons";
-import { Form, Link, useNavigation } from "react-router";
+import { Form, Link, redirect, useNavigation } from "react-router";
+import z from "zod";
 import InputPair from "~/common/components/input-pair.tsx";
 import AuthButtons from "~/features/auth/components/auth-buttons.tsx";
+import { createSSRClient } from "~/supabase-client.ts";
 import type { Route } from "./+types/login-page";
 
 export const meta = () => {
   return [{ title: "Login | wemake" }];
 };
 
+const formSchema = z.object({
+  email: z.email({ error: "Invalid email address" }),
+  password: z
+    .string({ error: "Password must be a string" })
+    .min(8, { error: "Password must be at least 8 characters long" }),
+});
+
 export const action = async ({ request }: Route.ActionArgs) => {
-  await new Promise((resolve) => setTimeout(resolve, 5000));
   const formData = await request.formData();
-  const _email = formData.get("email") as string;
-  const _password = formData.get("password") as string;
-  return {
-    error: { message: "Error" },
-  };
+  const { success, error: formZodError, data } = formSchema.safeParse(Object.fromEntries(formData));
+  if (!success) {
+    const formError = formZodError.issues.reduce(
+      (acc, issue) => {
+        const key = issue.path.join(".");
+        if (!acc[key]) {
+          acc[key] = [];
+        }
+        acc[key].push({ index: acc[key].length, message: issue.message });
+        return acc;
+      },
+      {} as Record<string, { index: number; message: string }[]>,
+    );
+    return { formError };
+  }
+
+  const { email, password } = data;
+  const { supabase, headers } = createSSRClient(request);
+  const { error: loginError } = await supabase.auth.signInWithPassword({ email, password });
+  if (loginError) {
+    return { loginError };
+  }
+
+  return redirect("/", { headers });
 };
 
 export default function LoginPage({ actionData }: Route.ComponentProps) {
   const navigation = useNavigation();
-  const isSubmitting = navigation.state === "submitting";
+  const isSubmitting = navigation.state === "submitting" || navigation.state === "loading";
   return (
     <div className="flex flex-col relative items-center justify-center h-full">
       <Button variant="ghost" asChild className="absolute top-8 right-8">
@@ -39,6 +66,11 @@ export default function LoginPage({ actionData }: Route.ComponentProps) {
             type="email"
             placeholder="Enter your email"
           />
+          {actionData?.formError?.email?.map(({ index, message }) => (
+            <p key={`${index}`} className="text-sm text-red-500">
+              {message}
+            </p>
+          ))}
           <InputPair
             label="Password"
             description="Enter your password"
@@ -48,10 +80,17 @@ export default function LoginPage({ actionData }: Route.ComponentProps) {
             type="password"
             placeholder="Enter your password"
           />
+          {actionData?.formError?.password?.map(({ index, message }) => (
+            <p key={`${index}`} className="text-sm text-red-500">
+              {message}
+            </p>
+          ))}
           <Button type="submit" className="w-full" disabled={isSubmitting}>
             {isSubmitting ? <LoaderCircleIcon className="animate-spin" /> : "Login"}
           </Button>
-          {actionData?.error && <p className="text-sm text-red-500">{actionData.error.message}</p>}
+          {actionData?.loginError && (
+            <p className="text-sm text-red-500">{actionData.loginError.message}</p>
+          )}
         </Form>
         <AuthButtons />
       </div>
