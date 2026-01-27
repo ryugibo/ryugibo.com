@@ -62,7 +62,7 @@ export default [
   ]),
   ...prefix("/teams", [
     index("features/teams/pages/teams-page.tsx"),
-    route("/:teamId", "features/teams/pages/team-page.tsx"),
+    route("/:id", "features/teams/pages/team-page.tsx"),
     route("/submit", "features/teams/pages/team-submit-page.tsx"),
   ]),
   ...prefix("/my", [

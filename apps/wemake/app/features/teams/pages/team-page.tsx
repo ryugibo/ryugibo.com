@@ -3,35 +3,51 @@ import { Badge } from "@ryugibo/ui/badge";
 import { Button } from "@ryugibo/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@ryugibo/ui/card";
 import { Form } from "react-router";
+import z from "zod";
 import { Hero } from "~/common/components/hero.tsx";
 import InputPair from "~/common/components/input-pair.tsx";
+import { getTeamById } from "../queries.ts";
+import type { Route } from "./+types/team-page";
 
 export const meta = () => {
   return [{ title: "Team Details | wemake" }, { description: "View team details" }];
 };
 
-export default function TeamPage() {
+const paramsSchema = z.object({
+  id: z.coerce.number(),
+});
+export const loader = async ({ params }: Route.LoaderArgs) => {
+  const { success, data } = paramsSchema.safeParse(params);
+  if (!success) {
+    throw new Error("Invalid params");
+  }
+  const team = await getTeamById({ id: data.id });
+  return { team };
+};
+
+export default function TeamPage({ loaderData }: Route.ComponentProps) {
+  const { team } = loaderData;
   return (
     <div className="space-y-20">
-      <Hero title="Join ryugibo's team" />
+      <Hero title={`Join ${team.team_leader.name}'s team`} />
       <div className="grid grid-cols-6 gap-40 items-start">
         <div className="col-span-4 grid grid-cols-4 gap-5">
           {[
             {
               title: "Product Name",
-              value: "Doggie Social",
+              value: team.product_name,
             },
             {
               title: "Stage",
-              value: "MVP",
+              value: team.product_stage,
             },
             {
               title: "Team Size",
-              value: "3",
+              value: team.team_size,
             },
             {
               title: "Available Equity",
-              value: "50",
+              value: team.equity_split,
             },
           ].map((item) => (
             <Card key={item.value}>
@@ -40,7 +56,7 @@ export default function TeamPage() {
                   {item.title}
                 </CardTitle>
               </CardHeader>
-              <CardContent className="font-bold text-2xl">
+              <CardContent className="font-bold text-2xl capitalize">
                 <p>{item.value}</p>
               </CardContent>
             </Card>
@@ -53,13 +69,8 @@ export default function TeamPage() {
             </CardHeader>
             <CardContent className="font-bold text-lg">
               <ul className="list-disc list-inside">
-                {[
-                  "Senior React Developer",
-                  "Senior Node.js Developer",
-                  "Senior Python Developer",
-                  "UI/UX Designer",
-                ].map((item) => (
-                  <li key={item}>{item}</li>
+                {team.roles.split(",").map((role) => (
+                  <li key={role}>{role}</li>
                 ))}
               </ul>
             </CardContent>
@@ -71,21 +82,21 @@ export default function TeamPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="font-medium text-lg">
-              <p>
-                We are looking for a skilled and experienced Software Engineer to join our team.
-              </p>
+              <p>{team.product_description}</p>
             </CardContent>
           </Card>
         </div>
         <aside className="col-span-2 border rounded-lg shadow-sm p-5 space-y-5">
           <div className="flex gap-5">
             <Avatar className="size-14">
-              <AvatarImage src="https://github.com/ryugibo.png" />
-              <AvatarFallback>WM</AvatarFallback>
+              {team.team_leader.avatar && <AvatarImage src={team.team_leader.avatar} />}
+              <AvatarFallback>{team.team_leader.name[0]}</AvatarFallback>
             </Avatar>
             <div className="flex flex-col">
-              <h4 className="text-lg font-medium">@ryugibo</h4>
-              <Badge variant="secondary">Entrepreneur</Badge>
+              <h4 className="text-lg font-medium">{team.team_leader.name}</h4>
+              <Badge variant="secondary" className="capitalize">
+                {team.team_leader.role}
+              </Badge>
             </div>
           </div>
           <Form className="space-y-5">
