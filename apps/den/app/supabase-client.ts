@@ -1,7 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Database as SupabaseDatabase } from "database.types";
 import type { MergeDeep, SetNonNullable } from "type-fest";
-import { env } from "./env.ts";
 
 type Database = MergeDeep<
   SupabaseDatabase,
@@ -17,8 +16,8 @@ type Database = MergeDeep<
 >;
 
 const supabase = createClient<Database>(
-  env.VITE_SUPABASE_URL,
-  env.VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY,
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY,
   {
     db: {
       schema: __APP_NAME__,
