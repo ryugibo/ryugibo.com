@@ -1,0 +1,1 @@
+ALTER TABLE "wemake"."profiles" ADD CONSTRAINT "profiles_username_unique" UNIQUE("username");
