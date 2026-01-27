@@ -1,7 +1,16 @@
 import { redirect } from "react-router";
+import { createSSRClient } from "~/supabase-client.ts";
+import { getUserById } from "../queries.ts";
 import type { Route } from "./+types/my-profile-page";
 
-export const loader = (_: Route.LoaderArgs) => {
-  // find the user using the cookies
-  return redirect("/users/mr.35be5d21");
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { supabase } = createSSRClient(request);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    return redirect("/auth/login");
+  }
+  const profile = await getUserById(supabase, { id: user.id });
+  return redirect(`/users/${profile.username}`);
 };

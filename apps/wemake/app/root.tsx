@@ -13,6 +13,7 @@ import "~/app.css";
 import { cn } from "@ryugibo/ui";
 import { Settings } from "luxon";
 import Navigation from "~/common/components/navigation.tsx";
+import { getUserById } from "./features/users/queries.ts";
 import { createSSRClient } from "./supabase-client.ts";
 
 export const links: Route.LinksFunction = () => [
@@ -54,7 +55,11 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  return { user };
+  if (!user) {
+    return { user: null, profile: null };
+  }
+  const profile = await getUserById(supabase, { id: user.id });
+  return { user, profile };
 };
 
 export default function App({ loaderData }: Route.ComponentProps) {
@@ -64,7 +69,14 @@ export default function App({ loaderData }: Route.ComponentProps) {
   return (
     <div className={cn(!pathname.startsWith("/auth") && "py-28 px-5 lg:px-20")}>
       {!pathname.startsWith("/auth") && (
-        <Navigation isLoggedIn={isLoggedIn} hasNotifications={true} hasMessages={true} />
+        <Navigation
+          isLoggedIn={isLoggedIn}
+          name={loaderData.profile?.name}
+          username={loaderData.profile?.username}
+          avatar={loaderData.profile?.avatar}
+          hasNotifications={true}
+          hasMessages={true}
+        />
       )}
       <Outlet />
     </div>
