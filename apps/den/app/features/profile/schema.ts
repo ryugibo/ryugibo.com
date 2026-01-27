@@ -3,7 +3,7 @@ import { schema } from "db";
 
 const users = pgSchema("auth").table("users", { id: uuid().primaryKey() });
 
-export const profiles = schema.table("profile", {
+export const profiles = schema.table("profiles", {
   id: uuid()
     .primaryKey()
     .references(() => users.id, { onDelete: "cascade" }),
