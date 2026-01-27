@@ -48,3 +48,13 @@ export const getJobs = async ({
 
   return data;
 };
+
+export const getJobById = async (id: number) => {
+  const { data, error } = await supabase.from("jobs").select().eq("id", id).single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+};

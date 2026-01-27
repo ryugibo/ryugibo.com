@@ -1,12 +1,32 @@
 import { Badge } from "@ryugibo/ui/badge";
 import { Button } from "@ryugibo/ui/button";
 import { DotIcon } from "@ryugibo/ui/icons";
+import { DateTime } from "luxon";
+import z from "zod";
+import { getJobById } from "../queries.ts";
+import type { Route } from "./+types/job-page";
 
 export const meta = () => {
   return [{ title: "Job Details | wemake" }, { name: "description", content: "Job details" }];
 };
 
-export default function JobPage() {
+const paramsSchema = z.object({
+  id: z.coerce.number(),
+});
+
+export const loader = async ({ params }: Route.LoaderArgs) => {
+  const { success, data } = paramsSchema.safeParse(params);
+
+  if (!success) {
+    throw new Error("Invalid params");
+  }
+
+  const job = await getJobById(data.id);
+  return { job };
+};
+
+export default function JobPage({ loaderData }: Route.ComponentProps) {
+  const { job } = loaderData;
   return (
     <div>
       <div className="bg-linear-to-tr from-primary/80 to-primary/10 h-60 w-full rounded-lg"></div>
@@ -14,30 +34,23 @@ export default function JobPage() {
         <div className="col-span-4 space-y-10">
           <div>
             <div className="size-40 bg-white rounded-full overflow-hidden relative left-10">
-              <img src="https://github.com/facebook.png" alt="" className="object-cover" />
+              <img src={job.company_logo} alt="" className="object-cover" />
             </div>
-            <h1 className="text-4xl font-bold">Software Engineer</h1>
-            <h4 className="text-lg text-muted-foreground">Meta Inc.</h4>
+            <h1 className="text-4xl font-bold">{job.position}</h1>
+            <h4 className="text-lg text-muted-foreground">{job.company_name}</h4>
           </div>
-          <div className="flex gap-2">
-            <Badge variant="secondary">Full-time</Badge>
-            <Badge variant="secondary">Remote</Badge>
+          <div className="flex gap-2 capitalize">
+            <Badge variant="secondary">{job.job_type}</Badge>
+            <Badge variant="secondary">{job.location}</Badge>
           </div>
           <div className="space-y-2.5">
             <h4 className="text-3xl font-bold">Overview</h4>
-            <p className="text-lg">
-              This is a full-time remote position for a Software Engineer. We are looking for a
-              skilled and experienced Software Engineer to join our team.
-            </p>
+            <p className="text-lg">{job.overview}</p>
           </div>
           <div className="space-y-2.5">
             <h4 className="text-3xl font-bold">Responsibilities</h4>
             <ul className="list-disc list-inside">
-              {[
-                "Design and implement new features",
-                "Fix bugs and improve performance",
-                "Collaborate with other engineers",
-              ].map((item) => (
+              {job.responsibilities.split(",").map((item) => (
                 <li key={item}>{item}</li>
               ))}
             </ul>
@@ -45,11 +58,7 @@ export default function JobPage() {
           <div className="space-y-2.5">
             <h4 className="text-3xl font-bold">Qualifications</h4>
             <ul className="list-disc list-inside">
-              {[
-                "Bachelor's degree in Computer Science or related field",
-                "2+ years of experience in software development",
-                "Proficiency in JavaScript, Python, or Java",
-              ].map((item) => (
+              {job.qualifications.split(",").map((item) => (
                 <li key={item}>{item}</li>
               ))}
             </ul>
@@ -57,7 +66,7 @@ export default function JobPage() {
           <div className="space-y-2.5">
             <h4 className="text-3xl font-bold">Benefits</h4>
             <ul className="list-disc list-inside">
-              {["Health Insurance", "Paid Time Off", "Remote Work"].map((item) => (
+              {job.benefits.split(",").map((item) => (
                 <li key={item}>{item}</li>
               ))}
             </ul>
@@ -65,7 +74,7 @@ export default function JobPage() {
           <div className="space-y-2.5">
             <h4 className="text-3xl font-bold">Skills</h4>
             <ul className="list-disc list-inside">
-              {["React", "Node.js", "Python", "JavaScript", "TypeScript"].map((item) => (
+              {job.skills.split(",").map((item) => (
                 <li key={item}>{item}</li>
               ))}
             </ul>
@@ -74,18 +83,20 @@ export default function JobPage() {
         <div className="col-span-2 sticky top-20 p-6 border rounded-lg mt-32 space-y-5">
           <div className="flex flex-col">
             <h4 className="text-sm text-muted-foreground">Avg. Salary</h4>
-            <p className="text-2xl font-medium">$100,000 - $150,000</p>
+            <p className="text-2xl font-medium">{job.salary_range}</p>
           </div>
           <div className="flex flex-col">
             <h4 className="text-sm text-muted-foreground">Location</h4>
-            <p className="text-2xl font-medium">Remote</p>
+            <p className="text-2xl font-medium capitalize">{job.location}</p>
           </div>
           <div className="flex flex-col">
             <h4 className="text-sm text-muted-foreground">Type</h4>
-            <p className="text-2xl font-medium">Full Time</p>
+            <p className="text-2xl font-medium capitalize">{job.job_type}</p>
           </div>
           <div className="flex">
-            <h4 className="text-sm text-muted-foreground">Posted 12 hours ago</h4>
+            <h4 className="text-sm text-muted-foreground">
+              {DateTime.fromISO(job.created_at).toRelative()}
+            </h4>
             <DotIcon className="size-4" />
             <span className="text-sm text-muted-foreground">395 views</span>
           </div>

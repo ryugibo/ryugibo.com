@@ -38,7 +38,7 @@ export default [
   ]),
   ...prefix("/jobs", [
     index("features/jobs/pages/jobs-page.tsx"),
-    route("/:jobId", "features/jobs/pages/job-page.tsx"),
+    route("/:id", "features/jobs/pages/job-page.tsx"),
     route("/submit", "features/jobs/pages/job-submit-page.tsx"),
   ]),
   ...prefix("/auth", [
