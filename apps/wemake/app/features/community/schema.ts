@@ -38,9 +38,7 @@ export const postUpvotes = pg.table(
 export const postReplies = pg.table("post_replies", {
   id: bigint({ mode: "number" }).primaryKey().generatedAlwaysAsIdentity(),
   content: text().notNull(),
-  post_id: bigint({ mode: "number" })
-    .notNull()
-    .references(() => posts.id, { onDelete: "cascade" }),
+  post_id: bigint({ mode: "number" }).references(() => posts.id, { onDelete: "cascade" }),
   parent_id: bigint({ mode: "number" }).references((): AnyPgColumn => postReplies.id, {
     onDelete: "cascade",
   }),

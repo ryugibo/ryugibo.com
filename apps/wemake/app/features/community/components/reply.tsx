@@ -2,34 +2,47 @@ import { Avatar, AvatarFallback, AvatarImage } from "@ryugibo/ui/avatar";
 import { Button } from "@ryugibo/ui/button";
 import { DotIcon, MessageCircleIcon } from "@ryugibo/ui/icons";
 import { Textarea } from "@ryugibo/ui/textarea";
+import { DateTime } from "luxon";
 import { useState } from "react";
 import { Form, Link } from "react-router";
 
 interface ReplyProps {
-  avatarUrl: string;
+  avatarUrl: string | null;
   username: string;
   timestamp: string;
   content: string;
   topLevel: boolean;
+  replies?: {
+    id: number;
+    content: string;
+    created_at: string;
+    user: {
+      name: string;
+      username: string;
+      avatar: string | null;
+    };
+  }[];
 }
 
-export function Reply({ avatarUrl, username, timestamp, content, topLevel }: ReplyProps) {
+export function Reply({ avatarUrl, username, timestamp, content, topLevel, replies }: ReplyProps) {
   const [replying, setReplying] = useState(false);
   const toggleReply = () => setReplying((prev) => !prev);
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 w-full">
       <div className="flex items-start gap-5 w-2/3">
         <Avatar className="size-14">
-          <AvatarImage src={avatarUrl} />
+          {avatarUrl && <AvatarImage src={avatarUrl} />}
           <AvatarFallback>{username.slice(0, 2).toUpperCase()}</AvatarFallback>
         </Avatar>
-        <div className="flex flex-col gap-4 items-start">
+        <div className="flex flex-col gap-4 items-start w-full">
           <div className="flex items-center gap-2">
             <Link to={`/users/${username}`}>
               <h4 className="font-medium">@{username}</h4>
             </Link>
             <DotIcon className="size-4" />
-            <span className="text-xs text-muted-foreground">{timestamp}</span>
+            <span className="text-xs text-muted-foreground">
+              {DateTime.fromISO(timestamp).toRelative()}
+            </span>
           </div>
           <p className="text-muted-foreground">{content}</p>
           <Button variant="ghost" className="self-end" onClick={toggleReply}>
@@ -53,15 +66,18 @@ export function Reply({ avatarUrl, username, timestamp, content, topLevel }: Rep
           </div>
         </Form>
       )}
-      {topLevel && (
+      {topLevel && replies && (
         <div className="pl-20 w-full">
-          <Reply
-            avatarUrl="https://github.com/ryugibo.png"
-            username="ryugibo"
-            timestamp="10 minutes ago"
-            content="Hello, I'm looking for a new productivity tool that can help me manage my time better. What are your recommendations? I have tried Notion, Trello, and Asana, but I am not satisfied with any of them. Any suggestions?"
-            topLevel={false}
-          />
+          {replies.map((reply) => (
+            <Reply
+              key={reply.id}
+              avatarUrl={reply.user.avatar}
+              username={reply.user.username}
+              timestamp={`${DateTime.fromISO(reply.created_at).toRelative()}`}
+              content={reply.content}
+              topLevel={false}
+            />
+          ))}
         </div>
       )}
     </div>

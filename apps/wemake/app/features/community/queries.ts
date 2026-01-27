@@ -2,6 +2,17 @@ import { DateTime } from "luxon";
 import type { PeriodOption, SortOption } from "~/features/community/constant.ts";
 import supabase from "~/supabase-client.ts";
 
+const REPLY_SELECT = `
+id,
+content,
+created_at,
+user:profiles (
+  username,
+  name,
+  avatar
+)
+`;
+
 export const getTopics = async () => {
   const { data, error } = await supabase.from("topics").select("name, slug");
   if (error) {
@@ -59,6 +70,24 @@ export const getPostById = async (id: number) => {
     .select("*")
     .eq("id", id)
     .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+};
+
+export const getReplies = async (id: number) => {
+  const { data, error } = await supabase
+    .from("post_replies")
+    .select(`
+      ${REPLY_SELECT},
+      post_replies (
+        ${REPLY_SELECT}
+      )
+    `)
+    .eq("post_id", id);
 
   if (error) {
     throw error;

@@ -15,7 +15,7 @@ import { DateTime } from "luxon";
 import { Form, Link } from "react-router";
 import z from "zod";
 import { Reply } from "~/features/community/components/reply.tsx";
-import { getPostById } from "../queries.ts";
+import { getPostById, getReplies } from "../queries.ts";
 import type { Route } from "./+types/post-page";
 
 export const meta = () => {
@@ -32,11 +32,12 @@ export const loader = async ({ params }: Route.LoaderArgs) => {
     throw new Error("Invalid params");
   }
   const post = await getPostById(data.id);
-  return { post };
+  const replies = await getReplies(data.id);
+  return { post, replies };
 };
 
 export default function PostPage({ loaderData }: Route.ComponentProps) {
-  const { post } = loaderData;
+  const { post, replies } = loaderData;
   return (
     <div className="space-y-10">
       <Breadcrumb>
@@ -65,7 +66,7 @@ export default function PostPage({ loaderData }: Route.ComponentProps) {
               <ChevronUpIcon className="size-4 shrink-0" />
               <span>{post.upvotes}</span>
             </Button>
-            <div className="space-y-20">
+            <div className="space-y-20 w-full">
               <div className="space-y-2">
                 <h2 className="text-3xl font-bold">{post.title}</h2>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -94,13 +95,17 @@ export default function PostPage({ loaderData }: Route.ComponentProps) {
               <div className="space-y-10">
                 <h4 className="font-semibold">{post.replies} Replies</h4>
                 <div className="flex flex-col gap-5">
-                  <Reply
-                    avatarUrl="https://github.com/ryugibo.png"
-                    username="ryugibo"
-                    timestamp="10 minutes ago"
-                    content="Hello, I'm looking for a new productivity tool that can help me manage my time better. What are your recommendations? I have tried Notion, Trello, and Asana, but I am not satisfied with any of them. Any suggestions?"
-                    topLevel
-                  />
+                  {replies.map((reply) => (
+                    <Reply
+                      key={reply.id}
+                      avatarUrl={reply.user.avatar}
+                      username={reply.user.username}
+                      timestamp={reply.created_at}
+                      content={reply.content}
+                      topLevel
+                      replies={reply.post_replies}
+                    />
+                  ))}
                 </div>
               </div>
             </div>
