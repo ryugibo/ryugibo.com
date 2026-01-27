@@ -1,18 +1,19 @@
 import { redirect } from "react-router";
 import z from "zod";
-import supabase from "~/supabase-client.ts";
+import { createSSRClient } from "~/supabase-client.ts";
 import type { Route } from "./+types/product-visit-page";
 
 const paramsSchema = z.object({
   productId: z.coerce.number(),
 });
 
-export const loader = async ({ params }: Route.LoaderArgs) => {
+export const loader = async ({ params, request }: Route.LoaderArgs) => {
   const { success, data: dataParams } = paramsSchema.safeParse(params);
   if (!success) {
     throw new Error("Invalid product ID");
   }
 
+  const { supabase } = createSSRClient(request);
   const { data, error } = await supabase
     .from("products")
     .select("url")

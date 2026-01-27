@@ -15,6 +15,7 @@ import { DateTime } from "luxon";
 import { Form, Link } from "react-router";
 import z from "zod";
 import { Reply } from "~/features/community/components/reply.tsx";
+import { createSSRClient } from "~/supabase-client.ts";
 import { getPostById, getReplies } from "../queries.ts";
 import type { Route } from "./+types/post-page";
 
@@ -26,13 +27,15 @@ const paramsSchema = z.object({
   id: z.coerce.number(),
 });
 
-export const loader = async ({ params }: Route.LoaderArgs) => {
+export const loader = async ({ params, request }: Route.LoaderArgs) => {
   const { success, data } = paramsSchema.safeParse(params);
   if (!success) {
     throw new Error("Invalid params");
   }
-  const post = await getPostById(data.id);
-  const replies = await getReplies(data.id);
+  const { id } = data;
+  const { supabase } = createSSRClient(request);
+  const post = await getPostById(supabase, { id });
+  const replies = await getReplies(supabase, { id });
   return { post, replies };
 };
 

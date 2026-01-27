@@ -13,6 +13,7 @@ import { Hero } from "~/common/components/hero.tsx";
 import { PostCard } from "~/features/community/components/post-card.tsx";
 import { PERIOD_OPTIONS, SORT_OPTIONS } from "~/features/community/constant.ts";
 import { getPosts, getTopics } from "~/features/community/queries.ts";
+import { createSSRClient } from "~/supabase-client.ts";
 import type { Route } from "./+types/community-page";
 
 export const meta = () => [
@@ -46,9 +47,10 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
       { status: 400 },
     );
   }
+  const { supabase } = createSSRClient(request);
   const [topics, posts] = await Promise.all([
-    getTopics(),
-    getPosts({
+    getTopics(supabase),
+    getPosts(supabase, {
       limit: 20,
       sorting: dataSort.sorting,
       period: dataSort.period,

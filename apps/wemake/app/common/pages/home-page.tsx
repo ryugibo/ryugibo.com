@@ -11,6 +11,7 @@ import { ProductCard } from "~/features/products/components/product-card.tsx";
 import { getProductsByDateRange } from "~/features/products/queries.ts";
 import { TeamCard } from "~/features/teams/components/team-card.tsx";
 import { getTeams } from "~/features/teams/queries.ts";
+import { createSSRClient } from "~/supabase-client.ts";
 import type { Route } from "./+types/home-page";
 
 export const meta: Route.MetaFunction = () => [
@@ -20,20 +21,21 @@ export const meta: Route.MetaFunction = () => [
   { name: "description", content: "Welcome to wemake" },
 ];
 
-export const loader = async () => {
-  const products = await getProductsByDateRange({
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { supabase } = createSSRClient(request);
+  const products = await getProductsByDateRange(supabase, {
     startDate: DateTime.now().startOf("day"),
     endDate: DateTime.now().endOf("day"),
     limit: 7,
   });
-  const posts = await getPosts({
+  const posts = await getPosts(supabase, {
     limit: 7,
     sorting: "newest",
     period: "all",
   });
-  const ideas = await getIdeas({ limit: 7 });
-  const jobs = await getJobs({ limit: 11 });
-  const teams = await getTeams({ limit: 7 });
+  const ideas = await getIdeas(supabase, { limit: 7 });
+  const jobs = await getJobs(supabase, { limit: 11 });
+  const teams = await getTeams(supabase, { limit: 7 });
   return { products, posts, ideas, jobs, teams };
 };
 

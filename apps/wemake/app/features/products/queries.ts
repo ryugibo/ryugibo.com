@@ -1,5 +1,6 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
 import type { DateTime } from "luxon";
-import supabase from "~/supabase-client.ts";
+import type { Database } from "~/supabase-client.ts";
 import { PAGE_SIZE } from "./constants.ts";
 
 export const PRODUCT_SELECT = `
@@ -11,17 +12,20 @@ export const PRODUCT_SELECT = `
       stats->>reviews
 ` as const;
 
-export const getProductsByDateRange = async ({
-  startDate,
-  endDate,
-  limit = PAGE_SIZE,
-  page = 1,
-}: {
-  startDate: DateTime;
-  endDate: DateTime;
-  limit?: number;
-  page?: number;
-}) => {
+export const getProductsByDateRange = async (
+  supabase: SupabaseClient<Database>,
+  {
+    startDate,
+    endDate,
+    limit = PAGE_SIZE,
+    page = 1,
+  }: {
+    startDate: DateTime;
+    endDate: DateTime;
+    limit?: number;
+    page?: number;
+  },
+) => {
   const { data, error } = await supabase
     .from("products")
     .select(PRODUCT_SELECT)
@@ -37,13 +41,16 @@ export const getProductsByDateRange = async ({
   return data;
 };
 
-export const getProductPagesByDateRange = async ({
-  startDate,
-  endDate,
-}: {
-  startDate: DateTime;
-  endDate: DateTime;
-}) => {
+export const getProductPagesByDateRange = async (
+  supabase: SupabaseClient<Database>,
+  {
+    startDate,
+    endDate,
+  }: {
+    startDate: DateTime;
+    endDate: DateTime;
+  },
+) => {
   const { count, error } = await supabase
     .from("products")
     .select("id", { count: "exact", head: true })
@@ -60,7 +67,7 @@ export const getProductPagesByDateRange = async ({
   return Math.ceil(count / PAGE_SIZE);
 };
 
-export const getCategories = async () => {
+export const getCategories = async (supabase: SupabaseClient<Database>) => {
   const { data, error } = await supabase.from("categories").select("id, name, description");
 
   if (error) {
@@ -70,7 +77,10 @@ export const getCategories = async () => {
   return data;
 };
 
-export const getCategoryById = async (id: number) => {
+export const getCategoryById = async (
+  supabase: SupabaseClient<Database>,
+  { id }: { id: number },
+) => {
   const { data, error } = await supabase
     .from("categories")
     .select("id, name, description")
@@ -84,15 +94,18 @@ export const getCategoryById = async (id: number) => {
   return data;
 };
 
-export const getProductsByCategory = async ({
-  id,
-  page = 1,
-  limit = PAGE_SIZE,
-}: {
-  id: number;
-  page?: number;
-  limit?: number;
-}) => {
+export const getProductsByCategory = async (
+  supabase: SupabaseClient<Database>,
+  {
+    id,
+    page = 1,
+    limit = PAGE_SIZE,
+  }: {
+    id: number;
+    page?: number;
+    limit?: number;
+  },
+) => {
   const { data, error } = await supabase
     .from("products")
     .select(PRODUCT_SELECT)
@@ -107,7 +120,10 @@ export const getProductsByCategory = async ({
   return data;
 };
 
-export const getCategoryPages = async (id: number) => {
+export const getCategoryPages = async (
+  supabase: SupabaseClient<Database>,
+  { id }: { id: number },
+) => {
   const { count, error } = await supabase
     .from("products")
     .select("id", { count: "exact", head: true })
@@ -123,15 +139,18 @@ export const getCategoryPages = async (id: number) => {
   return Math.ceil(count / PAGE_SIZE);
 };
 
-export const getProductsByKeyword = async ({
-  keyword,
-  page = 1,
-  limit = PAGE_SIZE,
-}: {
-  keyword: string;
-  page?: number;
-  limit?: number;
-}) => {
+export const getProductsByKeyword = async (
+  supabase: SupabaseClient<Database>,
+  {
+    keyword,
+    page = 1,
+    limit = PAGE_SIZE,
+  }: {
+    keyword: string;
+    page?: number;
+    limit?: number;
+  },
+) => {
   const { data, error } = await supabase
     .from("products")
     .select(PRODUCT_SELECT)
@@ -145,7 +164,10 @@ export const getProductsByKeyword = async ({
   return data;
 };
 
-export const getPagesByKeyword = async ({ keyword }: { keyword: string }) => {
+export const getPagesByKeyword = async (
+  supabase: SupabaseClient<Database>,
+  { keyword }: { keyword: string },
+) => {
   const { count, error } = await supabase
     .from("products")
     .select("id", { count: "exact", head: true })
@@ -162,7 +184,10 @@ export const getPagesByKeyword = async ({ keyword }: { keyword: string }) => {
   return Math.ceil(count / PAGE_SIZE);
 };
 
-export const getProductById = async (id: number) => {
+export const getProductById = async (
+  supabase: SupabaseClient<Database>,
+  { id }: { id: number },
+) => {
   const { data, error } = await supabase
     .from("product_overview_view")
     .select("*")
@@ -176,7 +201,10 @@ export const getProductById = async (id: number) => {
   return data;
 };
 
-export const getReviewsByProductId = async (id: number) => {
+export const getReviewsByProductId = async (
+  supabase: SupabaseClient<Database>,
+  { id }: { id: number },
+) => {
   const { data, error } = await supabase
     .from("reviews")
     .select(`

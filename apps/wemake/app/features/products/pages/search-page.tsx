@@ -5,6 +5,7 @@ import z from "zod";
 import { Hero } from "~/common/components/hero.tsx";
 import { ProductPagination } from "~/common/components/product-pagination.tsx";
 import { ProductCard } from "~/features/products/components/product-card.tsx";
+import { createSSRClient } from "~/supabase-client.ts";
 import { getPagesByKeyword, getProductsByKeyword } from "../queries.ts";
 import type { Route } from "./+types/search-page";
 
@@ -28,8 +29,9 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   if (dataParams.keyword === "") {
     return { products: [], totalPages: 1 };
   }
-  const products = await getProductsByKeyword(dataParams);
-  const totalPages = await getPagesByKeyword(dataParams);
+  const { supabase } = createSSRClient(request);
+  const products = await getProductsByKeyword(supabase, dataParams);
+  const totalPages = await getPagesByKeyword(supabase, dataParams);
   return { products, totalPages };
 };
 

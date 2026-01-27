@@ -4,6 +4,7 @@ import { DateTime } from "luxon";
 import { data } from "react-router";
 import { z } from "zod";
 import { Hero } from "~/common/components/hero.tsx";
+import { createSSRClient } from "~/supabase-client.ts";
 import { getIdea } from "../queries.ts";
 import type { Route } from "./+types/idea-page";
 
@@ -19,12 +20,13 @@ const paramsSchema = z.object({
   ideaId: z.coerce.number(),
 });
 
-export const loader = async ({ params }: Route.LoaderArgs) => {
+export const loader = async ({ params, request }: Route.LoaderArgs) => {
   const { success: successId, data: dataId } = paramsSchema.safeParse(params);
   if (!successId) {
     throw data({ error_code: "idea_not_found", message: "Idea not found" }, { status: 404 });
   }
-  const idea = await getIdea({ id: dataId.ideaId });
+  const { supabase } = createSSRClient(request);
+  const idea = await getIdea(supabase, { id: dataId.ideaId });
   if (!idea) {
     throw data({ error_code: "idea_not_found", message: "Idea not found" }, { status: 404 });
   }

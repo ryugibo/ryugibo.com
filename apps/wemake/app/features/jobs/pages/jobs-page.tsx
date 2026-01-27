@@ -5,6 +5,7 @@ import z from "zod";
 import { Hero } from "~/common/components/hero.tsx";
 import { JobCard } from "~/features/jobs/components/job-card.tsx";
 import { JOB_TYPES, LOCATION_TYPES, SALARY_RANGE } from "~/features/jobs/constants.ts";
+import { createSSRClient } from "~/supabase-client.ts";
 import { getJobs } from "../queries.ts";
 import type { Route } from "./+types/jobs-page";
 
@@ -30,7 +31,8 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   if (!success) {
     throw data({ error_code: "invalid_params", message: "invalid params" }, { status: 400 });
   }
-  const jobs = await getJobs({ limit: 11, ...dataFilter });
+  const { supabase } = createSSRClient(request);
+  const jobs = await getJobs(supabase, { limit: 11, ...dataFilter });
   return { jobs };
 };
 

@@ -2,6 +2,7 @@ import z from "zod";
 import { Hero } from "~/common/components/hero.tsx";
 import { ProductPagination } from "~/common/components/product-pagination.tsx";
 import { ProductCard } from "~/features/products/components/product-card.tsx";
+import { createSSRClient } from "~/supabase-client.ts";
 import { getCategoryById, getCategoryPages, getProductsByCategory } from "../queries.ts";
 import type { Route } from "./+types/category-page";
 
@@ -20,9 +21,11 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
   if (!success) {
     throw new Response("Invalid params", { status: 400 });
   }
-  const category = await getCategoryById(dataParams.id);
-  const products = await getProductsByCategory({ id: dataParams.id, page });
-  const totalPage = await getCategoryPages(dataParams.id);
+  const { id } = dataParams;
+  const { supabase } = createSSRClient(request);
+  const category = await getCategoryById(supabase, { id });
+  const products = await getProductsByCategory(supabase, { id, page });
+  const totalPage = await getCategoryPages(supabase, { id });
 
   return { category, products, totalPage };
 };

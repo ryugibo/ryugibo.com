@@ -6,6 +6,7 @@ import { Form } from "react-router";
 import z from "zod";
 import { Hero } from "~/common/components/hero.tsx";
 import InputPair from "~/common/components/input-pair.tsx";
+import { createSSRClient } from "~/supabase-client.ts";
 import { getTeamById } from "../queries.ts";
 import type { Route } from "./+types/team-page";
 
@@ -16,12 +17,14 @@ export const meta = () => {
 const paramsSchema = z.object({
   id: z.coerce.number(),
 });
-export const loader = async ({ params }: Route.LoaderArgs) => {
+export const loader = async ({ params, request }: Route.LoaderArgs) => {
   const { success, data } = paramsSchema.safeParse(params);
   if (!success) {
     throw new Error("Invalid params");
   }
-  const team = await getTeamById({ id: data.id });
+  const { id } = data;
+  const { supabase } = createSSRClient(request);
+  const team = await getTeamById(supabase, { id });
   return { team };
 };
 

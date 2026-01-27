@@ -3,6 +3,7 @@ import { Button, buttonVariants } from "@ryugibo/ui/button";
 import { ChevronUpIcon, StarIcon } from "@ryugibo/ui/icons";
 import { Link, NavLink, Outlet } from "react-router";
 import { z } from "zod";
+import { createSSRClient } from "~/supabase-client.ts";
 import { getProductById } from "../queries.ts";
 import type { Route } from "./+types/product-layout";
 
@@ -14,16 +15,17 @@ export const meta = ({ loaderData }: Route.MetaArgs) => {
 };
 
 const paramsSchema = z.object({
-  productId: z.coerce.number(),
+  id: z.coerce.number(),
 });
 
-export const loader = async ({ params }: Route.LoaderArgs) => {
+export const loader = async ({ params, request }: Route.LoaderArgs) => {
   const { success, data } = paramsSchema.safeParse(params);
   if (!success) {
     throw new Error("Invalid params");
   }
-  const product = await getProductById(data.productId);
-
+  const { id } = data;
+  const { supabase } = createSSRClient(request);
+  const product = await getProductById(supabase, { id });
   return { product };
 };
 export default function ProductLayout({ loaderData }: Route.ComponentProps) {

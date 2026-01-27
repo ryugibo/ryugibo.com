@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { ProductCard } from "~/features/products/components/product-card.tsx";
+import { createSSRClient } from "~/supabase-client.ts";
 import { getProductsByUsername } from "../queries.ts";
 import type { Route } from "./+types/profile-products-page";
 
@@ -7,13 +8,14 @@ const paramsSchema = z.object({
   username: z.string(),
 });
 
-export const loader = async ({ params }: Route.LoaderArgs) => {
+export const loader = async ({ params, request }: Route.LoaderArgs) => {
   const { success, data } = paramsSchema.safeParse(params);
   if (!success) {
     throw new Error("Invalid params");
   }
   const { username } = data;
-  const products = await getProductsByUsername(username);
+  const { supabase } = createSSRClient(request);
+  const products = await getProductsByUsername(supabase, { username });
   return { products };
 };
 

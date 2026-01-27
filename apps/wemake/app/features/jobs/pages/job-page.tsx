@@ -3,6 +3,7 @@ import { Button } from "@ryugibo/ui/button";
 import { DotIcon } from "@ryugibo/ui/icons";
 import { DateTime } from "luxon";
 import z from "zod";
+import { createSSRClient } from "~/supabase-client.ts";
 import { getJobById } from "../queries.ts";
 import type { Route } from "./+types/job-page";
 
@@ -14,14 +15,16 @@ const paramsSchema = z.object({
   id: z.coerce.number(),
 });
 
-export const loader = async ({ params }: Route.LoaderArgs) => {
+export const loader = async ({ params, request }: Route.LoaderArgs) => {
   const { success, data } = paramsSchema.safeParse(params);
 
   if (!success) {
     throw new Error("Invalid params");
   }
 
-  const job = await getJobById(data.id);
+  const { id } = data;
+  const { supabase } = createSSRClient(request);
+  const job = await getJobById(supabase, { id });
   return { job };
 };
 

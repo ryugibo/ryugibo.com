@@ -1,7 +1,11 @@
-import supabase from "~/supabase-client.ts";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "~/supabase-client.ts";
 import { PRODUCT_SELECT } from "../products/queries.ts";
 
-export const getUserProfile = async (username: string) => {
+export const getUserProfile = async (
+  supabase: SupabaseClient<Database>,
+  { username }: { username: string },
+) => {
   const { data, error } = await supabase
     .from("profiles")
     .select(`
@@ -23,7 +27,10 @@ export const getUserProfile = async (username: string) => {
   return data;
 };
 
-export const getProductsByUsername = async (username: string) => {
+export const getProductsByUsername = async (
+  supabase: SupabaseClient<Database>,
+  { username }: { username: string },
+) => {
   const { data, error } = await supabase
     .from("products")
     .select(`
@@ -42,7 +49,10 @@ export const getProductsByUsername = async (username: string) => {
   return data;
 };
 
-export const getPostsByUsername = async (username: string) => {
+export const getPostsByUsername = async (
+  supabase: SupabaseClient<Database>,
+  { username }: { username: string },
+) => {
   const { data, error } = await supabase
     .from("community_post_list_view")
     .select()

@@ -1,14 +1,16 @@
 import { Hero } from "~/common/components/hero.tsx";
 import { TeamCard } from "~/features/teams/components/team-card.tsx";
 import { getTeams } from "~/features/teams/queries.ts";
+import { createSSRClient } from "~/supabase-client.ts";
 import type { Route } from "./+types/teams-page";
 
 export const meta = () => {
   return [{ title: "Teams | wemake" }, { description: "Find a team to work with" }];
 };
 
-export const loader = async () => {
-  const teams = await getTeams({ limit: 7 });
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { supabase } = createSSRClient(request);
+  const teams = await getTeams(supabase, { limit: 7 });
   return { teams };
 };
 export default function TeamsPage({ loaderData }: Route.ComponentProps) {

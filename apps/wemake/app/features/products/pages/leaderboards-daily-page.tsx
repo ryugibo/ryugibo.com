@@ -5,6 +5,7 @@ import { z } from "zod";
 import { Hero } from "~/common/components/hero.tsx";
 import { ProductPagination } from "~/common/components/product-pagination.tsx";
 import { ProductCard } from "~/features/products/components/product-card.tsx";
+import { createSSRClient } from "~/supabase-client.ts";
 import { getProductPagesByDateRange, getProductsByDateRange } from "../queries.ts";
 import type { Route } from "./+types/leaderboards-daily-page";
 
@@ -37,12 +38,13 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
     throw data({ error_code: "future_date", message: "future date" }, { status: 400 });
   }
   const url = new URL(request.url);
-  const products = await getProductsByDateRange({
+  const { supabase } = createSSRClient(request);
+  const products = await getProductsByDateRange(supabase, {
     startDate: date.startOf("day"),
     endDate: date.endOf("day"),
     page: Number(url.searchParams.get("page")) || 1,
   });
-  const totalPages = await getProductPagesByDateRange({
+  const totalPages = await getProductPagesByDateRange(supabase, {
     startDate: date.startOf("day"),
     endDate: date.endOf("day"),
   });

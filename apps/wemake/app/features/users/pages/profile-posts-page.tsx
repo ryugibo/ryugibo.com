@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { PostCard } from "~/features/community/components/post-card.tsx";
+import { createSSRClient } from "~/supabase-client.ts";
 import { getPostsByUsername } from "../queries.ts";
 import type { Route } from "./+types/profile-posts-page";
 
@@ -7,13 +8,14 @@ const paramsSchema = z.object({
   username: z.string(),
 });
 
-export const loader = async ({ params }: Route.LoaderArgs) => {
+export const loader = async ({ params, request }: Route.LoaderArgs) => {
   const { success, data } = paramsSchema.safeParse(params);
   if (!success) {
     throw new Error("Invalid params");
   }
   const { username } = data;
-  const posts = await getPostsByUsername(username);
+  const { supabase } = createSSRClient(request);
+  const posts = await getPostsByUsername(supabase, { username });
   return { posts };
 };
 

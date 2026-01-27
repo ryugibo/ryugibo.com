@@ -1,5 +1,6 @@
 import { Hero } from "~/common/components/hero.tsx";
 import { IdeaCard } from "~/features/ideas/components/idea-card.tsx";
+import { createSSRClient } from "~/supabase-client.ts";
 import { getIdeas } from "../queries.ts";
 import type { Route } from "./+types/ideas-page";
 
@@ -10,8 +11,9 @@ export const meta = () => {
   ];
 };
 
-export const loader = async () => {
-  const ideas = await getIdeas({ limit: 20 });
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { supabase } = createSSRClient(request);
+  const ideas = await getIdeas(supabase, { limit: 20 });
 
   return { ideas };
 };

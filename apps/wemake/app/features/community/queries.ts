@@ -1,6 +1,7 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { DateTime } from "luxon";
 import type { PeriodOption, SortOption } from "~/features/community/constant.ts";
-import supabase from "~/supabase-client.ts";
+import type { Database } from "~/supabase-client.ts";
 
 const REPLY_SELECT = `
 id,
@@ -13,7 +14,7 @@ user:profiles (
 )
 `;
 
-export const getTopics = async () => {
+export const getTopics = async (supabase: SupabaseClient<Database>) => {
   const { data, error } = await supabase.from("topics").select("name, slug");
   if (error) {
     throw error;
@@ -21,19 +22,22 @@ export const getTopics = async () => {
   return data;
 };
 
-export const getPosts = async ({
-  limit,
-  sorting,
-  period,
-  keyword,
-  topic,
-}: {
-  limit: number;
-  sorting: SortOption;
-  period: PeriodOption;
-  keyword?: string;
-  topic?: string;
-}) => {
+export const getPosts = async (
+  supabase: SupabaseClient<Database>,
+  {
+    limit,
+    sorting,
+    period,
+    keyword,
+    topic,
+  }: {
+    limit: number;
+    sorting: SortOption;
+    period: PeriodOption;
+    keyword?: string;
+    topic?: string;
+  },
+) => {
   const query = supabase.from("community_post_list_view").select("*").limit(limit);
   if (sorting === "popular") {
     query.order("upvotes", { ascending: false });
@@ -64,7 +68,7 @@ export const getPosts = async ({
   return data;
 };
 
-export const getPostById = async (id: number) => {
+export const getPostById = async (supabase: SupabaseClient<Database>, { id }: { id: number }) => {
   const { data, error } = await supabase
     .from("community_post_detail_view")
     .select("*")
@@ -78,7 +82,7 @@ export const getPostById = async (id: number) => {
   return data;
 };
 
-export const getReplies = async (id: number) => {
+export const getReplies = async (supabase: SupabaseClient<Database>, { id }: { id: number }) => {
   const { data, error } = await supabase
     .from("post_replies")
     .select(`
