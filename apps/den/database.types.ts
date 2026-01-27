@@ -47,36 +47,6 @@ export type Database = {
         }
         Relationships: []
       }
-      profile: {
-        Row: {
-          avatar: string | null
-          bio: string | null
-          created_at: string
-          id: string
-          name: string
-          updated_at: string
-          username: string
-        }
-        Insert: {
-          avatar?: string | null
-          bio?: string | null
-          created_at?: string
-          id: string
-          name: string
-          updated_at?: string
-          username: string
-        }
-        Update: {
-          avatar?: string | null
-          bio?: string | null
-          created_at?: string
-          id?: string
-          name?: string
-          updated_at?: string
-          username?: string
-        }
-        Relationships: []
-      }
       profile_books: {
         Row: {
           book_id: number | null
@@ -117,13 +87,43 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "profile_books_profile_id_profile_id_fk"
+            foreignKeyName: "profile_books_profile_id_profiles_id_fk"
             columns: ["profile_id"]
             isOneToOne: false
-            referencedRelation: "profile"
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
+      }
+      profiles: {
+        Row: {
+          avatar: string | null
+          bio: string | null
+          created_at: string
+          id: string
+          name: string
+          updated_at: string
+          username: string
+        }
+        Insert: {
+          avatar?: string | null
+          bio?: string | null
+          created_at?: string
+          id: string
+          name: string
+          updated_at?: string
+          username: string
+        }
+        Update: {
+          avatar?: string | null
+          bio?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          updated_at?: string
+          username?: string
+        }
+        Relationships: []
       }
     }
     Views: {
@@ -152,10 +152,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "profile_books_profile_id_profile_id_fk"
+            foreignKeyName: "profile_books_profile_id_profiles_id_fk"
             columns: ["profile_id"]
             isOneToOne: false
-            referencedRelation: "profile"
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]

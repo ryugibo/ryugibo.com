@@ -15,6 +15,13 @@
       "when": 1769360754182,
       "tag": "0001_fresh_ultimates",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1769524610529,
+      "tag": "0002_nosy_romulus",
+      "breakpoints": true
     }
   ]
 }
