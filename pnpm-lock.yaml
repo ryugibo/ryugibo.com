@@ -135,6 +135,9 @@ importers:
       '@ryugibo/vite-config':
         specifier: workspace:*
         version: link:../../packages/vite-config
+      '@supabase/ssr':
+        specifier: ^0.8.0
+        version: 0.8.0(@supabase/supabase-js@2.91.0)
       '@supabase/supabase-js':
         specifier: ^2.91.0
         version: 2.91.0
