@@ -23,7 +23,6 @@ const searchParamsSchema = z.object({
 });
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
-  import.meta.env.VITE_APP_ENV;
   const url = new URL(request.url);
   const { success, data: dataFilter } = searchParamsSchema.safeParse(
     Object.fromEntries(url.searchParams),
