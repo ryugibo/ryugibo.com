@@ -38,6 +38,27 @@ export type Database = {
         }
         Relationships: []
       }
+      events: {
+        Row: {
+          created_at: string
+          event_data: Json | null
+          event_type: Database["wemake"]["Enums"]["event_type"]
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          event_data?: Json | null
+          event_type: Database["wemake"]["Enums"]["event_type"]
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          event_data?: Json | null
+          event_type?: Database["wemake"]["Enums"]["event_type"]
+          id?: string
+        }
+        Relationships: []
+      }
       follows: {
         Row: {
           created_at: string
@@ -853,9 +874,16 @@ export type Database = {
       }
     }
     Functions: {
-      [_ in never]: never
+      track_event: {
+        Args: {
+          event_data: Json
+          event_type: Database["wemake"]["Enums"]["event_type"]
+        }
+        Returns: undefined
+      }
     }
     Enums: {
+      event_type: "product_view" | "product_visit" | "profile_view"
       job_type:
         | "full-time"
         | "part-time"
@@ -1006,6 +1034,7 @@ export type CompositeTypes<
 export const Constants = {
   wemake: {
     Enums: {
+      event_type: ["product_view", "product_visit", "profile_view"],
       job_type: [
         "full-time",
         "part-time",

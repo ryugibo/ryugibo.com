@@ -1,0 +1,1 @@
+ALTER TABLE "wemake"."events" RENAME COLUMN "type" TO "event_type";
