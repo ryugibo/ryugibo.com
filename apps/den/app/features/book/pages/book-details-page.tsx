@@ -2,14 +2,16 @@ import { Button } from "@ryugibo/ui/button";
 import { Separator } from "@ryugibo/ui/separator";
 import { ArrowLeft, Bookmark, Trash2 } from "lucide-react";
 import { Link } from "react-router";
+import { createSSRClient } from "~/supabase-client.ts";
 import { useTranslation } from "../../../common/hooks/use-translation.ts";
 import AppLayout from "../../../common/layouts/app-layout.tsx";
 import { BookCover } from "../components/book-cover.tsx";
 import { getBook } from "../queries.ts";
 import type { Route } from "./+types/book-details-page";
 
-export const loader = async ({ params }: Route.LoaderArgs) => {
-  const book = await getBook({ id: parseInt(params.bookId, 10) });
+export const loader = async ({ params, request }: Route.LoaderArgs) => {
+  const { supabase } = createSSRClient(request);
+  const book = await getBook(supabase, { id: parseInt(params.bookId, 10) });
   return { book };
 };
 
