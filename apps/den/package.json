@@ -6,16 +6,18 @@
     "build": "react-router build",
     "dev": "react-router dev",
     "start": "react-router-serve ./build/server/index.js",
-    "check-types": "react-router typegen && tsc --noEmit",
+    "check-types": "react-router typegen && pnpm lint:routes && tsc --noEmit",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
-    "db:typegen": "dotenv -e .env -- sh -c 'pnpm supabase gen types typescript --project-id \"$VITE_SUPABASE_ID\" --schema $npm_package_name > database.types.ts'"
+    "db:typegen": "dotenv -e .env -- sh -c 'pnpm supabase gen types typescript --project-id \"$VITE_SUPABASE_ID\" --schema $npm_package_name > database.types.ts'",
+    "lint:routes": "rr-kit check-types"
   },
   "dependencies": {
     "@react-router/node": "7.12.0",
     "@react-router/serve": "7.12.0",
     "@ryugibo/db": "workspace:*",
+    "@ryugibo/react-router-kit": "workspace:*",
     "@ryugibo/ui": "workspace:*",
     "@ryugibo/vite-config": "workspace:*",
     "@supabase/supabase-js": "^2.91.0",

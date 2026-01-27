@@ -53,6 +53,9 @@ importers:
       '@ryugibo/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@ryugibo/react-router-kit':
+        specifier: workspace:*
+        version: link:../../packages/react-router-kit
       '@ryugibo/ui':
         specifier: workspace:*
         version: link:../../packages/ui
