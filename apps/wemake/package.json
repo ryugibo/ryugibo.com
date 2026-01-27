@@ -20,6 +20,7 @@
     "@ryugibo/db": "workspace:*",
     "@ryugibo/ui": "workspace:*",
     "@ryugibo/vite-config": "workspace:*",
+    "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.91.0",
     "isbot": "^5.1.31",
     "luxon": "^3.7.2",
