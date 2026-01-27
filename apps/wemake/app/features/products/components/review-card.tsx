@@ -1,8 +1,9 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@ryugibo/ui/avatar";
 import { StarIcon } from "@ryugibo/ui/icons";
+import { DateTime } from "luxon";
 
 interface ReviewCardProps {
-  avatarUrl: string;
+  avatarUrl: string | null;
   authorName: string;
   authorUsername: string;
   rating: number;
@@ -22,7 +23,7 @@ export function ReviewCard({
     <div className="space-y-5">
       <div className="flex items-center gap-2">
         <Avatar>
-          <AvatarImage src={avatarUrl} />
+          {avatarUrl && <AvatarImage src={avatarUrl} />}
           <AvatarFallback>{authorName.slice(0, 2).toUpperCase()}</AvatarFallback>
         </Avatar>
         <div>
@@ -31,12 +32,18 @@ export function ReviewCard({
         </div>
       </div>
       <div className="flex gap-1 text-yellow-500">
-        {[...Array(rating).keys()].map((index) => (
-          <StarIcon key={index} className="size-4" fill="currentColor" />
+        {[...Array(5).keys()].map((index) => (
+          <StarIcon
+            key={index}
+            className="size-4"
+            fill={index < rating ? "currentColor" : "none"}
+          />
         ))}
       </div>
       <p className="text-muted-foreground">{content}</p>
-      <span className="text-xs text-muted-foreground">{postedAt}</span>
+      <span className="text-xs text-muted-foreground">
+        {DateTime.fromISO(postedAt).toRelative()}
+      </span>
     </div>
   );
 }

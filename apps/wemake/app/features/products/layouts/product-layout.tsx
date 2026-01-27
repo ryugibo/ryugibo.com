@@ -2,25 +2,51 @@ import { cn } from "@ryugibo/ui";
 import { Button, buttonVariants } from "@ryugibo/ui/button";
 import { ChevronUpIcon, StarIcon } from "@ryugibo/ui/icons";
 import { NavLink, Outlet } from "react-router";
+import { z } from "zod";
+import { getProductById } from "../queries.ts";
 import type { Route } from "./+types/product-layout";
 
-export default function ProductLayout({ params }: Route.ComponentProps) {
-  const { productId } = params;
+export const meta = ({ loaderData }: Route.MetaArgs) => {
+  return [
+    { title: `${loaderData.product.name} | wemake` },
+    { name: "description", content: loaderData.product.description },
+  ];
+};
+
+const paramsSchema = z.object({
+  productId: z.coerce.number(),
+});
+
+export const loader = async ({ params }: Route.LoaderArgs) => {
+  const { success, data } = paramsSchema.safeParse(params);
+  if (!success) {
+    throw new Error("Invalid params");
+  }
+  const product = await getProductById(data.productId);
+
+  return { product };
+};
+export default function ProductLayout({ loaderData }: Route.ComponentProps) {
+  const { product } = loaderData;
   return (
     <div className="space-y-10">
       <div className="flex justify-between">
         <div className="flex gap-10">
           <div className="size-40 rounded-xl shadow-xl bg-primary/50"></div>
           <div>
-            <h1 className="text-5xl font-bold">Product Name</h1>
-            <p className="text-2xl font-light">Product Description</p>
+            <h1 className="text-5xl font-bold">{product.name}</h1>
+            <p className="text-2xl font-light">{product.tagline}</p>
             <div className="mt-5 flex items-center gap-2">
               <div className="flex gap-1 text-yellow-500">
                 {[...Array(5).keys()].map((index) => (
-                  <StarIcon key={index} className="size-4" fill="currentColor" />
+                  <StarIcon
+                    key={index}
+                    className="size-4"
+                    fill={index < Math.floor(product.average_rating) ? "currentColor" : "none"}
+                  />
                 ))}
               </div>
-              <span className="text-muted-foreground">100 reviews</span>
+              <span className="text-muted-foreground">{product.reviews} reviews</span>
             </div>
           </div>
         </div>
@@ -30,13 +56,13 @@ export default function ProductLayout({ params }: Route.ComponentProps) {
           </Button>
           <Button size="lg" className="text-lg h-14 px-10">
             <ChevronUpIcon className="size-4" />
-            Upvote (100)
+            Upvote ({product.upvotes})
           </Button>
         </div>
       </div>
       <div className="flex gap-2.5">
         <NavLink
-          to={`/products/${productId}/overview`}
+          to={`/products/${product.id}/overview`}
           className={({ isActive }) =>
             cn([
               buttonVariants({ variant: "outline" }),
@@ -47,7 +73,7 @@ export default function ProductLayout({ params }: Route.ComponentProps) {
           Overview
         </NavLink>
         <NavLink
-          to={`/products/${productId}/reviews`}
+          to={`/products/${product.id}/reviews`}
           className={({ isActive }) =>
             cn([
               buttonVariants({ variant: "outline" }),
@@ -59,7 +85,14 @@ export default function ProductLayout({ params }: Route.ComponentProps) {
         </NavLink>
       </div>
       <div>
-        <Outlet />
+        <Outlet
+          context={{
+            id: product.id,
+            description: product.description,
+            how_it_works: product.how_it_works,
+            review_count: product.reviews,
+          }}
+        />
       </div>
     </div>
   );

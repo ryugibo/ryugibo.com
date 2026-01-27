@@ -161,3 +161,36 @@ export const getPagesByKeyword = async ({ keyword }: { keyword: string }) => {
 
   return Math.ceil(count / PAGE_SIZE);
 };
+
+export const getProductById = async (id: number) => {
+  const { data, error } = await supabase
+    .from("product_overview_view")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+};
+
+export const getReviewsByProductId = async (id: number) => {
+  const { data, error } = await supabase
+    .from("reviews")
+    .select(`
+      id,
+      rating,
+      comment,
+      created_at,
+      profiles!inner(name, username, avatar)
+    `)
+    .eq("product_id", id);
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+};

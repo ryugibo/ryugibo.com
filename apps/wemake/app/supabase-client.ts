@@ -15,6 +15,9 @@ type Database = MergeDeep<
             string | null
           >;
         };
+        product_overview_view: {
+          Row: SetNonNullable<SupabaseDatabase["wemake"]["Views"]["product_overview_view"]["Row"]>;
+        };
         ideas_view: {
           Row: SetNonNullable<SupabaseDatabase["wemake"]["Views"]["ideas_view"]["Row"]>;
         };
