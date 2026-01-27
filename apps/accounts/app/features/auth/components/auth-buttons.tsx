@@ -16,19 +16,19 @@ export default function AuthButtons() {
       </div>
       <div className="w-full flex flex-col gap-2">
         <Button variant="outline" className="w-full" asChild>
-          <Link to="/auth/social/kakao/start">
+          <Link to="/social/kakao/start">
             <MessageCircleIcon className="size-4" />
             Kakao Talk
           </Link>
         </Button>
         <Button variant="outline" className="w-full" asChild>
-          <Link to="/auth/social/github/start">
+          <Link to="/social/github/start">
             <SiGithub className="size-5" />
             Github
           </Link>
         </Button>
         <Button variant="outline" className="w-full" asChild>
-          <Link to="/auth/otp/start">
+          <Link to="/otp/start">
             <LockIcon className="size-4" />
             OTP
           </Link>

@@ -5,6 +5,7 @@ import { Input } from "@ryugibo/ui/input";
 import { Search } from "lucide-react";
 import { data, Form, Link, useSearchParams } from "react-router";
 import z from "zod";
+import { createSSRClient } from "~/supabase-client.ts";
 import { useTranslation } from "../../../common/hooks/use-translation.ts";
 import AppLayout from "../../../common/layouts/app-layout.tsx";
 import { BookCover } from "../../book/components/book-cover.tsx";
@@ -28,7 +29,11 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
       message: "Invalid search parameters",
     });
   }
-  const books = await getLibrary({ keyword: dataQuery.keyword, read_state: dataQuery.read_state });
+  const { supabase } = createSSRClient(request);
+  const books = await getLibrary(supabase, {
+    keyword: dataQuery.keyword,
+    read_state: dataQuery.read_state,
+  });
   return {
     books,
     read_state: dataQuery.read_state,

@@ -1,13 +1,18 @@
-import supabase from "~/supabase-client.ts";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "~/supabase-client.ts";
+
 import type { ReadState } from "./constant.ts";
 
-export const getLibrary = async ({
-  keyword,
-  read_state,
-}: {
-  keyword?: string;
-  read_state?: ReadState;
-}) => {
+export const getLibrary = async (
+  supabase: SupabaseClient<Database>,
+  {
+    keyword,
+    read_state,
+  }: {
+    keyword?: string;
+    read_state?: ReadState;
+  },
+) => {
   const query = supabase.from("profile_books_list_view").select("*");
 
   if (keyword) {

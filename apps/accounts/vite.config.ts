@@ -3,11 +3,12 @@ import { getBaseViteConfig } from "@ryugibo/vite-config";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
-import pkg from "./package.json";
 
 export default defineConfig(() => {
-  return getBaseViteConfig(pkg.name, {
-    server: { port: 5175 },
+  return getBaseViteConfig("accounts", {
+    server: {
+      port: 5173,
+    },
     plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
   });
 });

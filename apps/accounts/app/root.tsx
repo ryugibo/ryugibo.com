@@ -8,7 +8,10 @@ import {
 } from "react-router";
 
 import type { Route } from "./+types/root";
-import "./app.css";
+import "~/app.css";
+import { Settings } from "luxon";
+
+import { createSSRClient } from "./supabase-client.ts";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -23,15 +26,12 @@ export const links: Route.LinksFunction = () => [
   },
 ];
 
-import { ThemeProvider } from "./common/components/theme-provider.tsx";
+export function Layout({ children }: { children: React.ReactNode }) {
+  Settings.defaultLocale = "ko";
+  Settings.defaultZone = "Asia/Seoul";
 
-import { LanguageProvider, useLanguage } from "./common/contexts/language-context.tsx";
-import { createSSRClient } from "./supabase-client.ts";
-
-function Html({ children }: { children: React.ReactNode }) {
-  const { language } = useLanguage();
   return (
-    <html lang={language} suppressHydrationWarning>
+    <html lang="ko">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -39,21 +39,11 @@ function Html({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          {children}
-        </ThemeProvider>
+        <main>{children}</main>
         <ScrollRestoration />
         <Scripts />
       </body>
     </html>
-  );
-}
-
-export function Layout({ children }: { children: React.ReactNode }) {
-  return (
-    <LanguageProvider>
-      <Html>{children}</Html>
-    </LanguageProvider>
   );
 }
 
@@ -62,11 +52,10 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
   return { user };
 };
 
-export default function App() {
+export default function App(_: Route.ComponentProps) {
   return <Outlet />;
 }
 

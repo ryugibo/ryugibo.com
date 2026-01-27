@@ -12,13 +12,20 @@ import {
   SidebarMenuItem,
 } from "@ryugibo/ui/sidebar";
 import { BookOpen, Home, Layers, Library, Settings } from "lucide-react";
-import { Link, useLocation } from "react-router";
+import { useEffect, useState } from "react";
+import { Link, useLocation, useRouteLoaderData } from "react-router";
 
 import { useTranslation } from "../hooks/use-translation.ts";
 
 export function AppSidebar() {
   const location = useLocation();
   const { t } = useTranslation();
+  const { user } = useRouteLoaderData("root");
+  const [origin, setOrigin] = useState("");
+
+  useEffect(() => {
+    setOrigin(window.location.origin);
+  }, []);
 
   const items = [
     {
@@ -91,16 +98,31 @@ export function AppSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <Link to="/settings">
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src="" alt="Ryugibo" />
-                  <AvatarFallback className="rounded-lg">R</AvatarFallback>
-                </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">Ryugibo</span>
-                  <span className="truncate text-xs">ryugibo@example.com</span>
-                </div>
-              </Link>
+              {user ? (
+                <Link to="/settings">
+                  <Avatar className="h-8 w-8 rounded-lg">
+                    <AvatarImage src="" alt="Ryugibo" />
+                    <AvatarFallback className="rounded-lg">R</AvatarFallback>
+                  </Avatar>
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-semibold">{user.email}</span>
+                    <span className="truncate text-xs">{user.email}</span>
+                  </div>
+                </Link>
+              ) : (
+                <a
+                  href={`${import.meta.env.VITE_ACCOUNTS_URL}/login?redirect_url=${encodeURIComponent(
+                    `${origin}${location.pathname}`,
+                  )}`}
+                >
+                  <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-indigo-600 text-sidebar-primary-foreground">
+                    <BookOpen className="size-4 text-white" />
+                  </div>
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-semibold">Login</span>
+                  </div>
+                </a>
+              )}
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

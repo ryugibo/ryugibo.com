@@ -5,24 +5,22 @@ import z from "zod";
 import InputPair from "~/common/components/input-pair.tsx";
 import AuthButtons from "~/features/auth/components/auth-buttons.tsx";
 import { createSSRClient } from "~/supabase-client.ts";
-import { isExistsUsername } from "../queries.ts";
-import type { Route } from "./+types/join-page";
+import type { Route } from "./+types/login-page";
 
 export const meta = () => {
-  return [{ title: "Join | wemake" }];
+  return [{ title: "Login | wemake" }];
 };
 
 const formSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  username: z.string().min(1, "Username is required"),
-  email: z.email("Invalid email"),
-  password: z.string().min(1, "Password is required"),
+  email: z.email({ error: "Invalid email address" }),
+  password: z
+    .string({ error: "Password must be a string" })
+    .min(8, { error: "Password must be at least 8 characters long" }),
 });
 
 export const action = async ({ request }: Route.ActionArgs) => {
   const formData = await request.formData();
-  console.log(formData);
-  const { success, data, error: formZodError } = formSchema.safeParse(Object.fromEntries(formData));
+  const { success, error: formZodError, data } = formSchema.safeParse(Object.fromEntries(formData));
   if (!success) {
     const formError = formZodError.issues.reduce(
       (acc, issue) => {
@@ -37,67 +35,32 @@ export const action = async ({ request }: Route.ActionArgs) => {
     );
     return { formError };
   }
+
+  const { email, password } = data;
   const { supabase, headers } = createSSRClient(request);
-  const isTakenUsername = await isExistsUsername(supabase, { username: data.username });
-  if (isTakenUsername) {
-    return { formError: { username: [{ key: 0, message: "Username already exists" }] } };
+  const { error: loginError } = await supabase.auth.signInWithPassword({ email, password });
+
+  if (loginError) {
+    return { loginError };
   }
-  const { email, password, name, username } = data;
-  const { error: signUpError } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      data: {
-        name,
-        username,
-      },
-    },
-  });
-  if (signUpError) {
-    return { signUpError };
-  }
-  return redirect("/", { headers });
+
+  const url = new URL(request.url);
+  const redirectUrl = url.searchParams.get("redirect_url") || "/";
+
+  return redirect(redirectUrl, { headers });
 };
 
-export default function JoinPage({ actionData }: Route.ComponentProps) {
+export default function LoginPage({ actionData }: Route.ComponentProps) {
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting" || navigation.state === "loading";
   return (
     <div className="flex flex-col relative items-center justify-center h-full">
       <Button variant="ghost" asChild className="absolute top-8 right-8">
-        <Link to="/auth/login">Login</Link>
+        <Link to="/join">Join</Link>
       </Button>
       <div className="flex flex-col items-center justify-center w-full max-w-md gap-10">
-        <h1 className="text-2xl font-semibold">Create an account</h1>
+        <h1 className="text-2xl font-semibold">Log in to your account</h1>
         <Form method="post" className="w-full space-y-4">
-          <InputPair
-            label="Name"
-            description="Enter your name"
-            id="name"
-            name="name"
-            required
-            type="text"
-            placeholder="Enter your name"
-          />
-          {actionData?.formError?.name?.map(({ key, message }) => (
-            <p key={key} className="text-sm text-red-500">
-              {message}
-            </p>
-          ))}
-          <InputPair
-            label="Username"
-            description="Enter your username"
-            id="username"
-            name="username"
-            required
-            type="text"
-            placeholder="Enter your username"
-          />
-          {actionData?.formError?.username?.map(({ key, message }) => (
-            <p key={key} className="text-sm text-red-500">
-              {message}
-            </p>
-          ))}
           <InputPair
             label="Email"
             description="Enter your email"
@@ -126,11 +89,11 @@ export default function JoinPage({ actionData }: Route.ComponentProps) {
               {message}
             </p>
           ))}
-          <Button type="submit" className="w-full">
-            {isSubmitting ? <LoaderCircleIcon className="animate-spin" /> : "Create an account"}
+          <Button type="submit" className="w-full" disabled={isSubmitting}>
+            {isSubmitting ? <LoaderCircleIcon className="animate-spin" /> : "Login"}
           </Button>
-          {actionData?.signUpError && (
-            <p className="text-sm text-red-500">{actionData.signUpError.message}</p>
+          {actionData?.loginError && (
+            <p className="text-sm text-red-500">{actionData.loginError.message}</p>
           )}
         </Form>
         <AuthButtons />
