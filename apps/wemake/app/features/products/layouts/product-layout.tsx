@@ -1,7 +1,7 @@
 import { cn } from "@ryugibo/ui";
 import { Button, buttonVariants } from "@ryugibo/ui/button";
 import { ChevronUpIcon, StarIcon } from "@ryugibo/ui/icons";
-import { NavLink, Outlet } from "react-router";
+import { Link, NavLink, Outlet } from "react-router";
 import { z } from "zod";
 import { getProductById } from "../queries.ts";
 import type { Route } from "./+types/product-layout";
@@ -51,8 +51,8 @@ export default function ProductLayout({ loaderData }: Route.ComponentProps) {
           </div>
         </div>
         <div className="flex gap-5">
-          <Button variant="secondary" size="lg" className="text-lg h-14 px-10">
-            Visit Website
+          <Button variant="secondary" size="lg" className="text-lg h-14 px-10" asChild>
+            <Link to={`/products/${product.id}/visit`}>Visit Website</Link>
           </Button>
           <Button size="lg" className="text-lg h-14 px-10">
             <ChevronUpIcon className="size-4" />

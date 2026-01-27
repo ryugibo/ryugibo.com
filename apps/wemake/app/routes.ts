@@ -30,6 +30,7 @@ export default [
         route("/overview", "features/products/pages/product-overview-page.tsx"),
         route("/reviews", "features/products/pages/product-reviews-page.tsx"),
       ]),
+      route("/visit", "features/products/pages/product-visit-page.tsx"),
     ]),
   ]),
   ...prefix("/ideas", [

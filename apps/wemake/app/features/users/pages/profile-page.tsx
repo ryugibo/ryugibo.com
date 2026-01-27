@@ -1,10 +1,28 @@
 import { useOutletContext } from "react-router";
+import z from "zod";
+import supabase from "~/supabase-client.ts";
 import type { Route } from "./+types/profile-page";
 
 export const meta = (_: Route.MetaArgs) => [
   { title: "Profile | wenake" },
   { name: "description", content: "Profile" },
 ];
+
+const paramsSchema = z.object({
+  username: z.string(),
+});
+
+export const loader = async ({ params }: Route.LoaderArgs) => {
+  const { success, data } = paramsSchema.safeParse(params);
+  if (success) {
+    await supabase.rpc("track_event", {
+      event_type: "profile_view",
+      event_data: { username: data.username },
+    });
+  }
+
+  return null;
+};
 
 export default function ProfilePage() {
   const { headline, bio } = useOutletContext<{ headline: string; bio: string }>();
