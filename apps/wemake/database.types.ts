@@ -376,7 +376,7 @@ export type Database = {
           created_at: string
           id: number
           parent_id: number | null
-          post_id: number
+          post_id: number | null
           profile_id: string
           updated_at: string
         }
@@ -385,7 +385,7 @@ export type Database = {
           created_at?: string
           id?: never
           parent_id?: number | null
-          post_id: number
+          post_id?: number | null
           profile_id: string
           updated_at?: string
         }
@@ -394,7 +394,7 @@ export type Database = {
           created_at?: string
           id?: never
           parent_id?: number | null
-          post_id?: number
+          post_id?: number | null
           profile_id?: string
           updated_at?: string
         }

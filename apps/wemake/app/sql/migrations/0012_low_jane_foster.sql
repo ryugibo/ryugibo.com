@@ -1,0 +1,1 @@
+ALTER TABLE "wemake"."post_replies" ALTER COLUMN "post_id" DROP NOT NULL;
