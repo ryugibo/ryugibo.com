@@ -323,6 +323,13 @@ export type Database = {
             foreignKeyName: "notifications_post_id_posts_id_fk"
             columns: ["post_id"]
             isOneToOne: false
+            referencedRelation: "community_post_detail_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_post_id_posts_id_fk"
+            columns: ["post_id"]
+            isOneToOne: false
             referencedRelation: "community_post_list_view"
             referencedColumns: ["id"]
           },
@@ -403,6 +410,13 @@ export type Database = {
             foreignKeyName: "post_replies_post_id_posts_id_fk"
             columns: ["post_id"]
             isOneToOne: false
+            referencedRelation: "community_post_detail_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "post_replies_post_id_posts_id_fk"
+            columns: ["post_id"]
+            isOneToOne: false
             referencedRelation: "community_post_list_view"
             referencedColumns: ["id"]
           },
@@ -436,6 +450,13 @@ export type Database = {
           profile_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "post_upvotes_post_id_posts_id_fk"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "community_post_detail_view"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "post_upvotes_post_id_posts_id_fk"
             columns: ["post_id"]
@@ -771,6 +792,24 @@ export type Database = {
       }
     }
     Views: {
+      community_post_detail_view: {
+        Row: {
+          author_avatar: string | null
+          author_created_at: string | null
+          author_name: string | null
+          author_products: number | null
+          author_role: Database["wemake"]["Enums"]["role"] | null
+          content: string | null
+          created_at: string | null
+          id: number | null
+          replies: number | null
+          title: string | null
+          topic_name: string | null
+          topic_slug: string | null
+          upvotes: number | null
+        }
+        Relationships: []
+      }
       community_post_list_view: {
         Row: {
           author: string | null
