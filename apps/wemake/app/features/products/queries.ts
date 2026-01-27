@@ -2,7 +2,7 @@ import type { DateTime } from "luxon";
 import supabase from "~/supabase-client.ts";
 import { PAGE_SIZE } from "./constants.ts";
 
-const PRODUCT_SELECTS = `
+export const PRODUCT_SELECT = `
       id,
       name,
       tagline,
@@ -24,7 +24,7 @@ export const getProductsByDateRange = async ({
 }) => {
   const { data, error } = await supabase
     .from("products")
-    .select(PRODUCT_SELECTS)
+    .select(PRODUCT_SELECT)
     .order("stats->>upvotes", { ascending: false })
     .gte("created_at", startDate.toISO())
     .lte("created_at", endDate.toISO())
@@ -95,7 +95,7 @@ export const getProductsByCategory = async ({
 }) => {
   const { data, error } = await supabase
     .from("products")
-    .select(PRODUCT_SELECTS)
+    .select(PRODUCT_SELECT)
     .eq("category_id", id)
     .order("stats->>upvotes", { ascending: false })
     .range((page - 1) * limit, page * limit - 1);
@@ -134,7 +134,7 @@ export const getProductsByKeyword = async ({
 }) => {
   const { data, error } = await supabase
     .from("products")
-    .select(PRODUCT_SELECTS)
+    .select(PRODUCT_SELECT)
     .or(`name.ilike.%${keyword}%, tagline.ilike.%${keyword}%`)
     .range((page - 1) * limit, page * limit - 1);
 

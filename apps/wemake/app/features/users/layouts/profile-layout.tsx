@@ -12,19 +12,35 @@ import {
 } from "@ryugibo/ui/dialog";
 import { Textarea } from "@ryugibo/ui/textarea";
 import { Form, Link, NavLink, Outlet } from "react-router";
+import { z } from "zod";
+import { getUserProfile } from "../queries.ts";
 import type { Route } from "./+types/profile-layout";
 
-export default function ProfileLayout(_: Route.ComponentProps) {
+const paramsSchema = z.object({
+  username: z.string(),
+});
+export const loader = async ({ params }: Route.LoaderArgs) => {
+  const { success, data } = paramsSchema.safeParse(params);
+  if (!success) {
+    throw new Error("Invalid params");
+  }
+  const { username } = data;
+  const profile = await getUserProfile(username);
+  return { profile };
+};
+
+export default function ProfileLayout({ loaderData }: Route.ComponentProps) {
+  const { profile } = loaderData;
   return (
     <div className="space-y-10">
       <div className="flex items-center gap-4">
         <Avatar className="size-40">
-          <AvatarImage src="https://github.com/shadcn.png" alt="" />
-          <AvatarFallback>WM</AvatarFallback>
+          {profile.avatar && <AvatarImage src={profile.avatar} alt="" />}
+          <AvatarFallback className="text-2xl">{profile.username[0]}</AvatarFallback>
         </Avatar>
         <div className="space-y-4">
           <div className="flex gap-2">
-            <h1 className="text-2xl font-semibold">John Doe</h1>
+            <h1 className="text-2xl font-semibold">{profile.name}</h1>
             <Button variant="outline" asChild>
               <Link to="/my/settings">Edit Profile</Link>
             </Button>
@@ -38,7 +54,9 @@ export default function ProfileLayout(_: Route.ComponentProps) {
                   <DialogTitle>Message</DialogTitle>
                 </DialogHeader>
                 <DialogDescription className="space-y-50">
-                  <span className="text-sm text-muted-foreground">Send a message to John Doe</span>
+                  <span className="text-sm text-muted-foreground">
+                    Send a message to {profile.name}
+                  </span>
                   <Form className="space-y-4">
                     <Textarea placeholder="message" className="resize-none" rows={4} />
                     <Button type="submit">Send</Button>
@@ -48,8 +66,10 @@ export default function ProfileLayout(_: Route.ComponentProps) {
             </Dialog>
           </div>
           <div className="flex gap-2 items-center">
-            <span className="text-sm text-muted-foreground">@john_doe</span>
-            <Badge variant="secondary">Product Designer</Badge>
+            <span className="text-sm text-muted-foreground">@{profile.username}</span>
+            <Badge variant="secondary" className="capitalize">
+              {profile.role}
+            </Badge>
             <Badge variant="secondary">100 followers</Badge>
             <Badge variant="secondary">100 following</Badge>
           </div>
@@ -57,9 +77,9 @@ export default function ProfileLayout(_: Route.ComponentProps) {
       </div>
       <div className="flex gap-5">
         {[
-          { label: "About", to: "/users/username" },
-          { label: "Products", to: "/users/username/products" },
-          { label: "Posts", to: "/users/username/posts" },
+          { label: "About", to: `/users/${profile.username}` },
+          { label: "Products", to: `/users/${profile.username}/products` },
+          { label: "Posts", to: `/users/${profile.username}/posts` },
         ].map((item) => (
           <NavLink
             key={item.label}
@@ -77,7 +97,7 @@ export default function ProfileLayout(_: Route.ComponentProps) {
         ))}
       </div>
       <div className="max-w-3xl">
-        <Outlet />
+        <Outlet context={{ headline: profile.headline, bio: profile.bio }} />
       </div>
     </div>
   );

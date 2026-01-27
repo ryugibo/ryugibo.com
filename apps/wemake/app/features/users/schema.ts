@@ -30,7 +30,7 @@ export const profiles = pg.table("profiles", {
     .references(() => users.id, { onDelete: "cascade" }),
   avatar: text(),
   name: text().notNull(),
-  username: text().notNull(),
+  username: text().notNull().unique(),
   headline: text(),
   bio: text(),
   role: roles().default("developer").notNull(),
