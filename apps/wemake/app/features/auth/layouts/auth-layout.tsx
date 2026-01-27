@@ -11,7 +11,7 @@ export default function AuthLayout(_: Route.ComponentProps) {
         maxOpacity={0.5}
         flickerChance={0.2}
         color="#E11D49"
-        className="hidden lg:block"
+        className="max-lg:hidden"
       />
       <Outlet />
     </div>
