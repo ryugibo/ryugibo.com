@@ -11,7 +11,7 @@ export default function OtpStartPage(_: Route.ComponentProps) {
   return (
     <div className="flex flex-col relative items-center justify-center h-full">
       <Button variant="ghost" asChild className="absolute top-8 right-8">
-        <Link to="/auth/join">Join</Link>
+        <Link to="/join">Join</Link>
       </Button>
       <div className="flex flex-col items-center justify-center w-full max-w-md gap-10">
         <div className="text-center">

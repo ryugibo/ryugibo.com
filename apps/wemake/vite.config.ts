@@ -7,6 +7,7 @@ import pkg from "./package.json";
 
 export default defineConfig(() => {
   return getBaseViteConfig(pkg.name, {
+    server: { port: 5174 },
     plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
   });
 });

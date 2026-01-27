@@ -8,6 +8,7 @@ const envSchema = z.object({
   VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY: z
     .string()
     .min(1, "VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY is required"),
+  VITE_ACCOUNTS_URL: z.string().url().min(1, "VITE_ACCOUNTS_URL is required"),
 });
 
 export const env = envSchema.parse(process.env);

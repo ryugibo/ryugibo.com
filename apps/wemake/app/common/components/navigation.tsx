@@ -28,7 +28,8 @@ import {
   navigationMenuTriggerStyle,
 } from "@ryugibo/ui/navigation-menu";
 import { Separator } from "@ryugibo/ui/separator";
-import { Link } from "react-router";
+import { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router";
 
 const menus = [
   {
@@ -141,6 +142,8 @@ const menus = [
   },
 ];
 
+export const loader = () => {};
+
 export default function Navigation({
   isLoggedIn,
   hasNotifications,
@@ -156,6 +159,12 @@ export default function Navigation({
   username?: string;
   avatar?: string | null;
 }) {
+  const location = useLocation();
+  const [origin, setOrigin] = useState("");
+  useEffect(() => {
+    setOrigin(window.location.origin);
+  }, []);
+  const redirectUrl = `${origin}${location.pathname}`;
   return (
     <nav className="flex px-20 h-16 items-center justify-between backdrop-blur fixed top-0 left-0 right-0 z-50 bg-background/50">
       <div className="flex items-center">
@@ -263,10 +272,12 @@ export default function Navigation({
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild className="cursor-pointer">
-                  <Link to="/auth/logout">
+                  <a
+                    href={`${import.meta.env.VITE_ACCOUNTS_URL}/logout?redirect_url=${encodeURIComponent(redirectUrl)}`}
+                  >
                     <LogOutIcon className="size-4 mr-2" />
                     Logout
-                  </Link>
+                  </a>
                 </DropdownMenuItem>
               </DropdownMenuGroup>
             </DropdownMenuContent>
@@ -275,10 +286,18 @@ export default function Navigation({
       ) : (
         <div className="flex items-center gap-4">
           <Button asChild variant="outline">
-            <Link to="/auth/login">Login</Link>
+            <a
+              href={`${import.meta.env.VITE_ACCOUNTS_URL}/login?redirect_url=${encodeURIComponent(redirectUrl)}`}
+            >
+              Login
+            </a>
           </Button>
           <Button asChild>
-            <Link to="/auth/join">Join</Link>
+            <a
+              href={`${import.meta.env.VITE_ACCOUNTS_URL}/join?redirect_url=${encodeURIComponent(redirectUrl)}`}
+            >
+              Join
+            </a>
           </Button>
         </div>
       )}

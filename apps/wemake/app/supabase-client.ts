@@ -47,6 +47,12 @@ export const supabase = createBrowserClient<Database>(
     db: {
       schema: __APP_NAME__,
     },
+    cookieOptions: {
+      domain: ".lvh.me",
+      path: "/",
+      sameSite: "lax",
+      secure: false,
+    },
   },
 );
 
@@ -60,6 +66,13 @@ export const createSSRClient = (request: Request) => {
       db: {
         schema: __APP_NAME__,
       },
+      cookieOptions: {
+        domain: ".lvh.me",
+        path: "/",
+        sameSite: "lax",
+        httpOnly: false,
+        secure: false,
+      },
       cookies: {
         getAll() {
           return parseCookieHeader(request.headers.get("Cookie") ?? "") as {
@@ -69,7 +82,16 @@ export const createSSRClient = (request: Request) => {
         },
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value, options }) => {
-            headers.append("Set-Cookie", serializeCookieHeader(name, value, options));
+            headers.append(
+              "Set-Cookie",
+              serializeCookieHeader(name, value, {
+                ...options,
+                domain: ".lvh.me",
+                path: "/",
+                sameSite: "lax",
+                secure: false,
+              }),
+            );
           });
         },
       },
