@@ -21,6 +21,15 @@ type Database = MergeDeep<
         ideas_view: {
           Row: SetNonNullable<SupabaseDatabase["wemake"]["Views"]["ideas_view"]["Row"]>;
         };
+        community_post_detail_view: {
+          Row: SetFieldType<
+            SetNonNullable<
+              SupabaseDatabase["wemake"]["Views"]["community_post_detail_view"]["Row"]
+            >,
+            "author_avatar",
+            string | null
+          >;
+        };
       };
     };
   }

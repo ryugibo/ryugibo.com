@@ -52,3 +52,17 @@ export const getPosts = async ({
   }
   return data;
 };
+
+export const getPostById = async (id: number) => {
+  const { data, error } = await supabase
+    .from("community_post_detail_view")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+};

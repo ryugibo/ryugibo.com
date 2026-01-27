@@ -57,7 +57,7 @@ export default [
   ]),
   ...prefix("/community", [
     index("features/community/pages/community-page.tsx"),
-    route("/:postId", "features/community/pages/post-page.tsx"),
+    route("/:id", "features/community/pages/post-page.tsx"),
     route("/submit", "features/community/pages/post-submit-page.tsx"),
   ]),
   ...prefix("/teams", [
