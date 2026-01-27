@@ -5,8 +5,9 @@ import { Link } from "react-router";
 import { BookCover } from "../../features/book/components/book-cover.tsx";
 import { useTranslation } from "../hooks/use-translation.ts";
 import AppLayout from "../layouts/app-layout.tsx";
+import type { Route } from "./+types/dashboard-page";
 
-export default function DashboardPage() {
+export default function DashboardPage(_: Route.ComponentProps) {
   const { t } = useTranslation();
 
   const recentBooks = [

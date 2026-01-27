@@ -11,8 +11,9 @@ import { toast } from "sonner";
 import { useTranslation } from "../../../common/hooks/use-translation.ts";
 import AppLayout from "../../../common/layouts/app-layout.tsx";
 import { BookCover } from "../components/book-cover.tsx";
+import type { Route } from "./+types/add-book-page";
 
-export default function AddBookPage() {
+export default function AddBookPage(_: Route.ComponentProps) {
   const navigate = useNavigate();
   const [coverUrl, setCoverUrl] = useState("");
   const { t } = useTranslation();

@@ -13,8 +13,9 @@ import { toast } from "sonner";
 import { useTranslation } from "../../../common/hooks/use-translation.ts";
 import AppLayout from "../../../common/layouts/app-layout.tsx";
 import { translations } from "../../../common/translations/translations.ts";
+import type { Route } from "./+types/settings-page";
 
-export default function SettingsPage() {
+export default function SettingsPage(_: Route.ComponentProps) {
   const { t, language, setLanguage } = useTranslation();
   const { setTheme, theme } = useTheme();
   const [mounted, setMounted] = useState(false);

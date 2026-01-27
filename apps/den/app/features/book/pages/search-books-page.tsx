@@ -7,8 +7,9 @@ import { toast } from "sonner";
 import { useTranslation } from "../../../common/hooks/use-translation.ts";
 import AppLayout from "../../../common/layouts/app-layout.tsx";
 import { BookCover } from "../components/book-cover.tsx";
+import type { Route } from "./+types/search-books-page";
 
-export default function SearchBooksPage() {
+export default function SearchBooksPage(_: Route.ComponentProps) {
   const [query, setQuery] = useState("");
   const { t } = useTranslation();
 

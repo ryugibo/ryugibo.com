@@ -11,8 +11,9 @@ import { Input } from "@ryugibo/ui/input";
 import { Label } from "@ryugibo/ui/label";
 import { Link, useNavigate } from "react-router";
 import { useTranslation } from "../../../common/hooks/use-translation.ts";
+import type { Route } from "./+types/login-page";
 
-export default function LoginPage() {
+export default function LoginPage(_: Route.ComponentProps) {
   const navigate = useNavigate();
   const { t } = useTranslation();
 

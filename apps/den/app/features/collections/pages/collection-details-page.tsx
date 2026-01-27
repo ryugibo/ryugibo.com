@@ -4,8 +4,9 @@ import { Link, useParams } from "react-router";
 import { useTranslation } from "../../../common/hooks/use-translation.ts";
 import AppLayout from "../../../common/layouts/app-layout.tsx";
 import { BookCover } from "../../book/components/book-cover.tsx";
+import type { Route } from "./+types/collection-details-page";
 
-export default function CollectionDetailsPage() {
+export default function CollectionDetailsPage(_: Route.ComponentProps) {
   const { collectionId } = useParams();
   const { t } = useTranslation();
 

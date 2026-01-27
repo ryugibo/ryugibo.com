@@ -5,8 +5,9 @@ import { Plus } from "lucide-react";
 import { Link } from "react-router";
 import { useTranslation } from "../../../common/hooks/use-translation.ts";
 import AppLayout from "../../../common/layouts/app-layout.tsx";
+import type { Route } from "./+types/collections-page";
 
-export default function CollectionsPage() {
+export default function CollectionsPage(_: Route.ComponentProps) {
   const { t } = useTranslation();
 
   const collections = [
