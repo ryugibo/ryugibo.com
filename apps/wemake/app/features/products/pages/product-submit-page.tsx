@@ -6,13 +6,14 @@ import { Form } from "react-router";
 import { Hero } from "~/common/components/hero.tsx";
 import InputPair from "~/common/components/input-pair.tsx";
 import SelectPair from "~/common/components/select-pair.tsx";
+import type { Route } from "./+types/product-submit-page";
 
 export const meta = () => [
   { title: "Submit Product | wemake" },
   { name: "description", content: "Share your product with the world" },
 ];
 
-export default function ProductSubmitPage() {
+export default function ProductSubmitPage(_: Route.ComponentProps) {
   const [icon, setIcon] = useState<string | null>(null);
   const onChangeIcon = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) {

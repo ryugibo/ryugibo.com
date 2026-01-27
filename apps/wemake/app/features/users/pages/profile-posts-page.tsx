@@ -1,6 +1,7 @@
 import { PostCard } from "~/features/community/components/post-card.tsx";
+import type { Route } from "./+types/profile-posts-page";
 
-export default function ProfilePostsPage() {
+export default function ProfilePostsPage(_: Route.ComponentProps) {
   return (
     <div className="flex flex-col gap-5">
       {[...Array(5).keys()].map((index) => (

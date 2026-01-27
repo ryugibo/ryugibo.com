@@ -10,8 +10,9 @@ import {
   SidebarProvider,
 } from "@ryugibo/ui/sidebar";
 import { Link, Outlet, useLocation } from "react-router";
+import type { Route } from "./+types/dashboard-layout";
 
-export default function DashboardLayout() {
+export default function DashboardLayout(_: Route.ComponentProps) {
   const location = useLocation();
   return (
     <SidebarProvider className="flex min-h-full">

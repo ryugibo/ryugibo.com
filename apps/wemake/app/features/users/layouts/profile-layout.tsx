@@ -12,8 +12,9 @@ import {
 } from "@ryugibo/ui/dialog";
 import { Textarea } from "@ryugibo/ui/textarea";
 import { Form, Link, NavLink, Outlet } from "react-router";
+import type { Route } from "./+types/profile-layout";
 
-export default function ProfileLayout() {
+export default function ProfileLayout(_: Route.ComponentProps) {
   return (
     <div className="space-y-10">
       <div className="flex items-center gap-4">

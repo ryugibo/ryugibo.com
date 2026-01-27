@@ -4,6 +4,7 @@ import { Hero } from "~/common/components/hero.tsx";
 import InputPair from "~/common/components/input-pair.tsx";
 import SelectPair from "~/common/components/select-pair.tsx";
 import { JOB_TYPES, LOCATION_TYPES, SALARY_RANGE } from "~/features/jobs/constants.ts";
+import type { Route } from "./+types/job-submit-page";
 
 export const meta = () => {
   return [
@@ -12,7 +13,7 @@ export const meta = () => {
   ];
 };
 
-export default function JobSubmitPage() {
+export default function JobSubmitPage(_: Route.ComponentProps) {
   return (
     <div>
       <Hero title="Post a job" description="Reach out to the best developers." />

@@ -1,11 +1,12 @@
 import { NotificationCard } from "~/features/users/components/notification-card.tsx";
+import type { Route } from "./+types/notifications-page";
 
 export const meta = () => [
   { title: "Notifications | wemake" },
   { name: "description", content: "Notifications" },
 ];
 
-export default function NotificationsPage() {
+export default function NotificationsPage(_: Route.ComponentProps) {
   return (
     <div className="space-y-20">
       <h1 className="text-4xl font-bold mb-6">Notifications</h1>

@@ -7,13 +7,14 @@ import { useState } from "react";
 import { Form } from "react-router";
 import { Hero } from "~/common/components/hero.tsx";
 import SelectPair from "~/common/components/select-pair.tsx";
+import type { Route } from "./+types/promote-page";
 
 export const meta = () => [
   { title: "Promote Product | wemake" },
   { name: "description", content: "Promote your product" },
 ];
 
-export default function PromotePage() {
+export default function PromotePage(_: Route.ComponentProps) {
   const [promotionPeriod, setPromotionPeriod] = useState<DateRange | undefined>(undefined);
   const totalDays =
     promotionPeriod?.from && promotionPeriod?.to

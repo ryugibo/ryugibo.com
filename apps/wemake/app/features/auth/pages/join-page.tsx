@@ -2,12 +2,13 @@ import { Button } from "@ryugibo/ui/button";
 import { Form, Link } from "react-router";
 import InputPair from "~/common/components/input-pair.tsx";
 import AuthButtons from "~/features/auth/components/auth-buttons.tsx";
+import type { Route } from "./+types/join-page";
 
 export const meta = () => {
   return [{ title: "Join | wemake" }];
 };
 
-export default function JoinPage() {
+export default function JoinPage(_: Route.ComponentProps) {
   return (
     <div className="flex flex-col relative items-center justify-center h-full">
       <Button variant="ghost" asChild className="absolute top-8 right-8">

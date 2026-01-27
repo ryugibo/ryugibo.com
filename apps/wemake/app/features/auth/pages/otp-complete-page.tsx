@@ -1,12 +1,13 @@
 import { Button } from "@ryugibo/ui/button";
 import { Form, Link } from "react-router";
 import InputPair from "~/common/components/input-pair.tsx";
+import type { Route } from "./+types/otp-complete-page";
 
 export const meta = () => {
   return [{ title: "Verify OTP | wemake" }];
 };
 
-export default function OtpCompletePage() {
+export default function OtpCompletePage(_: Route.ComponentProps) {
   return (
     <div className="flex flex-col relative items-center justify-center h-full">
       <Button variant="ghost" asChild className="absolute top-8 right-8">

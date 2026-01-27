@@ -1,7 +1,8 @@
 import { FlickeringGrid } from "@ryugibo/ui/flickering-grid";
 import { Outlet } from "react-router";
+import type { Route } from "./+types/auth-layout";
 
-export default function AuthLayout() {
+export default function AuthLayout(_: Route.ComponentProps) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 h-screen">
       <FlickeringGrid

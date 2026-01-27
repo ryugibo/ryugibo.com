@@ -3,6 +3,7 @@ import { Form } from "react-router";
 import { Hero } from "~/common/components/hero.tsx";
 import InputPair from "~/common/components/input-pair.tsx";
 import SelectPair from "~/common/components/select-pair.tsx";
+import type { Route } from "./+types/post-submit-page";
 
 export const meta = () => {
   return [
@@ -15,7 +16,7 @@ export const meta = () => {
   ];
 };
 
-export default function PostSubmitPage() {
+export default function PostSubmitPage(_: Route.ComponentProps) {
   return (
     <div>
       <Hero

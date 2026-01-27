@@ -5,13 +5,14 @@ import { useState } from "react";
 import { Form } from "react-router";
 import InputPair from "~/common/components/input-pair.tsx";
 import SelectPair from "~/common/components/select-pair.tsx";
+import type { Route } from "./+types/settings-page";
 
 export const meta = () => [
   { title: "Settings | wemake" },
   { name: "description", content: "Settings" },
 ];
 
-export default function SettingsPage() {
+export default function SettingsPage(_: Route.ComponentProps) {
   const [avatar, setAvatar] = useState<string | null>(null);
   const onChangeAvatar = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) {

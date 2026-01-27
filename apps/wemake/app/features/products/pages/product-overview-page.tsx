@@ -1,6 +1,7 @@
 import { useOutletContext } from "react-router";
+import type { Route } from "./+types/product-overview-page";
 
-export default function ProductOverviewPage() {
+export default function ProductOverviewPage(_: Route.ComponentProps) {
   const { description, how_it_works } = useOutletContext<{
     description: string;
     how_it_works: string;

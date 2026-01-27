@@ -7,8 +7,9 @@ import {
 } from "@ryugibo/ui/sidebar";
 import { Outlet } from "react-router";
 import { MessageCard } from "~/features/users/components/message-card.tsx";
+import type { Route } from "./+types/messages-layout";
 
-export default function MessagesLayout() {
+export default function MessagesLayout(_: Route.ComponentProps) {
   return (
     <SidebarProvider className="flex h-[calc(100vh-14rem)] max-h-[calc(100vh-14rem)] overflow-hidden min-h-full">
       <Sidebar variant="floating" className="pt-16">

@@ -13,12 +13,13 @@ import { ChevronUpIcon, DotIcon } from "@ryugibo/ui/icons";
 import { Textarea } from "@ryugibo/ui/textarea";
 import { Form, Link } from "react-router";
 import { Reply } from "~/features/community/components/reply.tsx";
+import type { Route } from "./+types/post-page";
 
 export const meta = () => {
   return [{ title: "Post | wemake" }, { description: "View a specific post" }];
 };
 
-export default function PostPage() {
+export default function PostPage(_: Route.ComponentProps) {
   return (
     <div className="space-y-10">
       <Breadcrumb>
