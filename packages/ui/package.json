@@ -7,6 +7,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
+    "prepare": "pnpm build:css",
     "build": "tsc && pnpm build:css",
     "build:css": "tailwindcss -i ./src/index.css -o ./dist/index.css --minify",
     "check-types": "tsc --noEmit"
