@@ -26,6 +26,7 @@ export const links: Route.LinksFunction = () => [
 import { ThemeProvider } from "./common/components/theme-provider.tsx";
 
 import { LanguageProvider, useLanguage } from "./common/contexts/language-context.tsx";
+import { createSSRClient } from "./supabase-client.ts";
 
 function Html({ children }: { children: React.ReactNode }) {
   const { language } = useLanguage();
@@ -55,6 +56,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
     </LanguageProvider>
   );
 }
+
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { supabase } = createSSRClient(request);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  return { user };
+};
 
 export default function App() {
   return <Outlet />;
