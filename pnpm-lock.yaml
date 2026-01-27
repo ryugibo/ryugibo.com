@@ -53,9 +53,6 @@ importers:
       '@ryugibo/db':
         specifier: workspace:*
         version: link:../../packages/db
-      '@ryugibo/react-router-kit':
-        specifier: workspace:*
-        version: link:../../packages/react-router-kit
       '@ryugibo/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -93,6 +90,9 @@ importers:
       '@react-router/dev':
         specifier: 7.12.0
         version: 7.12.0(@react-router/serve@7.12.0(react-router@7.12.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(typescript@5.9.2))(@types/node@22.15.3)(jiti@2.6.1)(lightningcss@1.30.2)(react-router@7.12.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(typescript@5.9.2)(vite@7.3.1(@types/node@22.15.3)(jiti@2.6.1)(lightningcss@1.30.2))
+      '@ryugibo/react-router-kit':
+        specifier: workspace:*
+        version: link:../../packages/react-router-kit
       '@tailwindcss/vite':
         specifier: ^4.1.13
         version: 4.1.18(vite@7.3.1(@types/node@22.15.3)(jiti@2.6.1)(lightningcss@1.30.2))
