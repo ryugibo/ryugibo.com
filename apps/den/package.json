@@ -20,7 +20,7 @@
     "@ryugibo/ui": "workspace:*",
     "@ryugibo/vite-config": "workspace:*",
     "@supabase/ssr": "^0.8.0",
-    "@supabase/supabase-js": "^2.91.0",
+    "@supabase/supabase-js": "^2.93.2",
     "isbot": "^5.1.31",
     "lucide-react": "^0.562.0",
     "next-themes": "^0.4.6",
