@@ -1,10 +1,11 @@
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { Button } from "@ryugibo/ui/button";
-import { LockIcon, MessageCircleIcon } from "@ryugibo/ui/icons";
+import { LockIcon } from "@ryugibo/ui/icons";
 import { Separator } from "@ryugibo/ui/separator";
-import { Link } from "react-router";
+import { Link, useSearchParams } from "react-router";
 
 export default function AuthButtons() {
+  const [searchParams] = useSearchParams();
   return (
     <div className="w-full flex flex-col items-center gap-10">
       <div className="w-full flex flex-col items-center gap-2">
@@ -16,13 +17,7 @@ export default function AuthButtons() {
       </div>
       <div className="w-full flex flex-col gap-2">
         <Button variant="outline" className="w-full" asChild>
-          <Link to="/social/kakao/start">
-            <MessageCircleIcon className="size-4" />
-            Kakao Talk
-          </Link>
-        </Button>
-        <Button variant="outline" className="w-full" asChild>
-          <Link to="/social/github/start">
+          <Link to={`/social/github/start?${searchParams.toString()}`}>
             <SiGithub className="size-5" />
             Github
           </Link>

@@ -11,6 +11,17 @@ export const meta = () => {
   return [{ title: "Login | wemake" }];
 };
 
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { supabase } = createSSRClient(request);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (user) {
+    return redirect("/");
+  }
+};
+
 const formSchema = z.object({
   email: z.email({ error: "Invalid email address" }),
   password: z

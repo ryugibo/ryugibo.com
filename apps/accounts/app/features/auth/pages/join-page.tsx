@@ -20,7 +20,6 @@ const formSchema = z.object({
 
 export const action = async ({ request }: Route.ActionArgs) => {
   const formData = await request.formData();
-  console.log(formData);
   const { success, data, error: formZodError } = formSchema.safeParse(Object.fromEntries(formData));
   if (!success) {
     const formError = formZodError.issues.reduce(
