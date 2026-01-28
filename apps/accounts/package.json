@@ -1,5 +1,5 @@
 {
-  "name": "@ryugibo/accounts",
+  "name": "accounts",
   "private": true,
   "type": "module",
   "scripts": {
