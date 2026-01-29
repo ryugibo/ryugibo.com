@@ -2,6 +2,7 @@ import { Button } from "@ryugibo/ui/button";
 import { Input } from "@ryugibo/ui/input";
 import { Label } from "@ryugibo/ui/label";
 import { Form, redirect, useNavigation } from "react-router";
+import z from "zod";
 import SelectPair from "~/common/components/select-pair.tsx";
 import { createSSRClient } from "~/supabase-client.ts";
 import { ROLE_TYPES } from "../constants.ts";
@@ -11,14 +12,33 @@ export const meta: Route.MetaFunction = () => {
   return [{ title: "Create Profile | wemake" }];
 };
 
+const formSchema = z.object({
+  name: z.string().min(3),
+  username: z.string().min(3),
+  role: z.string().default(ROLE_TYPES[0].value),
+  bio: z.string().optional().default(""),
+  headline: z.string().optional().default(""),
+});
+
 export const action = async ({ request }: Route.ActionArgs) => {
   const formData = await request.formData();
-  const name = formData.get("name") as string;
-  const username = formData.get("username") as string;
-  const role = formData.get("role") as string;
-  const bio = formData.get("bio") as string;
-  const headline = formData.get("headline") as string;
+  const { success, error: formZodError, data } = formSchema.safeParse(Object.fromEntries(formData));
+  if (!success) {
+    const formError = formZodError.issues.reduce(
+      (acc, issue) => {
+        const key = issue.path.join(".");
+        if (!acc[key]) {
+          acc[key] = [];
+        }
+        acc[key].push({ key: acc[key].length, message: issue.message });
+        return acc;
+      },
+      {} as Record<string, { key: number; message: string }[]>,
+    );
+    return { formError };
+  }
 
+  const { name, username, role, bio, headline } = data;
   const { supabase } = createSSRClient(request);
   const {
     data: { user },
@@ -28,7 +48,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
     return redirect("/auth/login");
   }
 
-  const { error } = await supabase.from("profiles").insert({
+  const { error: insertError } = await supabase.from("profiles").insert({
     id: user.id,
     name,
     username,
@@ -37,8 +57,14 @@ export const action = async ({ request }: Route.ActionArgs) => {
     headline,
   });
 
-  if (error) {
-    return { error: error.message };
+  if (insertError) {
+    const { code } = insertError;
+    if (code === "23505") {
+      return { formError: { username: [{ key: 0, message: "Username already exists" }] } };
+    } else {
+      console.log(insertError);
+      return { insertError };
+    }
   }
 
   return redirect("/");
@@ -60,12 +86,22 @@ export default function MakeProfilePage({ actionData }: Route.ComponentProps) {
           <Label htmlFor="name">Name</Label>
           <Input id="name" name="name" required placeholder="Your name" />
         </div>
+        {actionData?.formError?.name?.map(({ key, message }) => (
+          <p key={key} className="text-sm text-red-500">
+            {message}
+          </p>
+        ))}
 
         <div className="space-y-2">
           <Label htmlFor="username">Username</Label>
           <Input id="username" name="username" required placeholder="username" />
           <p className="text-xs text-muted-foreground">This will be your unique handle.</p>
         </div>
+        {actionData?.formError?.username?.map(({ key, message }) => (
+          <p key={key} className="text-sm text-red-500">
+            {message}
+          </p>
+        ))}
 
         <div className="space-y-2">
           <SelectPair
@@ -77,24 +113,38 @@ export default function MakeProfilePage({ actionData }: Route.ComponentProps) {
             placeholder="Select your role"
           />
         </div>
+        {actionData?.formError?.role?.map(({ key, message }) => (
+          <p key={key} className="text-sm text-red-500">
+            {message}
+          </p>
+        ))}
 
         <div className="space-y-2">
           <Label htmlFor="headline">Headline</Label>
           <Input id="headline" name="headline" placeholder="Software Engineer at ..." />
         </div>
+        {actionData?.formError?.headline?.map(({ key, message }) => (
+          <p key={key} className="text-sm text-red-500">
+            {message}
+          </p>
+        ))}
 
         <div className="space-y-2">
           <Label htmlFor="bio">Bio</Label>
           <Input id="bio" name="bio" placeholder="Tell us about yourself" />
         </div>
-
-        {actionData?.error && (
-          <div className="text-red-500 text-sm font-medium">{actionData.error}</div>
-        )}
+        {actionData?.formError?.bio?.map(({ key, message }) => (
+          <p key={key} className="text-sm text-red-500">
+            {message}
+          </p>
+        ))}
 
         <Button type="submit" disabled={isSubmitting} className="w-full">
           {isSubmitting ? "Creating..." : "Create Profile"}
         </Button>
+        {actionData?.insertError && (
+          <p className="text-sm text-red-500">Unknown error occurred. Please contact support.</p>
+        )}
       </Form>
     </div>
   );
