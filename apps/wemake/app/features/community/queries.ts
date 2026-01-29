@@ -22,6 +22,23 @@ export const getTopics = async (supabase: SupabaseClient<Database>) => {
   return data;
 };
 
+export const getTopicIdBySlug = async (
+  supabase: SupabaseClient<Database>,
+  { slug }: { slug: string },
+) => {
+  const { data, error } = await supabase
+    .from("topics")
+    .select("topic_id:id")
+    .eq("slug", slug)
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+};
+
 export const getPosts = async (
   supabase: SupabaseClient<Database>,
   {

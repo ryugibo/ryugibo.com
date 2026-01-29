@@ -1,8 +1,13 @@
-import { Button } from "@ryugibo/ui";
-import { Form } from "react-router";
+import { LoadingButton } from "@ryugibo/ui";
+import { Form, redirect, useNavigation } from "react-router";
+import z from "zod";
 import { Hero } from "~/common/components/hero.tsx";
 import InputPair from "~/common/components/input-pair.tsx";
 import SelectPair from "~/common/components/select-pair.tsx";
+import { getLoggedInUserId } from "~/features/users/queries.ts";
+import { createSSRClient } from "~/supabase-client.ts";
+import { createPost } from "../mutations.ts";
+import { getTopicIdBySlug, getTopics } from "../queries.ts";
 import type { Route } from "./+types/post-submit-page";
 
 export const meta = () => {
@@ -16,14 +21,64 @@ export const meta = () => {
   ];
 };
 
-export default function PostSubmitPage(_: Route.ComponentProps) {
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { supabase } = createSSRClient(request);
+  const id = await getLoggedInUserId(supabase);
+  if (!id) {
+    return redirect("/community");
+  }
+  const topics = await getTopics(supabase);
+  return { topics };
+};
+
+const formSchema = z.object({
+  title: z.string().min(1, "Title is required").max(40, "Title must be less than 40 characters"),
+  category: z.string().min(1, "Category is required"),
+  content: z
+    .string()
+    .min(1, "Content is required")
+    .max(1000, "Content must be less than 1000 characters"),
+});
+
+export const action = async ({ request }: Route.ActionArgs) => {
+  const { supabase } = createSSRClient(request);
+  const id = await getLoggedInUserId(supabase);
+  if (!id) {
+    return redirect("/community");
+  }
+  const formData = await request.formData();
+  const { success, data, error: formZodError } = formSchema.safeParse(Object.fromEntries(formData));
+  if (!success) {
+    const formError = formZodError.issues.reduce(
+      (acc, issue) => {
+        const key = issue.path.join(".");
+        if (!acc[key]) {
+          acc[key] = [];
+        }
+        acc[key].push({ key: acc[key].length, message: issue.message });
+        return acc;
+      },
+      {} as Record<string, { key: number; message: string }[]>,
+    );
+    return { formError };
+  }
+  const { title, category, content } = data;
+  const { topic_id } = await getTopicIdBySlug(supabase, { slug: category });
+  const post = await createPost(supabase, { profile_id: id, title, topic_id, content });
+  return redirect(`/community/${post.id}`);
+};
+
+export default function PostSubmitPage({ loaderData, actionData }: Route.ComponentProps) {
+  const navigation = useNavigation();
+  const isSubmitting = navigation.state === "submitting" || navigation.state === "loading";
+  const { topics } = loaderData;
   return (
     <div>
       <Hero
         title="Create Discussion"
         description="Ask questions, share ideas, and connect with other developers"
       />
-      <Form className="flex flex-col gap-5 space-y-10 max-w-3xl mx-auto">
+      <Form method="post" className="flex flex-col gap-5 space-y-10 max-w-3xl mx-auto">
         <InputPair
           label="Title"
           description="(40 characters or less"
@@ -32,24 +87,27 @@ export default function PostSubmitPage(_: Route.ComponentProps) {
           required
           placeholder="i.e What is the bset productivity tool?"
         />
+        {actionData?.formError?.title?.map(({ key, message }) => (
+          <p key={key} className="text-sm text-red-500">
+            {message}
+          </p>
+        ))}
         <SelectPair
           description="Select the category that best fits your discussion"
           label="Category"
           name="category"
           required
           placeholder="i.e Productivity"
-          options={[
-            { value: "productivity", label: "Productivity" },
-            { value: "technology", label: "Technology" },
-            { value: "gaming", label: "Gaming" },
-            { value: "entertainment", label: "Entertainment" },
-            { value: "health", label: "Health" },
-            { value: "fitness", label: "Fitness" },
-            { value: "finance", label: "Finance" },
-            { value: "travel", label: "Travel" },
-            { value: "food", label: "Food" },
-          ]}
+          options={topics.map((topic) => ({
+            label: topic.name,
+            value: topic.slug,
+          }))}
         />
+        {actionData?.formError?.category?.map(({ key, message }) => (
+          <p key={key} className="text-sm text-red-500">
+            {message}
+          </p>
+        ))}
         <InputPair
           label="Content"
           description="(1000 chracters or less)"
@@ -59,7 +117,14 @@ export default function PostSubmitPage(_: Route.ComponentProps) {
           placeholder="i.e I'm looking for a new productivity tool that can help me manage my time better. What are your recommendations?"
           textarea
         />
-        <Button className="mx-auto">Create Discussion</Button>
+        {actionData?.formError?.content?.map(({ key, message }) => (
+          <p key={key} className="text-sm text-red-500">
+            {message}
+          </p>
+        ))}
+        <LoadingButton className="mx-auto w-auto" isLoading={isSubmitting}>
+          Create Discussion
+        </LoadingButton>
       </Form>
     </div>
   );

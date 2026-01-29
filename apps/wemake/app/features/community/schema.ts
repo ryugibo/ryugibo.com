@@ -17,7 +17,9 @@ export const posts = pg.table("posts", {
   topic_id: bigint({ mode: "number" })
     .notNull()
     .references(() => topics.id, { onDelete: "cascade" }),
-  profile_id: uuid().references(() => profiles.id, { onDelete: "cascade" }),
+  profile_id: uuid()
+    .notNull()
+    .references(() => profiles.id, { onDelete: "cascade" }),
   created_at: timestamp().notNull().defaultNow(),
   updated_at: timestamp().notNull().defaultNow(),
 });

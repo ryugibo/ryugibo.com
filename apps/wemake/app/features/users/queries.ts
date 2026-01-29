@@ -86,3 +86,13 @@ export const getPostsByUsername = async (
 
   return data;
 };
+
+export const getLoggedInUserId = async (supabase: SupabaseClient<Database>) => {
+  const { data, error } = await supabase.auth.getUser();
+
+  if (error) {
+    return null;
+  }
+
+  return data.user.id;
+};
