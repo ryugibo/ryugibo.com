@@ -4,6 +4,69 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+catalogs:
+  default:
+    '@icons-pack/react-simple-icons':
+      specifier: ^13.8.0
+      version: 13.8.0
+    '@react-router/dev':
+      specifier: 7.12.0
+      version: 7.12.0
+    '@react-router/node':
+      specifier: 7.12.0
+      version: 7.12.0
+    '@react-router/serve':
+      specifier: 7.12.0
+      version: 7.12.0
+    '@supabase/ssr':
+      specifier: ^0.8.0
+      version: 0.8.0
+    '@supabase/supabase-js':
+      specifier: ^2.93.2
+      version: 2.93.2
+    '@tailwindcss/vite':
+      specifier: ^4.1.18
+      version: 4.1.18
+    '@types/luxon':
+      specifier: ^3.7.1
+      version: 3.7.1
+    '@types/react':
+      specifier: ^19.2.10
+      version: 19.2.10
+    '@types/react-dom':
+      specifier: ^19.2.3
+      version: 19.2.3
+    dotenv-cli:
+      specifier: ^11.0.0
+      version: 11.0.0
+    isbot:
+      specifier: ^5.1.34
+      version: 5.1.34
+    luxon:
+      specifier: ^3.7.2
+      version: 3.7.2
+    react:
+      specifier: ^19.2.4
+      version: 19.2.4
+    react-dom:
+      specifier: ^19.2.4
+      version: 19.2.4
+    react-router:
+      specifier: 7.12.0
+      version: 7.12.0
+    supabase:
+      specifier: ^2.72.9
+      version: 2.72.9
+    vite:
+      specifier: ^7.3.1
+      version: 7.3.1
+    vite-tsconfig-paths:
+      specifier: ^5.1.4
+      version: 5.1.4
+    zod:
+      specifier: ^4.3.6
+      version: 4.3.6
+
 overrides:
   '@types/node': ^24.10.9
 
@@ -51,13 +114,13 @@ importers:
   apps/accounts:
     dependencies:
       '@icons-pack/react-simple-icons':
-        specifier: ^13.8.0
+        specifier: 'catalog:'
         version: 13.8.0(react@19.2.4)
       '@react-router/node':
-        specifier: 7.12.0
+        specifier: 'catalog:'
         version: 7.12.0(react-router@7.12.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(typescript@5.9.3)
       '@react-router/serve':
-        specifier: 7.12.0
+        specifier: 'catalog:'
         version: 7.12.0(react-router@7.12.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(typescript@5.9.3)
       '@ryugibo/ui':
         specifier: workspace:*
@@ -66,65 +129,65 @@ importers:
         specifier: workspace:*
         version: link:../../packages/vite-config
       '@supabase/ssr':
-        specifier: ^0.8.0
+        specifier: 'catalog:'
         version: 0.8.0(@supabase/supabase-js@2.93.2)
       '@supabase/supabase-js':
-        specifier: ^2.93.2
+        specifier: 'catalog:'
         version: 2.93.2
       isbot:
-        specifier: ^5.1.34
+        specifier: 'catalog:'
         version: 5.1.34
       luxon:
-        specifier: ^3.7.2
+        specifier: 'catalog:'
         version: 3.7.2
       react:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.4
       react-dom:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.4(react@19.2.4)
       react-router:
-        specifier: 7.12.0
+        specifier: 'catalog:'
         version: 7.12.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       zod:
-        specifier: ^4.3.6
+        specifier: 'catalog:'
         version: 4.3.6
     devDependencies:
       '@react-router/dev':
-        specifier: 7.12.0
+        specifier: 'catalog:'
         version: 7.12.0(@react-router/serve@7.12.0(react-router@7.12.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(typescript@5.9.3))(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)(react-router@7.12.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(typescript@5.9.3)(vite@7.3.1(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2))
       '@ryugibo/react-router-kit':
         specifier: workspace:*
         version: link:../../packages/react-router-kit
       '@tailwindcss/vite':
-        specifier: ^4.1.18
+        specifier: 'catalog:'
         version: 4.1.18(vite@7.3.1(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2))
       '@types/luxon':
-        specifier: ^3.7.1
+        specifier: 'catalog:'
         version: 3.7.1
       '@types/react':
-        specifier: ^19.2.10
+        specifier: 'catalog:'
         version: 19.2.10
       '@types/react-dom':
-        specifier: ^19.2.3
+        specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.10)
       supabase:
-        specifier: ^2.72.9
+        specifier: 'catalog:'
         version: 2.72.9
       vite:
-        specifier: ^7.3.1
+        specifier: 'catalog:'
         version: 7.3.1(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)
       vite-tsconfig-paths:
-        specifier: ^5.1.4
+        specifier: 'catalog:'
         version: 5.1.4(typescript@5.9.3)(vite@7.3.1(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2))
 
   apps/den:
     dependencies:
       '@react-router/node':
-        specifier: 7.12.0
+        specifier: 'catalog:'
         version: 7.12.0(react-router@7.12.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(typescript@5.9.3)
       '@react-router/serve':
-        specifier: 7.12.0
+        specifier: 'catalog:'
         version: 7.12.0(react-router@7.12.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(typescript@5.9.3)
       '@ryugibo/db':
         specifier: workspace:*
@@ -136,74 +199,71 @@ importers:
         specifier: workspace:*
         version: link:../../packages/vite-config
       '@supabase/ssr':
-        specifier: ^0.8.0
+        specifier: 'catalog:'
         version: 0.8.0(@supabase/supabase-js@2.93.2)
       '@supabase/supabase-js':
-        specifier: ^2.93.2
+        specifier: 'catalog:'
         version: 2.93.2
       isbot:
-        specifier: ^5.1.34
+        specifier: 'catalog:'
         version: 5.1.34
-      lucide-react:
-        specifier: ^0.562.0
-        version: 0.562.0(react@19.2.4)
       next-themes:
         specifier: ^0.4.6
         version: 0.4.6(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.4
       react-dom:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.4(react@19.2.4)
       react-router:
-        specifier: 7.12.0
+        specifier: 'catalog:'
         version: 7.12.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       sonner:
         specifier: ^2.0.7
         version: 2.0.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       zod:
-        specifier: ^4.3.6
+        specifier: 'catalog:'
         version: 4.3.6
     devDependencies:
       '@react-router/dev':
-        specifier: 7.12.0
+        specifier: 'catalog:'
         version: 7.12.0(@react-router/serve@7.12.0(react-router@7.12.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(typescript@5.9.3))(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)(react-router@7.12.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(typescript@5.9.3)(vite@7.3.1(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2))
       '@ryugibo/react-router-kit':
         specifier: workspace:*
         version: link:../../packages/react-router-kit
       '@tailwindcss/vite':
-        specifier: ^4.1.18
+        specifier: 'catalog:'
         version: 4.1.18(vite@7.3.1(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2))
       '@types/react':
-        specifier: ^19.2.10
+        specifier: 'catalog:'
         version: 19.2.10
       '@types/react-dom':
-        specifier: ^19.2.3
+        specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.10)
       dotenv-cli:
-        specifier: ^11.0.0
+        specifier: 'catalog:'
         version: 11.0.0
       supabase:
-        specifier: ^2.72.9
+        specifier: 'catalog:'
         version: 2.72.9
       vite:
-        specifier: ^7.3.1
+        specifier: 'catalog:'
         version: 7.3.1(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)
       vite-tsconfig-paths:
-        specifier: ^5.1.4
+        specifier: 'catalog:'
         version: 5.1.4(typescript@5.9.3)(vite@7.3.1(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2))
 
   apps/wemake:
     dependencies:
       '@icons-pack/react-simple-icons':
-        specifier: ^13.8.0
+        specifier: 'catalog:'
         version: 13.8.0(react@19.2.4)
       '@react-router/node':
-        specifier: 7.12.0
+        specifier: 'catalog:'
         version: 7.12.0(react-router@7.12.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(typescript@5.9.3)
       '@react-router/serve':
-        specifier: 7.12.0
+        specifier: 'catalog:'
         version: 7.12.0(react-router@7.12.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(typescript@5.9.3)
       '@ryugibo/db':
         specifier: workspace:*
@@ -215,59 +275,59 @@ importers:
         specifier: workspace:*
         version: link:../../packages/vite-config
       '@supabase/ssr':
-        specifier: ^0.8.0
+        specifier: 'catalog:'
         version: 0.8.0(@supabase/supabase-js@2.93.2)
       '@supabase/supabase-js':
-        specifier: ^2.93.2
+        specifier: 'catalog:'
         version: 2.93.2
       isbot:
-        specifier: ^5.1.34
+        specifier: 'catalog:'
         version: 5.1.34
       luxon:
-        specifier: ^3.7.2
+        specifier: 'catalog:'
         version: 3.7.2
       react:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.4
       react-dom:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.4(react@19.2.4)
       react-router:
-        specifier: 7.12.0
+        specifier: 'catalog:'
         version: 7.12.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       zod:
-        specifier: ^4.3.6
+        specifier: 'catalog:'
         version: 4.3.6
     devDependencies:
       '@react-router/dev':
-        specifier: 7.12.0
+        specifier: 'catalog:'
         version: 7.12.0(@react-router/serve@7.12.0(react-router@7.12.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(typescript@5.9.3))(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)(react-router@7.12.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(typescript@5.9.3)(vite@7.3.1(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2))
       '@ryugibo/react-router-kit':
         specifier: workspace:*
         version: link:../../packages/react-router-kit
       '@tailwindcss/vite':
-        specifier: ^4.1.18
+        specifier: 'catalog:'
         version: 4.1.18(vite@7.3.1(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2))
       '@types/luxon':
-        specifier: ^3.7.1
+        specifier: 'catalog:'
         version: 3.7.1
       '@types/react':
-        specifier: ^19.2.10
+        specifier: 'catalog:'
         version: 19.2.10
       '@types/react-dom':
-        specifier: ^19.2.3
+        specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.10)
       dotenv-cli:
-        specifier: ^11.0.0
+        specifier: 'catalog:'
         version: 11.0.0
       supabase:
-        specifier: ^2.72.9
+        specifier: 'catalog:'
         version: 2.72.9
       vite:
-        specifier: ^7.3.1
+        specifier: 'catalog:'
         version: 7.3.1(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)
       vite-tsconfig-paths:
-        specifier: ^5.1.4
+        specifier: 'catalog:'
         version: 5.1.4(typescript@5.9.3)(vite@7.3.1(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2))
 
   packages/db:
@@ -658,11 +718,9 @@ packages:
 
   '@esbuild-kit/core-utils@3.3.2':
     resolution: {integrity: sha512-sPRAnw9CdSsRmEtnsl2WXWdyquogVpB3yZ3dgwJfe8zrOzTsV7cJvmwrKVa+0ma5BoiGJ+BoqkMvawbayKUsqQ==}
-    deprecated: 'Merged into tsx: https://tsx.is'
 
   '@esbuild-kit/esm-loader@2.6.5':
     resolution: {integrity: sha512-FxEMIkJKnodyA1OaCUoEvbYRkoZlLZ4d/eXFu9Fh8CbBBgP5EmZxrfTRyN0qpXZ4vOvqnE5YdRdcrmUUXuU+dA==}
-    deprecated: 'Merged into tsx: https://tsx.is'
 
   '@esbuild/aix-ppc64@0.25.12':
     resolution: {integrity: sha512-Hhmwd6CInZ3dwpuGTF8fJG6yoWmsToE+vYgD4nytZVxcu1ulHpUQRAB1UJ8+N1Am3Mz4+xOByoQoSZf4D+CpkA==}
@@ -3087,7 +3145,6 @@ packages:
   node-domexception@1.0.0:
     resolution: {integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==}
     engines: {node: '>=10.5.0'}
-    deprecated: Use your platform's native DOMException instead
 
   node-fetch@3.3.2:
     resolution: {integrity: sha512-dRB78srN/l6gqWulah9SrxeYnxeddIG30+GOqK/9OlLVyLg3HPnr6SqOWTWOXKRwC2eGYCkZ59NNuSgvSrpgOA==}
