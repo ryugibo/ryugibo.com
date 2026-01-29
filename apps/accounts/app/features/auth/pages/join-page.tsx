@@ -1,5 +1,4 @@
-import { Button } from "@ryugibo/ui";
-import { LoaderCircleIcon } from "@ryugibo/ui/icons";
+import { Button, LoadingButton } from "@ryugibo/ui";
 import { Form, Link, redirect, useNavigation } from "react-router";
 import z from "zod";
 import InputPair from "~/common/components/input-pair.tsx";
@@ -88,9 +87,7 @@ export default function JoinPage({ actionData }: Route.ComponentProps) {
               {message}
             </p>
           ))}
-          <Button type="submit" className="w-full">
-            {isSubmitting ? <LoaderCircleIcon className="animate-spin" /> : "Create an account"}
-          </Button>
+          <LoadingButton isLoading={isSubmitting}>Create an account</LoadingButton>
           {actionData?.signUpError && (
             <p className="text-sm text-red-500">{actionData.signUpError.message}</p>
           )}
