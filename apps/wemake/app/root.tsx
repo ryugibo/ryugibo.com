@@ -5,16 +5,11 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  useLocation,
 } from "react-router";
 
 import type { Route } from "./+types/root";
 import "~/app.css";
-import { cn } from "@ryugibo/ui";
 import { Settings } from "luxon";
-import Navigation from "~/common/components/navigation.tsx";
-import { getUserById } from "./features/users/queries.ts";
-import { createSSRClient } from "./supabase-client.ts";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -50,40 +45,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-export const loader = async ({ request }: Route.LoaderArgs) => {
-  const url = new URL(request.url);
-  const { origin } = url;
-  const { supabase } = createSSRClient(request);
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) {
-    return { user: null, profile: null, origin };
-  }
-  const profile = await getUserById(supabase, { id: user.id });
-  return { user, profile, origin };
-};
-
-export default function App({ loaderData }: Route.ComponentProps) {
-  const { pathname } = useLocation();
-  const isLoggedIn = loaderData.user !== null;
-
-  return (
-    <div className={cn(!pathname.startsWith("/auth") && "py-28 px-5 lg:px-20")}>
-      {!pathname.startsWith("/auth") && (
-        <Navigation
-          origin={origin}
-          isLoggedIn={isLoggedIn}
-          name={loaderData.profile?.name}
-          username={loaderData.profile?.username}
-          avatar={loaderData.profile?.avatar}
-          hasNotifications={true}
-          hasMessages={true}
-        />
-      )}
-      <Outlet />
-    </div>
-  );
+export default function App() {
+  return <Outlet />;
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
