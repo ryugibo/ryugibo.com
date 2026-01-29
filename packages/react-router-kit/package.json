@@ -21,11 +21,7 @@
     "commander": "^14.0.2",
     "fast-glob": "^3.3.3"
   },
-  "devDependencies": {
-    "@types/node": "^22",
-    "typescript": "^5.9.2"
-  },
   "engines": {
-    "node": ">=18"
+    "node": ">=24"
   }
 }
