@@ -11,18 +11,13 @@ import {
 import { pg } from "~/db.ts";
 import { posts } from "~/features/community/schema.ts";
 import { products } from "~/features/products/schema.ts";
+import { ROLE_TYPES } from "./constants.ts";
 
 const users = pgSchema("auth").table("users", {
   id: uuid().primaryKey(),
 });
 
-export const roles = pg.enum("role", [
-  "developer",
-  "designer",
-  "marketer",
-  "founder",
-  "product-manager",
-]);
+export const roles = pg.enum("role", ROLE_TYPES.map((type) => type.value) as [string, ...string[]]);
 
 export const profiles = pg.table("profiles", {
   id: uuid()
