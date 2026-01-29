@@ -80,4 +80,5 @@ export default [
       ]),
     ]),
   ]),
+  route("/make-profile", "features/users/pages/make-profile-page.tsx"),
 ] satisfies RouteConfig;

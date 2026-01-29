@@ -1,5 +1,5 @@
 import { cn } from "@ryugibo/ui";
-import { Outlet } from "react-router";
+import { Outlet, redirect } from "react-router";
 import { getProfileById } from "~/features/users/queries.ts";
 import { createSSRClient } from "~/supabase-client.ts";
 import Navigation from "../components/navigation.tsx";
@@ -13,10 +13,22 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) {
-    return { user: null, profile: null, origin };
+    return { user, profile: null, origin };
   }
-  const profile = await getProfileById(supabase, { id: user.id });
-  return { user, profile, origin };
+
+  const isMakeProfilePage = url.pathname === "/make-profile";
+  try {
+    const profile = await getProfileById(supabase, { id: user.id });
+    if (isMakeProfilePage) {
+      return redirect("/");
+    }
+    return { user, profile, origin };
+  } catch (_error) {
+    if (!isMakeProfilePage) {
+      return redirect("/make-profile");
+    }
+    return { user, profile: null, origin };
+  }
 };
 
 export default function HomeLayout({ loaderData }: Route.ComponentProps) {
