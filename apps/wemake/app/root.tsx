@@ -51,15 +51,17 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
+  const url = new URL(request.url);
+  const { origin } = url;
   const { supabase } = createSSRClient(request);
   const {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) {
-    return { user: null, profile: null };
+    return { user: null, profile: null, origin };
   }
   const profile = await getUserById(supabase, { id: user.id });
-  return { user, profile };
+  return { user, profile, origin };
 };
 
 export default function App({ loaderData }: Route.ComponentProps) {
@@ -70,6 +72,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
     <div className={cn(!pathname.startsWith("/auth") && "py-28 px-5 lg:px-20")}>
       {!pathname.startsWith("/auth") && (
         <Navigation
+          origin={origin}
           isLoggedIn={isLoggedIn}
           name={loaderData.profile?.name}
           username={loaderData.profile?.username}

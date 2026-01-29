@@ -28,7 +28,6 @@ import {
   navigationMenuTriggerStyle,
 } from "@ryugibo/ui/navigation-menu";
 import { Separator } from "@ryugibo/ui/separator";
-import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router";
 
 const menus = [
@@ -142,9 +141,8 @@ const menus = [
   },
 ];
 
-export const loader = () => {};
-
 export default function Navigation({
+  origin,
   isLoggedIn,
   hasNotifications,
   hasMessages,
@@ -152,6 +150,7 @@ export default function Navigation({
   username,
   avatar,
 }: {
+  origin: string;
   isLoggedIn: boolean;
   hasNotifications: boolean;
   hasMessages: boolean;
@@ -160,10 +159,6 @@ export default function Navigation({
   avatar?: string | null;
 }) {
   const location = useLocation();
-  const [origin, setOrigin] = useState("");
-  useEffect(() => {
-    setOrigin(window.location.origin);
-  }, []);
   const redirectUrl = `${origin}${location.pathname}`;
   return (
     <nav className="flex px-20 h-16 items-center justify-between backdrop-blur fixed top-0 left-0 right-0 z-50 bg-background/50">
