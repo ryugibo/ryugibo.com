@@ -1,16 +1,18 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@ryugibo/ui/avatar";
-import { Badge } from "@ryugibo/ui/badge";
 import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+  Badge,
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@ryugibo/ui/breadcrumb";
-import { Button } from "@ryugibo/ui/button";
+  Button,
+  Textarea,
+} from "@ryugibo/ui";
 import { ChevronUpIcon, DotIcon } from "@ryugibo/ui/icons";
-import { Textarea } from "@ryugibo/ui/textarea";
 import { DateTime } from "luxon";
 import { Form, Link } from "react-router";
 import z from "zod";

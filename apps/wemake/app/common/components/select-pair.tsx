@@ -1,5 +1,4 @@
-import { Label } from "@ryugibo/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@ryugibo/ui/select";
+import { Label, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@ryugibo/ui";
 import { useState } from "react";
 
 interface SelectPairProps {

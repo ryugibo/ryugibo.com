@@ -1,5 +1,4 @@
-import { cn } from "@ryugibo/ui";
-import { AspectRatio } from "@ryugibo/ui/aspect-ratio";
+import { AspectRatio, cn } from "@ryugibo/ui";
 
 interface BookCoverProps extends React.HTMLAttributes<HTMLDivElement> {
   src?: string | null;

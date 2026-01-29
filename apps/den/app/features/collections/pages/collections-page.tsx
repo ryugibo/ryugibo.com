@@ -1,6 +1,4 @@
-import { AspectRatio } from "@ryugibo/ui/aspect-ratio";
-import { Button } from "@ryugibo/ui/button";
-import { Card } from "@ryugibo/ui/card";
+import { AspectRatio, Button, Card } from "@ryugibo/ui";
 import { Plus } from "@ryugibo/ui/icons";
 import { Link } from "react-router";
 import { useTranslation } from "../../../common/hooks/use-translation.ts";

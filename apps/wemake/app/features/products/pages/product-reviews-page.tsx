@@ -1,5 +1,4 @@
-import { Button } from "@ryugibo/ui/button";
-import { Dialog, DialogTrigger } from "@ryugibo/ui/dialog";
+import { Button, Dialog, DialogTrigger } from "@ryugibo/ui";
 import { useOutletContext } from "react-router";
 import z from "zod";
 import CreateReviewDialog from "~/common/components/create-review-dialog.tsx";

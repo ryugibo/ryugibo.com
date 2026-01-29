@@ -1,4 +1,4 @@
-import { Button } from "@ryugibo/ui/button";
+import { Button } from "@ryugibo/ui";
 import { DateTime } from "luxon";
 import { data, isRouteErrorResponse, Link } from "react-router";
 import { z } from "zod";

@@ -1,6 +1,4 @@
-import { Button } from "@ryugibo/ui/button";
-import { Input } from "@ryugibo/ui/input";
-import { Label } from "@ryugibo/ui/label";
+import { Input, Label, LoadingButton } from "@ryugibo/ui";
 import { Form, redirect, useNavigation } from "react-router";
 import z from "zod";
 import SelectPair from "~/common/components/select-pair.tsx";
@@ -45,7 +43,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return redirect("/auth/login");
+    return redirect("/login");
   }
 
   const { error: insertError } = await supabase.from("profiles").insert({
@@ -138,10 +136,7 @@ export default function MakeProfilePage({ actionData }: Route.ComponentProps) {
             {message}
           </p>
         ))}
-
-        <Button type="submit" disabled={isSubmitting} className="w-full">
-          {isSubmitting ? "Creating..." : "Create Profile"}
-        </Button>
+        <LoadingButton isLoading={isSubmitting}>Create Profile</LoadingButton>
         {actionData?.insertError && (
           <p className="text-sm text-red-500">Unknown error occurred. Please contact support.</p>
         )}

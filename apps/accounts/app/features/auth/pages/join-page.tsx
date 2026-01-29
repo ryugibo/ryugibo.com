@@ -1,4 +1,4 @@
-import { Button } from "@ryugibo/ui/button";
+import { Button } from "@ryugibo/ui";
 import { LoaderCircleIcon } from "@ryugibo/ui/icons";
 import { Form, Link, redirect, useNavigation } from "react-router";
 import z from "zod";

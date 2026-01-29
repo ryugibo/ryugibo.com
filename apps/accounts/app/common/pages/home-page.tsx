@@ -1,4 +1,4 @@
-import { Button } from "@ryugibo/ui/button";
+import { Button } from "@ryugibo/ui";
 import { Link, redirect } from "react-router";
 import { createSSRClient } from "~/supabase-client.ts";
 import type { Route } from "./+types/home-page";

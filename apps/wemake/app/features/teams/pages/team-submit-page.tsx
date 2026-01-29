@@ -1,4 +1,4 @@
-import { Button } from "@ryugibo/ui/button";
+import { Button } from "@ryugibo/ui";
 import { Form } from "react-router";
 import { Hero } from "~/common/components/hero.tsx";
 import InputPair from "~/common/components/input-pair.tsx";

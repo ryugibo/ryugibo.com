@@ -1,4 +1,4 @@
-import { Button } from "@ryugibo/ui/button";
+import { Button } from "@ryugibo/ui";
 import { DotIcon, EyeIcon, HeartIcon } from "@ryugibo/ui/icons";
 import { DateTime } from "luxon";
 import { data } from "react-router";

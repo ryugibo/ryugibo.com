@@ -1,6 +1,4 @@
-import { Input } from "@ryugibo/ui/input";
-import { Label } from "@ryugibo/ui/label";
-import { Textarea } from "@ryugibo/ui/textarea";
+import { Input, Label, Textarea } from "@ryugibo/ui";
 import type { InputHTMLAttributes } from "react";
 
 export default function InputPair({

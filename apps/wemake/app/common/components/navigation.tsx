@@ -1,7 +1,9 @@
-import { cn } from "@ryugibo/ui";
-import { Avatar, AvatarFallback, AvatarImage } from "@ryugibo/ui/avatar";
-import { Button } from "@ryugibo/ui/button";
 import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+  Button,
+  cn,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
@@ -9,7 +11,16 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@ryugibo/ui/dropdown-menu";
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+  Separator,
+} from "@ryugibo/ui";
+
 import {
   BarChart3Icon,
   BellIcon,
@@ -18,16 +29,6 @@ import {
   SettingsIcon,
   UserIcon,
 } from "@ryugibo/ui/icons";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
-} from "@ryugibo/ui/navigation-menu";
-import { Separator } from "@ryugibo/ui/separator";
 import { Link, useLocation } from "react-router";
 
 const menus = [

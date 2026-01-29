@@ -1,10 +1,13 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@ryugibo/ui/card";
 import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
   type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@ryugibo/ui/chart";
+} from "@ryugibo/ui";
 import { Area, AreaChart, CartesianGrid, XAxis } from "@ryugibo/ui/recharts";
 import type { Route } from "./+types/dashboard-product-page";
 

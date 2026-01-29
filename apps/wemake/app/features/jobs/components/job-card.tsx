@@ -1,6 +1,4 @@
-import { Badge } from "@ryugibo/ui/badge";
-import { Button } from "@ryugibo/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@ryugibo/ui/card";
+import { Badge, Button, Card, CardContent, CardFooter, CardHeader, CardTitle } from "@ryugibo/ui";
 import { DateTime } from "luxon";
 import { Link } from "react-router";
 

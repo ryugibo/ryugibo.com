@@ -1,7 +1,5 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@ryugibo/ui/avatar";
-import { Button } from "@ryugibo/ui/button";
+import { Avatar, AvatarFallback, AvatarImage, Button, Textarea } from "@ryugibo/ui";
 import { DotIcon, MessageCircleIcon } from "@ryugibo/ui/icons";
-import { Textarea } from "@ryugibo/ui/textarea";
 import { DateTime } from "luxon";
 import { useState } from "react";
 import { Form, Link } from "react-router";

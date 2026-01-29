@@ -1,5 +1,4 @@
-import { Button } from "@ryugibo/ui/button";
-import { LoaderCircleIcon } from "@ryugibo/ui/icons";
+import { Button, LoadingButton } from "@ryugibo/ui";
 import { Form, Link, redirect, useNavigation } from "react-router";
 import z from "zod";
 import InputPair from "~/common/components/input-pair.tsx";
@@ -100,9 +99,7 @@ export default function LoginPage({ actionData }: Route.ComponentProps) {
               {message}
             </p>
           ))}
-          <Button type="submit" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? <LoaderCircleIcon className="animate-spin" /> : "Login"}
-          </Button>
+          <LoadingButton isLoading={isSubmitting}>Login</LoadingButton>
           {actionData?.loginError && (
             <p className="text-sm text-red-500">{actionData.loginError.message}</p>
           )}

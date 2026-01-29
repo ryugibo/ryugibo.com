@@ -1,16 +1,19 @@
-import { cn } from "@ryugibo/ui";
-import { Avatar, AvatarFallback, AvatarImage } from "@ryugibo/ui/avatar";
-import { Badge } from "@ryugibo/ui/badge";
-import { Button, buttonVariants } from "@ryugibo/ui/button";
 import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+  Badge,
+  Button,
+  buttonVariants,
+  cn,
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@ryugibo/ui/dialog";
-import { Textarea } from "@ryugibo/ui/textarea";
+  Textarea,
+} from "@ryugibo/ui";
 import { Form, Link, NavLink, Outlet } from "react-router";
 import { z } from "zod";
 import { createSSRClient } from "~/supabase-client.ts";

@@ -6,7 +6,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@ryugibo/ui/pagination";
+} from "@ryugibo/ui";
 import { useSearchParams } from "react-router";
 
 type ProductPaginationProps = {

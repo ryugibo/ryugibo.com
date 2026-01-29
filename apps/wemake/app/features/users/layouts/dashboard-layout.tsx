@@ -1,4 +1,3 @@
-import { HomeIcon, PackageIcon, SparkleIcon } from "@ryugibo/ui/icons";
 import {
   Sidebar,
   SidebarContent,
@@ -8,7 +7,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarProvider,
-} from "@ryugibo/ui/sidebar";
+} from "@ryugibo/ui";
+import { HomeIcon, PackageIcon, SparkleIcon } from "@ryugibo/ui/icons";
 import { Link, Outlet, useLocation } from "react-router";
 import type { Route } from "./+types/dashboard-layout";
 

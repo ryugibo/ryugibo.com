@@ -1,4 +1,4 @@
-import { Card, CardDescription, CardHeader, CardTitle } from "@ryugibo/ui/card";
+import { Card, CardDescription, CardHeader, CardTitle } from "@ryugibo/ui";
 import { ChevronRightIcon } from "@ryugibo/ui/icons";
 import { Link } from "react-router";
 

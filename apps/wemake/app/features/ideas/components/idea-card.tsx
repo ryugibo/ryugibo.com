@@ -1,6 +1,4 @@
-import { cn } from "@ryugibo/ui";
-import { Button } from "@ryugibo/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@ryugibo/ui/card";
+import { Button, Card, CardContent, CardFooter, CardHeader, CardTitle, cn } from "@ryugibo/ui";
 import { DotIcon, EyeIcon, HeartIcon, LockIcon } from "@ryugibo/ui/icons";
 import { DateTime } from "luxon";
 import { Link } from "react-router";

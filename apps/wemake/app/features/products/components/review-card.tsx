@@ -1,4 +1,4 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@ryugibo/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@ryugibo/ui";
 import { StarIcon } from "@ryugibo/ui/icons";
 import { DateTime } from "luxon";
 

@@ -1,5 +1,4 @@
-import { cn } from "@ryugibo/ui";
-import { type Button, buttonVariants } from "@ryugibo/ui/button";
+import { type Button, buttonVariants, cn } from "@ryugibo/ui";
 import { ChevronLeftIcon, ChevronRightIcon, MoreHorizontalIcon } from "@ryugibo/ui/icons";
 import type * as React from "react";
 
@@ -56,9 +55,9 @@ function PaginationPrevious({ className, ...props }: React.ComponentProps<typeof
   return (
     <PaginationLink
       aria-label="Go to previous page"
-      size="default"
       className={cn("gap-1 px-2.5 sm:pl-2.5", className)}
       {...props}
+      size="default"
     >
       <ChevronLeftIcon />
       <span className="hidden sm:block">Previous</span>
@@ -70,9 +69,9 @@ function PaginationNext({ className, ...props }: React.ComponentProps<typeof Pag
   return (
     <PaginationLink
       aria-label="Go to next page"
-      size="default"
       className={cn("gap-1 px-2.5 sm:pr-2.5", className)}
       {...props}
+      size="default"
     >
       <span className="hidden sm:block">Next</span>
       <ChevronRightIcon />

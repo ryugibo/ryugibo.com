@@ -9,7 +9,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) {
-    return redirect("/auth/login");
+    return redirect("/login");
   }
   const profile = await getProfileById(supabase, { id: user.id });
   return redirect(`/users/${profile.username}`);

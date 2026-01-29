@@ -1,4 +1,4 @@
-import { Button } from "@ryugibo/ui/button";
+import { Button } from "@ryugibo/ui";
 import { DateTime } from "luxon";
 import { Link } from "react-router";
 import { PostCard } from "~/features/community/components/post-card.tsx";

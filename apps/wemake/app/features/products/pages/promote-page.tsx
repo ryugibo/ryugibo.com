@@ -1,6 +1,4 @@
-import { Button } from "@ryugibo/ui/button";
-import { Calendar } from "@ryugibo/ui/calendar";
-import { Label } from "@ryugibo/ui/label";
+import { Button, Calendar, Label } from "@ryugibo/ui";
 import type { DateRange } from "@ryugibo/ui/react-day-picker";
 import { DateTime } from "luxon";
 import { useState } from "react";

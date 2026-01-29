@@ -1,12 +1,24 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@ryugibo/ui/avatar";
-import { Button } from "@ryugibo/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@ryugibo/ui/card";
-import { Input } from "@ryugibo/ui/input";
-import { Label } from "@ryugibo/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@ryugibo/ui/select";
-import { Separator } from "@ryugibo/ui/separator";
-import { Slider } from "@ryugibo/ui/slider";
-import { Switch } from "@ryugibo/ui/switch";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+  Button,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  Input,
+  Label,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  Separator,
+  Slider,
+  Switch,
+} from "@ryugibo/ui";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";

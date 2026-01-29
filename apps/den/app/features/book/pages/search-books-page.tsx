@@ -1,6 +1,5 @@
-import { Button } from "@ryugibo/ui/button";
+import { Button, Input } from "@ryugibo/ui";
 import { ArrowRight, Plus, Search } from "@ryugibo/ui/icons";
-import { Input } from "@ryugibo/ui/input";
 import { useState } from "react";
 import { Link } from "react-router";
 import { toast } from "sonner";

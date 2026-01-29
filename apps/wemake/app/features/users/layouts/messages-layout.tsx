@@ -1,10 +1,4 @@
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarMenu,
-  SidebarProvider,
-} from "@ryugibo/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarGroup, SidebarMenu, SidebarProvider } from "@ryugibo/ui";
 import { Outlet } from "react-router";
 import { MessageCard } from "~/features/users/components/message-card.tsx";
 import type { Route } from "./+types/messages-layout";

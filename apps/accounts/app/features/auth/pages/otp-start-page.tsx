@@ -1,4 +1,4 @@
-import { Button } from "@ryugibo/ui/button";
+import { Button } from "@ryugibo/ui";
 import { Form, Link } from "react-router";
 import InputPair from "~/common/components/input-pair.tsx";
 import type { Route } from "./+types/otp-start-page";

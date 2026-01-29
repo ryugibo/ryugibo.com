@@ -1,8 +1,15 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@ryugibo/ui/avatar";
-import { Button } from "@ryugibo/ui/button";
-import { Card, CardDescription, CardHeader, CardTitle } from "@ryugibo/ui/card";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+  Button,
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  Textarea,
+} from "@ryugibo/ui";
 import { SendIcon } from "@ryugibo/ui/icons";
-import { Textarea } from "@ryugibo/ui/textarea";
 import { Form } from "react-router";
 import { MessageBubble } from "~/features/users/components/message-bubble.tsx";
 import type { Route } from "./+types/message-page";
@@ -19,6 +26,7 @@ export default function MessagePage() {
         <CardHeader className="flex flex-row items-center gap-4">
           <Avatar className="size-14">
             <AvatarImage src="https://github.com/shadcn.png" />
+            ``
             <AvatarFallback>WM</AvatarFallback>
           </Avatar>
           <div className="flex flex-col gap-0">

@@ -1,7 +1,14 @@
-import { cn } from "@ryugibo/ui";
-import { Avatar, AvatarFallback, AvatarImage } from "@ryugibo/ui/avatar";
-import { Button } from "@ryugibo/ui/button";
-import { Card, CardFooter, CardHeader, CardTitle } from "@ryugibo/ui/card";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+  Button,
+  Card,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+  cn,
+} from "@ryugibo/ui";
 import { EyeIcon } from "@ryugibo/ui/icons";
 
 interface NotificationCardProps {

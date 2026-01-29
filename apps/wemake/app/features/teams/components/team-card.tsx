@@ -1,7 +1,14 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@ryugibo/ui/avatar";
-import { Badge } from "@ryugibo/ui/badge";
-import { Button } from "@ryugibo/ui/button";
-import { Card, CardFooter, CardHeader, CardTitle } from "@ryugibo/ui/card";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+  Badge,
+  Button,
+  Card,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@ryugibo/ui";
 import { Link } from "react-router";
 
 interface TeamCardProps {

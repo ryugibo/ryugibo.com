@@ -1,5 +1,4 @@
-import { Badge } from "@ryugibo/ui/badge";
-import { Button } from "@ryugibo/ui/button";
+import { Badge, Button } from "@ryugibo/ui";
 import { DotIcon } from "@ryugibo/ui/icons";
 import { DateTime } from "luxon";
 import z from "zod";

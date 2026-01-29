@@ -1,5 +1,4 @@
-import { Button } from "@ryugibo/ui/button";
-import { Input } from "@ryugibo/ui/input";
+import { Button, Input } from "@ryugibo/ui";
 import { data, Form } from "react-router";
 import z from "zod";
 import { Hero } from "~/common/components/hero.tsx";

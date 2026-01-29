@@ -1,7 +1,14 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@ryugibo/ui/avatar";
-import { Badge } from "@ryugibo/ui/badge";
-import { Button } from "@ryugibo/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@ryugibo/ui/card";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+  Badge,
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@ryugibo/ui";
 import { Form } from "react-router";
 import z from "zod";
 import { Hero } from "~/common/components/hero.tsx";

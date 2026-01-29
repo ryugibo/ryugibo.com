@@ -1,5 +1,4 @@
-import { cn } from "@ryugibo/ui";
-import { Button, buttonVariants } from "@ryugibo/ui/button";
+import { Button, buttonVariants, cn } from "@ryugibo/ui";
 import { ChevronUpIcon, StarIcon } from "@ryugibo/ui/icons";
 import { Link, NavLink, Outlet } from "react-router";
 import { z } from "zod";

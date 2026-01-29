@@ -1,5 +1,4 @@
-import { cn } from "@ryugibo/ui";
-import { Button } from "@ryugibo/ui/button";
+import { Button, cn } from "@ryugibo/ui";
 import { data, useSearchParams } from "react-router";
 import z from "zod";
 import { Hero } from "~/common/components/hero.tsx";

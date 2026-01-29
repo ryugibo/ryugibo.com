@@ -1,5 +1,4 @@
-import { Button } from "@ryugibo/ui/button";
-import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@ryugibo/ui/card";
+import { Button, Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@ryugibo/ui";
 import { ChevronUpIcon, EyeIcon, MessageCircleIcon } from "@ryugibo/ui/icons";
 import { Link } from "react-router";
 

@@ -1,4 +1,4 @@
-import { Button } from "@ryugibo/ui/button";
+import { Button } from "@ryugibo/ui";
 import { ArrowLeft, Edit, Plus, Trash2 } from "@ryugibo/ui/icons";
 import { Link, useParams } from "react-router";
 import { useTranslation } from "../../../common/hooks/use-translation.ts";

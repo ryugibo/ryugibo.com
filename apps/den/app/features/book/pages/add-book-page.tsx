@@ -1,10 +1,20 @@
-import { Button } from "@ryugibo/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@ryugibo/ui/card";
+import {
+  Button,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  Input,
+  Label,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  Textarea,
+} from "@ryugibo/ui";
 import { ArrowLeft, Save } from "@ryugibo/ui/icons";
-import { Input } from "@ryugibo/ui/input";
-import { Label } from "@ryugibo/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@ryugibo/ui/select";
-import { Textarea } from "@ryugibo/ui/textarea";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";

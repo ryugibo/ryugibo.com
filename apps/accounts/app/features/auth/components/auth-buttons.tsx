@@ -1,7 +1,6 @@
 import { SiGithub } from "@icons-pack/react-simple-icons";
-import { Button } from "@ryugibo/ui/button";
+import { Button, Separator } from "@ryugibo/ui";
 import { LockIcon } from "@ryugibo/ui/icons";
-import { Separator } from "@ryugibo/ui/separator";
 import { Link, useSearchParams } from "react-router";
 
 export default function AuthButtons() {

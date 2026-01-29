@@ -1,14 +1,24 @@
 "use client";
 
 import { Slot } from "@radix-ui/react-slot";
-import { cn, useIsMobile } from "@ryugibo/ui";
-import { Button } from "@ryugibo/ui/button";
+import {
+  Button,
+  cn,
+  Input,
+  Separator,
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  Skeleton,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+  useIsMobile,
+} from "@ryugibo/ui";
 import { PanelLeftIcon } from "@ryugibo/ui/icons";
-import { Input } from "@ryugibo/ui/input";
-import { Separator } from "@ryugibo/ui/separator";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@ryugibo/ui/sheet";
-import { Skeleton } from "@ryugibo/ui/skeleton";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@ryugibo/ui/tooltip";
 import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 
@@ -253,7 +263,7 @@ function SidebarTrigger({ className, onClick, ...props }: React.ComponentProps<t
       variant="ghost"
       size="icon"
       className={cn("size-7", className)}
-      onClick={(event) => {
+      onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
         onClick?.(event);
         toggleSidebar();
       }}

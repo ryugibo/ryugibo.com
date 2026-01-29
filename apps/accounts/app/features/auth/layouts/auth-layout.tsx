@@ -1,4 +1,4 @@
-import { FlickeringGrid } from "@ryugibo/ui/flickering-grid";
+import { FlickeringGrid } from "@ryugibo/ui";
 import { Outlet } from "react-router";
 import type { Route } from "./+types/auth-layout";
 
