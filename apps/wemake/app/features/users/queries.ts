@@ -2,7 +2,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "~/supabase-client.ts";
 import { PRODUCT_SELECT } from "../products/queries.ts";
 
-export const getUserProfile = async (
+export const getProfileByUsername = async (
   supabase: SupabaseClient<Database>,
   { username }: { username: string },
 ) => {
@@ -26,7 +26,10 @@ export const getUserProfile = async (
 
   return data;
 };
-export const getUserById = async (supabase: SupabaseClient<Database>, { id }: { id: string }) => {
+export const getProfileById = async (
+  supabase: SupabaseClient<Database>,
+  { id }: { id: string },
+) => {
   const { data, error } = await supabase
     .from("profiles")
     .select(`

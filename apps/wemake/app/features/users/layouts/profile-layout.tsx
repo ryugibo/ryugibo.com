@@ -14,7 +14,7 @@ import { Textarea } from "@ryugibo/ui/textarea";
 import { Form, Link, NavLink, Outlet } from "react-router";
 import { z } from "zod";
 import { createSSRClient } from "~/supabase-client.ts";
-import { getUserProfile } from "../queries.ts";
+import { getProfileByUsername } from "../queries.ts";
 import type { Route } from "./+types/profile-layout";
 
 const paramsSchema = z.object({
@@ -27,7 +27,7 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
   }
   const { username } = data;
   const { supabase } = createSSRClient(request);
-  const profile = await getUserProfile(supabase, { username });
+  const profile = await getProfileByUsername(supabase, { username });
   return { profile };
 };
 
