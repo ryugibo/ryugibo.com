@@ -1,8 +1,8 @@
 import { cn } from "@ryugibo/ui";
 import { Badge } from "@ryugibo/ui/badge";
 import { Button } from "@ryugibo/ui/button";
+import { Search } from "@ryugibo/ui/icons";
 import { Input } from "@ryugibo/ui/input";
-import { Search } from "lucide-react";
 import { data, Form, Link, useSearchParams } from "react-router";
 import z from "zod";
 import { createSSRClient } from "~/supabase-client.ts";

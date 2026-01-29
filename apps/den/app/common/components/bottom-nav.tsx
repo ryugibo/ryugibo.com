@@ -1,5 +1,5 @@
 import { cn } from "@ryugibo/ui";
-import { Home, Layers, Library, Search, Settings } from "lucide-react";
+import { Home, Layers, Library, Search, Settings } from "@ryugibo/ui/icons";
 import { Link, useLocation } from "react-router";
 
 import { useTranslation } from "../hooks/use-translation.ts";

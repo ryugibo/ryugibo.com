@@ -1,6 +1,6 @@
 import { Button } from "@ryugibo/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@ryugibo/ui/card";
-import { Plus } from "lucide-react";
+import { Plus } from "@ryugibo/ui/icons";
 import { Link } from "react-router";
 import { BookCover } from "../../features/book/components/book-cover.tsx";
 import { useTranslation } from "../hooks/use-translation.ts";

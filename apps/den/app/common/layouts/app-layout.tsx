@@ -6,10 +6,10 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@ryugibo/ui/breadcrumb";
+import { BookOpen } from "@ryugibo/ui/icons";
 import { Separator } from "@ryugibo/ui/separator";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@ryugibo/ui/sidebar";
 import { Toaster } from "@ryugibo/ui/sonner";
-import { BookOpen } from "lucide-react";
 import { Link, useLocation } from "react-router";
 import { AppSidebar } from "../components/app-sidebar.tsx";
 import { BottomNav } from "../components/bottom-nav.tsx";

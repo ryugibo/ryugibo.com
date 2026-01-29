@@ -1,5 +1,5 @@
 import { Button } from "@ryugibo/ui/button";
-import { ArrowLeft, Edit, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, Edit, Plus, Trash2 } from "@ryugibo/ui/icons";
 import { Link, useParams } from "react-router";
 import { useTranslation } from "../../../common/hooks/use-translation.ts";
 import AppLayout from "../../../common/layouts/app-layout.tsx";

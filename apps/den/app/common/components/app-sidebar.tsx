@@ -1,4 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@ryugibo/ui/avatar";
+import { BookOpen, Home, Layers, Library, Settings } from "@ryugibo/ui/icons";
 import {
   Sidebar,
   SidebarContent,
@@ -11,7 +12,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@ryugibo/ui/sidebar";
-import { BookOpen, Home, Layers, Library, Settings } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useRouteLoaderData } from "react-router";
 

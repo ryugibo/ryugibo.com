@@ -1,6 +1,6 @@
 import { Button } from "@ryugibo/ui/button";
+import { ArrowLeft, Bookmark, Trash2 } from "@ryugibo/ui/icons";
 import { Separator } from "@ryugibo/ui/separator";
-import { ArrowLeft, Bookmark, Trash2 } from "lucide-react";
 import { Link } from "react-router";
 import { createSSRClient } from "~/supabase-client.ts";
 import { useTranslation } from "../../../common/hooks/use-translation.ts";
