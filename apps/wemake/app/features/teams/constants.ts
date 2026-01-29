@@ -3,4 +3,4 @@ export const PRODUCT_STAGE = [
   { label: "Prototype", value: "prototype" },
   { label: "MVP", value: "mvp" },
   { label: "Production", value: "production" },
-];
+] as const;

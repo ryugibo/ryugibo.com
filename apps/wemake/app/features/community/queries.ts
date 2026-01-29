@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { DateTime } from "luxon";
-import type { PeriodOption, SortOption } from "~/features/community/constant.ts";
+import type { PeriodOption, SortOption } from "~/features/community/constants.ts";
 import type { Database } from "~/supabase-client.ts";
 
 const REPLY_SELECT = `

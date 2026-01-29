@@ -3,7 +3,7 @@ import { Form } from "react-router";
 import { Hero } from "~/common/components/hero.tsx";
 import InputPair from "~/common/components/input-pair.tsx";
 import SelectPair from "~/common/components/select-pair.tsx";
-import { PRODUCT_STAGE } from "~/features/teams/constant.ts";
+import { PRODUCT_STAGE } from "~/features/teams/constants.ts";
 import type { Route } from "./+types/team-submit-page";
 
 export const meta = () => {

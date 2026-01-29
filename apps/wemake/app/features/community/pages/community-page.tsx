@@ -11,7 +11,7 @@ import { data, Form, Link, useSearchParams } from "react-router";
 import { z } from "zod";
 import { Hero } from "~/common/components/hero.tsx";
 import { PostCard } from "~/features/community/components/post-card.tsx";
-import { PERIOD_OPTIONS, SORT_OPTIONS } from "~/features/community/constant.ts";
+import { PERIOD_OPTIONS, SORT_OPTIONS } from "~/features/community/constants.ts";
 import { getPosts, getTopics } from "~/features/community/queries.ts";
 import { createSSRClient } from "~/supabase-client.ts";
 import type { Route } from "./+types/community-page";

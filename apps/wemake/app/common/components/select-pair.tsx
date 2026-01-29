@@ -8,7 +8,7 @@ interface SelectPairProps {
   label: string;
   description: string;
   placeholder?: string;
-  options: { label: string; value: string }[];
+  options: readonly { readonly label: string; readonly value: string }[];
 }
 
 export default function SelectPair({

@@ -1,7 +1,7 @@
 import { sql } from "@ryugibo/db";
 import { bigint, check, integer, text, timestamp, uuid } from "@ryugibo/db/core";
 import { pg } from "~/db.ts";
-import { PRODUCT_STAGE } from "~/features/teams/constant.ts";
+import { PRODUCT_STAGE } from "~/features/teams/constants.ts";
 import { profiles } from "~/features/users/schema.ts";
 
 export const productStages = pg.enum(
