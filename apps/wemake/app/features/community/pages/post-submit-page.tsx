@@ -4,7 +4,7 @@ import z from "zod";
 import { Hero } from "~/common/components/hero.tsx";
 import InputPair from "~/common/components/input-pair.tsx";
 import SelectPair from "~/common/components/select-pair.tsx";
-import { getLoggedInUserId } from "~/features/users/queries.ts";
+import { ensureLoggedInProfileId } from "~/features/users/queries.ts";
 import { createSSRClient } from "~/supabase-client.ts";
 import { createPost } from "../mutations.ts";
 import { getTopicIdBySlug, getTopics } from "../queries.ts";
@@ -22,11 +22,9 @@ export const meta = () => {
 };
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { pathname } = new URL(request.url);
   const { supabase } = createSSRClient(request);
-  const id = await getLoggedInUserId(supabase);
-  if (!id) {
-    return redirect("/community");
-  }
+  await ensureLoggedInProfileId(supabase, { pathname, steps: 1 });
   const topics = await getTopics(supabase);
   return { topics };
 };
@@ -41,11 +39,10 @@ const formSchema = z.object({
 });
 
 export const action = async ({ request }: Route.ActionArgs) => {
+  const { pathname } = new URL(request.url);
   const { supabase } = createSSRClient(request);
-  const id = await getLoggedInUserId(supabase);
-  if (!id) {
-    return redirect("/community");
-  }
+  const profile_id = await ensureLoggedInProfileId(supabase, { pathname, steps: 1 });
+
   const formData = await request.formData();
   const { success, data, error: formZodError } = formSchema.safeParse(Object.fromEntries(formData));
   if (!success) {
@@ -64,7 +61,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
   }
   const { title, category, content } = data;
   const { topic_id } = await getTopicIdBySlug(supabase, { slug: category });
-  const post = await createPost(supabase, { profile_id: id, title, topic_id, content });
+  const post = await createPost(supabase, { profile_id, title, topic_id, content });
   return redirect(`/community/${post.id}`);
 };
 
