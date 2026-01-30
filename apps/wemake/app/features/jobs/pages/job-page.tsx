@@ -6,8 +6,11 @@ import { createSSRClient } from "~/supabase-client.ts";
 import { getJobById } from "../queries.ts";
 import type { Route } from "./+types/job-page";
 
-export const meta = () => {
-  return [{ title: "Job Details | wemake" }, { name: "description", content: "Job details" }];
+export const meta = ({ loaderData }: Route.MetaArgs) => {
+  return [
+    { title: `${loaderData.job.position} | wemake` },
+    { name: "description", content: loaderData.job.overview },
+  ];
 };
 
 const paramsSchema = z.object({
