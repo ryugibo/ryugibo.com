@@ -180,7 +180,7 @@ export default function Navigation({
                       <NavigationMenuTrigger>{menu.name}</NavigationMenuTrigger>
                     </Link>
                     <NavigationMenuContent>
-                      <ul className="grid w-[600px] font-light gap-3 p-4 grid-cols-2">
+                      <ul className="grid w-150 font-light gap-3 p-4 grid-cols-2">
                         {menu.items?.map((item) => (
                           <NavigationMenuItem
                             key={item.name}
@@ -190,7 +190,7 @@ export default function Navigation({
                                 "col-span-2 bg-primary/10 focus:bg-primary/20 hover:bg-primary/20",
                             ])}
                           >
-                            <NavigationMenuLink>
+                            <NavigationMenuLink asChild>
                               <Link
                                 to={item.to}
                                 className="p3 space-y-1 block leading-none no-underline outline-none"
