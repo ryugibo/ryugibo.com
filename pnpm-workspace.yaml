@@ -28,4 +28,5 @@ catalogs:
 onlyBuiltDependencies:
   - '@parcel/watcher'
   - esbuild
+  - sharp
   - supabase

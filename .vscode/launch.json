@@ -1,0 +1,39 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "den-api: dev",
+      "request": "launch",
+      "type": "node-terminal",
+      "command": "pnpm run dev",
+      "cwd": "${workspaceFolder}/apps/den-api"
+    },
+    {
+      "name": "wemake: dev",
+      "request": "launch",
+      "type": "node-terminal",
+      "command": "pnpm run dev",
+      "cwd": "${workspaceFolder}/apps/wemake"
+    },
+    {
+      "name": "den: dev",
+      "request": "launch",
+      "type": "node-terminal",
+      "command": "pnpm run dev",
+      "cwd": "${workspaceFolder}/apps/den"
+    },
+    {
+      "name": "accounts: dev",
+      "request": "launch",
+      "type": "node-terminal",
+      "command": "pnpm run dev",
+      "cwd": "${workspaceFolder}/apps/accounts"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "All Apps: dev",
+      "configurations": ["den-api: dev", "wemake: dev", "den: dev", "accounts: dev"]
+    }
+  ]
+}
