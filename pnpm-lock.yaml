@@ -125,6 +125,9 @@ importers:
       '@ryugibo/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      '@ryugibo/utils':
+        specifier: workspace:*
+        version: link:../../packages/utils
       '@ryugibo/vite-config':
         specifier: workspace:*
         version: link:../../packages/vite-config
@@ -271,6 +274,9 @@ importers:
       '@ryugibo/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      '@ryugibo/utils':
+        specifier: workspace:*
+        version: link:../../packages/utils
       '@ryugibo/vite-config':
         specifier: workspace:*
         version: link:../../packages/vite-config
@@ -442,6 +448,16 @@ importers:
       '@types/react-dom':
         specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.10)
+
+  packages/utils:
+    dependencies:
+      zod:
+        specifier: 'catalog:'
+        version: 4.3.6
+    devDependencies:
+      typescript:
+        specifier: ^5.7.2
+        version: 5.9.3
 
   packages/vite-config:
     devDependencies:

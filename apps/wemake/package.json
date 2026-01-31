@@ -17,6 +17,7 @@
     "@ryugibo/db": "workspace:*",
     "@ryugibo/ui": "workspace:*",
     "@ryugibo/vite-config": "workspace:*",
+    "@ryugibo/utils": "workspace:*",
     "@icons-pack/react-simple-icons": "catalog:",
     "@react-router/node": "catalog:",
     "@react-router/serve": "catalog:",

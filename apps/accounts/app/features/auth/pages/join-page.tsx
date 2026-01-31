@@ -1,4 +1,5 @@
 import { Button, LoadingButton } from "@ryugibo/ui";
+import { parseZodError } from "@ryugibo/utils";
 import { Form, Link, redirect, useNavigation } from "react-router";
 import z from "zod";
 import InputPair from "~/common/components/input-pair.tsx";
@@ -19,17 +20,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
   const formData = await request.formData();
   const { success, data, error: formZodError } = formSchema.safeParse(Object.fromEntries(formData));
   if (!success) {
-    const formError = formZodError.issues.reduce(
-      (acc, issue) => {
-        const key = issue.path.join(".");
-        if (!acc[key]) {
-          acc[key] = [];
-        }
-        acc[key].push({ key: acc[key].length, message: issue.message });
-        return acc;
-      },
-      {} as Record<string, { key: number; message: string }[]>,
-    );
+    const formError = parseZodError(formZodError);
     return { formError };
   }
   const { supabase, headers } = createSSRClient(request);
