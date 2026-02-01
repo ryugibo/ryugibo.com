@@ -1,10 +1,13 @@
 import { Button } from "@ryugibo/ui";
 import { DotIcon, EyeIcon, HeartIcon } from "@ryugibo/ui/icons";
+import { resolveParentPath } from "@ryugibo/utils";
 import { DateTime } from "luxon";
-import { data } from "react-router";
+import { data, Form, redirect } from "react-router";
 import { z } from "zod";
 import { Hero } from "~/common/components/hero.tsx";
+import { ensureLoggedInProfileId } from "~/features/users/queries.ts";
 import { createSSRClient } from "~/supabase-client.ts";
+import { claimIdea } from "../mutations.ts";
 import { getIdea } from "../queries.ts";
 import type { Route } from "./+types/idea-page";
 
@@ -30,8 +33,32 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
   if (!idea) {
     throw data({ error_code: "idea_not_found", message: "Idea not found" }, { status: 404 });
   }
+  if (idea.is_claimed) {
+    const { pathname } = new URL(request.url);
+    const redirectPath = resolveParentPath({ pathname, steps: 1 });
+    throw redirect(redirectPath);
+  }
+
   return { idea };
 };
+
+const formSchema = z.object({
+  id: z.coerce.number(),
+});
+
+export const action = async ({ request }: Route.ActionArgs) => {
+  const { pathname } = new URL(request.url);
+  const { supabase } = createSSRClient(request);
+  const claimed_by = await ensureLoggedInProfileId({ supabase, redirect_path: pathname });
+  const { success, data } = formSchema.safeParse(Object.fromEntries(await request.formData()));
+  if (!success) {
+    throw new Error("Invalid form");
+  }
+  const { id } = data;
+  await claimIdea({ supabase, id, claimed_by });
+  return redirect(`/my/dashboard/ideas`);
+};
+
 export default function IdeaPage({ loaderData }: Route.ComponentProps) {
   const { idea } = loaderData;
   return (
@@ -52,7 +79,12 @@ export default function IdeaPage({ loaderData }: Route.ComponentProps) {
             <span>{idea.likes}</span>
           </Button>
         </div>
-        <Button size="lg">Claim idea now &rarr;</Button>
+        {!idea.is_claimed && (
+          <Form method="post">
+            <input type="hidden" name="id" value={idea.id} />
+            <Button size="lg">Claim idea now &rarr;</Button>
+          </Form>
+        )}
       </div>
     </div>
   );

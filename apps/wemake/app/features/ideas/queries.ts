@@ -32,3 +32,19 @@ export const getIdea = async ({
 
   return data;
 };
+
+export const getClaimedIdeas = async ({
+  supabase,
+  claimed_by,
+}: {
+  supabase: SupabaseClient<Database>;
+  claimed_by: string;
+}) => {
+  const { data, error } = await supabase.from("ideas").select("*").eq("claimed_by", claimed_by);
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+};

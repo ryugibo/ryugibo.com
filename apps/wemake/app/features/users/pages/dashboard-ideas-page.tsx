@@ -1,4 +1,7 @@
 import { IdeaCard } from "~/features/ideas/components/idea-card.tsx";
+import { getClaimedIdeas } from "~/features/ideas/queries.ts";
+import { createSSRClient } from "~/supabase-client.ts";
+import { ensureLoggedInProfileId } from "../queries.ts";
 import type { Route } from "./+types/dashboard-ideas-page";
 
 export const meta = (_: Route.MetaArgs) => [
@@ -6,20 +9,21 @@ export const meta = (_: Route.MetaArgs) => [
   { name: "description", content: "My Ideas" },
 ];
 
-export default function DashboardIdeasPage() {
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { supabase } = createSSRClient(request);
+  const claimed_by = await ensureLoggedInProfileId({ supabase, redirect_path: "/" });
+  const ideas = await getClaimedIdeas({ supabase, claimed_by });
+  return { ideas };
+};
+
+export default function DashboardIdeasPage({ loaderData }: Route.ComponentProps) {
+  const { ideas } = loaderData;
   return (
     <div className="space-y-5 h-full">
       <h1 className="text-2xl font-semibold mb-6">Claimed Ideas</h1>
       <div className="grid grid-cols-4 gap-6">
-        {[...Array(5).keys()].map((index) => (
-          <IdeaCard
-            key={index}
-            id={index}
-            title="A startup that creates an AI-powered generated personal trainer, delivering customized fitness recommendations and tracking of progress using a mobile app to track workouts and progress as well as a website to manage the business."
-            viewCount={123}
-            createdAt={"12 hours ago"}
-            likesCount={12}
-          />
+        {ideas.map((idea) => (
+          <IdeaCard key={idea.id} id={idea.id} title={idea.idea} owner={true} />
         ))}
       </div>
     </div>
