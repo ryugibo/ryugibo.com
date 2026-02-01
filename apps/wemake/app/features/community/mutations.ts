@@ -31,3 +31,28 @@ export const createPost = async ({
 
   return data;
 };
+
+export const createReply = async ({
+  supabase,
+  profile_id,
+  post_id,
+  parent_id,
+  content,
+}: {
+  supabase: SupabaseClient<Database>;
+  profile_id: string;
+  post_id: number | undefined;
+  parent_id: number | undefined;
+  content: string;
+}) => {
+  const { error } = await supabase.from("post_replies").insert({
+    profile_id,
+    post_id,
+    parent_id,
+    content,
+  });
+
+  if (error) {
+    throw error;
+  }
+};

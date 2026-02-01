@@ -122,7 +122,9 @@ export const getReplies = async ({
         ${REPLY_SELECT}
       )
     `)
-    .eq("post_id", id);
+    .eq("post_id", id)
+    .order("created_at", { ascending: false, foreignTable: "post_replies" })
+    .order("created_at", { ascending: false });
 
   if (error) {
     throw error;

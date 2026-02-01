@@ -13,11 +13,16 @@ import {
   Textarea,
 } from "@ryugibo/ui";
 import { ChevronUpIcon, DotIcon } from "@ryugibo/ui/icons";
+import { parseZodError } from "@ryugibo/utils";
 import { DateTime } from "luxon";
-import { Form, Link } from "react-router";
+import { useEffect, useRef } from "react";
+import { Form, Link, useOutletContext } from "react-router";
 import z from "zod";
+import type { OutletContext } from "~/common/layouts/home-layout.tsx";
 import { Reply } from "~/features/community/components/reply.tsx";
+import { getLoggedInProfileId } from "~/features/users/queries.ts";
 import { createSSRClient } from "~/supabase-client.ts";
+import { createReply } from "../mutations.ts";
 import { getPostById, getReplies } from "../queries.ts";
 import type { Route } from "./+types/post-page";
 
@@ -41,8 +46,58 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
   return { post, replies };
 };
 
-export default function PostPage({ loaderData }: Route.ComponentProps) {
+const formSchema = z
+  .object({
+    content: z.string().min(1, "Content is required"),
+    post_id: z.coerce.number().optional(),
+    parent_id: z.coerce.number().optional(),
+  })
+  .refine(
+    (data) => {
+      const hasPostId = data.post_id !== undefined;
+      const hasParentId = data.parent_id !== undefined;
+      return hasPostId !== hasParentId;
+    },
+    {
+      message: "Either post_id or parent_id must be provided, but not both.",
+      path: ["content"],
+    },
+  );
+
+export const action = async ({ request }: Route.ActionArgs) => {
+  const { supabase } = createSSRClient(request);
+  const {
+    success: successForm,
+    data: dataForm,
+    error: formZodError,
+  } = formSchema.safeParse(Object.fromEntries(await request.formData()));
+  if (!successForm) {
+    const formError = parseZodError(formZodError);
+    return { success: false, formError };
+  }
+  const { content, post_id, parent_id } = dataForm;
+  const profile_id = await getLoggedInProfileId({ supabase });
+  if (!profile_id) {
+    return {
+      success: false,
+      formError: { content: [{ key: "content", message: "You must be logged in to reply" }] },
+    };
+  }
+  await createReply({ supabase, profile_id, post_id, parent_id, content });
+  return { success: true, post_id, parent_id };
+};
+
+export default function PostPage({ loaderData, actionData }: Route.ComponentProps) {
+  const { isLoggedIn, name, avatar } = useOutletContext<OutletContext>();
   const { post, replies } = loaderData;
+  const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    if (actionData?.success && actionData.post_id === post.id) {
+      formRef.current?.reset();
+    }
+  }, [actionData]);
+
   return (
     <div className="space-y-10">
       <Breadcrumb>
@@ -83,28 +138,39 @@ export default function PostPage({ loaderData }: Route.ComponentProps) {
                 </div>
                 <p className="text-muted-foreground w-2/3">{post.content}</p>
               </div>
-              <Form className="flex items-start gap-5 w-3/4">
-                <Avatar className="size-14">
-                  <AvatarImage src="https://github.com/ryugibo.png" />
-                  <AvatarFallback>WM</AvatarFallback>
-                </Avatar>
-                <div className="flex flex-col gap-5 items-end w-full">
-                  <Textarea
-                    placeholder="Write a reply..."
-                    className="w-full resize-none field-sizing-fixed"
-                    rows={5}
-                  />
-                  <Button type="submit">Reply</Button>
-                </div>
-              </Form>
+              {isLoggedIn && (
+                <Form ref={formRef} method="post" className="flex items-start gap-5 w-3/4">
+                  <input type="hidden" name="post_id" value={post.id} />
+                  <Avatar className="size-14">
+                    {avatar && <AvatarImage src={avatar} />}
+                    <AvatarFallback>{name[0]}</AvatarFallback>
+                  </Avatar>
+                  <div className="flex flex-col gap-5 items-end w-full">
+                    <Textarea
+                      placeholder="Write a reply..."
+                      className="w-full resize-none field-sizing-fixed"
+                      rows={5}
+                      name="content"
+                    />
+                    {actionData?.formError?.content?.map(({ key, message }) => (
+                      <p key={key} className="text-red-500">
+                        {message}
+                      </p>
+                    ))}
+                    <Button type="submit">Reply</Button>
+                  </div>
+                </Form>
+              )}
               <div className="space-y-10">
                 <h4 className="font-semibold">{post.replies} Replies</h4>
                 <div className="flex flex-col gap-5">
                   {replies.map((reply) => (
                     <Reply
                       key={reply.id}
+                      id={reply.id}
                       avatarUrl={reply.user.avatar}
                       username={reply.user.username}
+                      name={reply.user.name}
                       timestamp={reply.created_at}
                       content={reply.content}
                       topLevel

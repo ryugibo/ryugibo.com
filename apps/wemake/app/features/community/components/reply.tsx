@@ -1,12 +1,16 @@
 import { Avatar, AvatarFallback, AvatarImage, Button, Textarea } from "@ryugibo/ui";
 import { DotIcon, MessageCircleIcon } from "@ryugibo/ui/icons";
 import { DateTime } from "luxon";
-import { useState } from "react";
-import { Form, Link } from "react-router";
+import { useEffect, useState } from "react";
+import { Form, Link, useActionData, useOutletContext } from "react-router";
+import type { OutletContext } from "~/common/layouts/home-layout.tsx";
+import type { action } from "../pages/post-page.tsx";
 
 interface ReplyProps {
+  id: number;
   avatarUrl: string | null;
   username: string;
+  name: string;
   timestamp: string;
   content: string;
   topLevel: boolean;
@@ -22,20 +26,38 @@ interface ReplyProps {
   }[];
 }
 
-export function Reply({ avatarUrl, username, timestamp, content, topLevel, replies }: ReplyProps) {
+export function Reply({
+  id,
+  avatarUrl,
+  username,
+  name,
+  timestamp,
+  content,
+  topLevel,
+  replies,
+}: ReplyProps) {
   const [replying, setReplying] = useState(false);
   const toggleReply = () => setReplying((prev) => !prev);
+  const { isLoggedIn, name: loginName, avatar: loginAvatar } = useOutletContext<OutletContext>();
+  const actionData = useActionData<typeof action>();
+
+  useEffect(() => {
+    if (actionData?.success && actionData.parent_id === id) {
+      setReplying(false);
+    }
+  }, [actionData]);
+
   return (
     <div className="flex flex-col gap-2 w-full">
       <div className="flex items-start gap-5 w-2/3">
         <Avatar className="size-14">
           {avatarUrl && <AvatarImage src={avatarUrl} />}
-          <AvatarFallback>{username.slice(0, 2).toUpperCase()}</AvatarFallback>
+          <AvatarFallback>{name.slice(0, 2).toUpperCase()}</AvatarFallback>
         </Avatar>
         <div className="flex flex-col gap-4 items-start w-full">
           <div className="flex items-center gap-2">
             <Link to={`/users/${username}`}>
-              <h4 className="font-medium">@{username}</h4>
+              <h4 className="font-medium">{name}</h4>
             </Link>
             <DotIcon className="size-4" />
             <span className="text-xs text-muted-foreground">
@@ -43,22 +65,27 @@ export function Reply({ avatarUrl, username, timestamp, content, topLevel, repli
             </span>
           </div>
           <p className="text-muted-foreground">{content}</p>
-          <Button variant="ghost" className="self-end" onClick={toggleReply}>
-            <MessageCircleIcon className="size-4" /> Reply
-          </Button>
+          {isLoggedIn && (
+            <Button variant="ghost" className="self-end" onClick={toggleReply}>
+              <MessageCircleIcon className="size-4" /> Reply
+            </Button>
+          )}
         </div>
       </div>
-      {replying && (
-        <Form className="flex items-start gap-5 w-3/4">
+      {isLoggedIn && replying && (
+        <Form method="post" className="flex items-start gap-5 w-3/4">
+          <input type="hidden" name="parent_id" value={id} />
           <Avatar className="size-14">
-            <AvatarImage src="https://github.com/ryugibo.png" />
-            <AvatarFallback>WM</AvatarFallback>
+            {loginAvatar && <AvatarImage src={loginAvatar} />}
+            <AvatarFallback>{loginName[0]}</AvatarFallback>
           </Avatar>
           <div className="flex flex-col gap-5 items-end w-full">
             <Textarea
               placeholder="Write a reply..."
               className="w-full resize-none field-sizing-fixed"
               rows={5}
+              name="content"
+              defaultValue={`@${username} `}
             />
             <Button type="submit">Reply</Button>
           </div>
@@ -69,9 +96,11 @@ export function Reply({ avatarUrl, username, timestamp, content, topLevel, repli
           {replies.map((reply) => (
             <Reply
               key={reply.id}
+              id={reply.id}
               avatarUrl={reply.user.avatar}
               username={reply.user.username}
-              timestamp={`${DateTime.fromISO(reply.created_at).toRelative()}`}
+              name={reply.user.name}
+              timestamp={reply.created_at}
               content={reply.content}
               topLevel={false}
             />

@@ -31,6 +31,20 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   }
 };
 
+export type OutletContext =
+  | {
+      isLoggedIn: true;
+      name: string;
+      username: string;
+      avatar: string | null;
+    }
+  | {
+      isLoggedIn: false;
+      name: null;
+      username: null;
+      avatar: null;
+    };
+
 export default function HomeLayout({ loaderData }: Route.ComponentProps) {
   const isLoggedIn = loaderData.user !== null;
   return (
@@ -44,7 +58,16 @@ export default function HomeLayout({ loaderData }: Route.ComponentProps) {
         hasNotifications={true}
         hasMessages={true}
       />
-      <Outlet />
+      <Outlet
+        context={
+          {
+            isLoggedIn,
+            name: loaderData.profile?.name,
+            username: loaderData.profile?.username,
+            avatar: loaderData.profile?.avatar,
+          } as OutletContext
+        }
+      />
     </div>
   );
 }
