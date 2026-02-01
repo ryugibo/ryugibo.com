@@ -15,6 +15,12 @@ export const meta = () => {
   return [{ title: "Create Team | wemake" }, { description: "Create a team to find a team mate." }];
 };
 
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { pathname } = new URL(request.url);
+  const { supabase } = createSSRClient(request);
+  await ensureLoggedInProfileId(supabase, { pathname, steps: 1 });
+};
+
 export const formSchema = z.object({
   product_name: z.string().min(1, "Name is required").max(20, "Name must be at most 20 characters"),
   product_stage: z.enum(PRODUCT_STAGE.map((stage) => stage.value)),
