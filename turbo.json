@@ -12,11 +12,7 @@
     "check-types": {
       "dependsOn": ["^check-types"]
     },
-    "build:css": {
-      "cache": false
-    },
     "dev": {
-      "dependsOn": ["^build:css"],
       "cache": false,
       "persistent": true
     }
