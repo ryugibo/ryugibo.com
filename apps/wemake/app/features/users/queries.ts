@@ -88,18 +88,21 @@ export const getPostsByUsername = async (
   return data;
 };
 
-type PositiveInteger<N extends number> = `${N}` extends `-${string}` | "0" ? never : N;
-
-export const ensureLoggedInProfileId = async <T extends number>(
-  supabase: SupabaseClient<Database>,
-  { pathname, steps }: { pathname: string; steps: T & PositiveInteger<T> },
-) => {
+export async function getLoggedInProfileId(supabase: SupabaseClient<Database>) {
   const { data, error } = await supabase.auth.getUser();
-
-  if (!error) {
-    return data.user.id;
+  if (error) {
+    return null;
   }
-  const segments = pathname.split("/").filter(Boolean);
-  const parentSegments = steps >= segments.length ? [] : segments.slice(0, -steps);
-  throw redirect(`/${parentSegments.join("/")}`);
-};
+  return data.user.id;
+}
+
+export async function ensureLoggedInProfileId(
+  supabase: SupabaseClient<Database>,
+  redirect_path: string,
+) {
+  const profile_id = await getLoggedInProfileId(supabase);
+  if (profile_id) {
+    return profile_id;
+  }
+  throw redirect(redirect_path);
+}

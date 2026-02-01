@@ -1,5 +1,5 @@
 import { LoadingButton } from "@ryugibo/ui";
-import { parseZodError } from "@ryugibo/utils";
+import { parseZodError, resolveParentPath } from "@ryugibo/utils";
 import { Form, redirect, useNavigation } from "react-router";
 import z from "zod";
 import { Hero } from "~/common/components/hero.tsx";
@@ -18,7 +18,7 @@ export const meta = () => {
 export const loader = async ({ request }: Route.LoaderArgs) => {
   const { pathname } = new URL(request.url);
   const { supabase } = createSSRClient(request);
-  await ensureLoggedInProfileId(supabase, { pathname, steps: 1 });
+  await ensureLoggedInProfileId(supabase, resolveParentPath({ pathname, steps: 1 }));
 };
 
 export const formSchema = z.object({
@@ -40,7 +40,10 @@ export const action = async ({ request }: Route.ActionArgs) => {
   const formData = await request.formData();
   const { pathname } = new URL(request.url);
   const { supabase } = createSSRClient(request);
-  const profile_id = await ensureLoggedInProfileId(supabase, { pathname, steps: 1 });
+  const profile_id = await ensureLoggedInProfileId(
+    supabase,
+    resolveParentPath({ pathname, steps: 1 }),
+  );
   const { success, error: formZodError, data } = formSchema.safeParse(Object.fromEntries(formData));
   if (!success) {
     const formError = parseZodError(formZodError);
