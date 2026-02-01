@@ -9,19 +9,23 @@ import {
 } from "@ryugibo/ui";
 import { StarIcon } from "@ryugibo/ui/icons";
 import { useState } from "react";
-import { Form } from "react-router";
+import { Form, useActionData } from "react-router";
 import InputPair from "~/common/components/input-pair.tsx";
+import type { action } from "~/features/products/pages/product-reviews-page.tsx";
 
-export default function CreateReviewDialog() {
+export default function CreateReviewDialog({ productId }: { productId: number }) {
   const [rating, setRating] = useState<number>(0);
   const [hoveredStar, setHoveredStar] = useState<number>(0);
+  const actionData = useActionData<typeof action>();
+
   return (
     <DialogContent>
       <DialogHeader>
         <DialogTitle className="text-2xl">What do you think of this product?</DialogTitle>
         <DialogDescription>Share your experience with this product</DialogDescription>
       </DialogHeader>
-      <Form className="space-y-10">
+      <Form method="post" className="space-y-10">
+        <input type="hidden" name="product_id" value={productId} />
         <div>
           <Label className="flex flex-col items-start">
             Rating
@@ -49,16 +53,26 @@ export default function CreateReviewDialog() {
                 />
               </label>
             ))}
+            {actionData?.formError?.rating?.map(({ key, message }) => (
+              <p key={key} className="text-red-500">
+                {message}
+              </p>
+            ))}
           </div>
         </div>
         <InputPair
           textarea
           required
-          label="Review"
+          label="Comment"
           description="Maximum 1000 characters"
-          name="review"
-          placeholder="Write your review here..."
+          name="comment"
+          placeholder="Write your comment here..."
         />
+        {actionData?.formError?.comment?.map(({ key, message }) => (
+          <p key={key} className="text-red-500">
+            {message}
+          </p>
+        ))}
         <DialogFooter>
           <Button type="submit">Submit review</Button>
         </DialogFooter>

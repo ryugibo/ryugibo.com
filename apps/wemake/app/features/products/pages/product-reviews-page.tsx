@@ -1,9 +1,13 @@
 import { Button, Dialog, DialogTrigger } from "@ryugibo/ui";
+import { parseZodError } from "@ryugibo/utils";
+import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router";
 import z from "zod";
 import CreateReviewDialog from "~/common/components/create-review-dialog.tsx";
 import { ReviewCard } from "~/features/products/components/review-card.tsx";
+import { ensureLoggedInProfileId } from "~/features/users/queries.ts";
 import { createSSRClient } from "~/supabase-client.ts";
+import { createReview } from "../mutations.ts";
 import { getReviewsByProductId } from "../queries.ts";
 import type { Route } from "./+types/product-reviews-page.ts";
 
@@ -14,6 +18,7 @@ export const meta = () => {
 const paramsSchema = z.object({
   id: z.coerce.number(),
 });
+
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
   const { success, data } = paramsSchema.safeParse(params);
   if (!success) {
@@ -22,15 +27,48 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
   const { id } = data;
   const { supabase } = createSSRClient(request);
   const reviews = await getReviewsByProductId({ supabase, id: Number(id) });
-  return { reviews };
+  return { id, reviews };
 };
 
-export default function ProductReviewsPage({ loaderData }: Route.ComponentProps) {
+const reviewSchema = z.object({
+  product_id: z.coerce.number(),
+  rating: z.coerce.number(),
+  comment: z.string(),
+});
+
+export const action = async ({ request }: Route.ActionArgs) => {
+  const { pathname } = new URL(request.url);
+  const { supabase } = createSSRClient(request);
+  const profile_id = await ensureLoggedInProfileId({ supabase, redirect_path: pathname });
+  const {
+    success,
+    data,
+    error: formZodError,
+  } = reviewSchema.safeParse(Object.fromEntries(await request.formData()));
+  if (!success) {
+    const formError = parseZodError(formZodError);
+    return { succes: false, formError };
+  }
+  const { rating, comment, product_id } = data;
+  await createReview({ supabase, rating, comment, profile_id, product_id });
+  return { success: true };
+};
+
+export default function ProductReviewsPage({ loaderData, actionData }: Route.ComponentProps) {
+  const { id, reviews } = loaderData;
   const { review_count } = useOutletContext<{
     review_count: number;
   }>();
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (actionData?.success) {
+      setOpen(false);
+    }
+  }, [actionData]);
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <div className="space-y-10 max-w-xl">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold">
@@ -41,7 +79,7 @@ export default function ProductReviewsPage({ loaderData }: Route.ComponentProps)
           </DialogTrigger>
         </div>
         <div className="space-y-20">
-          {loaderData.reviews.map((review) => (
+          {reviews.map((review) => (
             <ReviewCard
               key={review.id}
               avatarUrl={review.profiles.avatar}
@@ -54,7 +92,7 @@ export default function ProductReviewsPage({ loaderData }: Route.ComponentProps)
           ))}
         </div>
       </div>
-      <CreateReviewDialog />
+      <CreateReviewDialog productId={id} />
     </Dialog>
   );
 }
