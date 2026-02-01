@@ -25,8 +25,11 @@ export const meta = () => {
 export const loader = async ({ request }: Route.LoaderArgs) => {
   const { pathname } = new URL(request.url);
   const { supabase } = createSSRClient(request);
-  await ensureLoggedInProfileId(supabase, resolveParentPath({ pathname, steps: 1 }));
-  const topics = await getTopics(supabase);
+  await ensureLoggedInProfileId({
+    supabase,
+    redirect_path: resolveParentPath({ pathname, steps: 1 }),
+  });
+  const topics = await getTopics({ supabase });
   return { topics };
 };
 
@@ -42,10 +45,10 @@ const formSchema = z.object({
 export const action = async ({ request }: Route.ActionArgs) => {
   const { pathname } = new URL(request.url);
   const { supabase } = createSSRClient(request);
-  const profile_id = await ensureLoggedInProfileId(
+  const profile_id = await ensureLoggedInProfileId({
     supabase,
-    resolveParentPath({ pathname, steps: 1 }),
-  );
+    redirect_path: resolveParentPath({ pathname, steps: 1 }),
+  });
 
   const formData = await request.formData();
   const { success, data, error: formZodError } = formSchema.safeParse(Object.fromEntries(formData));
@@ -54,8 +57,14 @@ export const action = async ({ request }: Route.ActionArgs) => {
     return { formError };
   }
   const { title, category, content } = data;
-  const { topic_id } = await getTopicIdBySlug(supabase, { slug: category });
-  const post = await createPost(supabase, { profile_id, title, topic_id, content });
+  const { topic_id } = await getTopicIdBySlug({ supabase, slug: category });
+  const post = await createPost({
+    supabase,
+    profile_id,
+    title,
+    topic_id,
+    content,
+  });
   return redirect(`/community/${post.id}`);
 };
 

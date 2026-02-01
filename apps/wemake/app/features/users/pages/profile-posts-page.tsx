@@ -15,7 +15,7 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
   }
   const { username } = data;
   const { supabase } = createSSRClient(request);
-  const posts = await getPostsByUsername(supabase, { username });
+  const posts = await getPostsByUsername({ supabase, username });
   return { posts };
 };
 

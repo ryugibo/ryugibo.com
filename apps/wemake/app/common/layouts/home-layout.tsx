@@ -18,7 +18,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 
   const isMakeProfilePage = url.pathname === "/make-profile";
   try {
-    const profile = await getProfileById(supabase, { id: user.id });
+    const profile = await getProfileById({ supabase, id: user.id });
     if (isMakeProfilePage) {
       return redirect("/");
     }

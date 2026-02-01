@@ -21,7 +21,7 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
   }
   const { id } = data;
   const { supabase } = createSSRClient(request);
-  const reviews = await getReviewsByProductId(supabase, { id });
+  const reviews = await getReviewsByProductId({ supabase, id: Number(id) });
   return { reviews };
 };
 

@@ -11,7 +11,7 @@ export const meta = (_: Route.MetaArgs) => [
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
   const { supabase } = createSSRClient(request);
-  const categories = await getCategories(supabase);
+  const categories = await getCategories({ supabase });
   return { categories };
 };
 

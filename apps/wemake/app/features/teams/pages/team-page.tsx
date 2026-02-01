@@ -31,7 +31,7 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
   }
   const { id } = data;
   const { supabase } = createSSRClient(request);
-  const team = await getTeamById(supabase, { id });
+  const team = await getTeamById({ supabase, id: Number(id) });
   return { team };
 };
 

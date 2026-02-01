@@ -29,8 +29,8 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
     return { products: [], totalPages: 1 };
   }
   const { supabase } = createSSRClient(request);
-  const products = await getProductsByKeyword(supabase, dataParams);
-  const totalPages = await getPagesByKeyword(supabase, dataParams);
+  const products = await getProductsByKeyword({ supabase, ...dataParams });
+  const totalPages = await getPagesByKeyword({ supabase, ...dataParams });
   return { products, totalPages };
 };
 

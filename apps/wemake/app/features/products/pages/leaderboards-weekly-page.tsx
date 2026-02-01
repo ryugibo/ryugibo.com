@@ -42,12 +42,15 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
   }
   const url = new URL(request.url);
   const { supabase } = createSSRClient(request);
-  const products = await getProductsByDateRange(supabase, {
+  const page = Number(url.searchParams.get("page")) || 1;
+  const products = await getProductsByDateRange({
+    supabase,
     startDate: date.startOf("week"),
     endDate: date.endOf("week"),
-    page: Number(url.searchParams.get("page")) || 1,
+    page,
   });
-  const totalPages = await getProductPagesByDateRange(supabase, {
+  const totalPages = await getProductPagesByDateRange({
+    supabase,
     startDate: date.startOf("week"),
     endDate: date.endOf("week"),
   });

@@ -10,7 +10,7 @@ export const meta = () => {
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
   const { supabase } = createSSRClient(request);
-  const teams = await getTeams(supabase, { limit: 7 });
+  const teams = await getTeams({ supabase, limit: 7 });
   return { teams };
 };
 export default function TeamsPage({ loaderData }: Route.ComponentProps) {

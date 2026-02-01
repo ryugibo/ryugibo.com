@@ -24,7 +24,7 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
   }
   const { id } = data;
   const { supabase } = createSSRClient(request);
-  const product = await getProductById(supabase, { id });
+  const product = await getProductById({ supabase, id: Number(id) });
   return { product };
 };
 export default function ProductLayout({ loaderData }: Route.ComponentProps) {

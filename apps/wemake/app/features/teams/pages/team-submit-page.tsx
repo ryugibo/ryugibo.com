@@ -18,7 +18,10 @@ export const meta = () => {
 export const loader = async ({ request }: Route.LoaderArgs) => {
   const { pathname } = new URL(request.url);
   const { supabase } = createSSRClient(request);
-  await ensureLoggedInProfileId(supabase, resolveParentPath({ pathname, steps: 1 }));
+  await ensureLoggedInProfileId({
+    supabase,
+    redirect_path: resolveParentPath({ pathname, steps: 1 }),
+  });
 };
 
 export const formSchema = z.object({
@@ -40,16 +43,16 @@ export const action = async ({ request }: Route.ActionArgs) => {
   const formData = await request.formData();
   const { pathname } = new URL(request.url);
   const { supabase } = createSSRClient(request);
-  const profile_id = await ensureLoggedInProfileId(
+  const profile_id = await ensureLoggedInProfileId({
     supabase,
-    resolveParentPath({ pathname, steps: 1 }),
-  );
+    redirect_path: resolveParentPath({ pathname, steps: 1 }),
+  });
   const { success, error: formZodError, data } = formSchema.safeParse(Object.fromEntries(formData));
   if (!success) {
     const formError = parseZodError(formZodError);
     return { formError };
   }
-  const { id } = await createTeam(supabase, { data, team_leader_id: profile_id });
+  const { id } = await createTeam({ supabase, data, team_leader_id: profile_id });
   return redirect(`/teams/${id}`);
 };
 

@@ -49,9 +49,10 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   }
   const { supabase } = createSSRClient(request);
   const [topics, posts] = await Promise.all([
-    getTopics(supabase),
-    getPosts(supabase, {
-      limit: 20,
+    getTopics({ supabase }),
+    getPosts({
+      supabase,
+      limit: 10,
       sorting: dataSort.sorting,
       period: dataSort.period,
       keyword: dataSort.keyword,

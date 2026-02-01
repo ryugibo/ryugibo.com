@@ -14,25 +14,30 @@ export const meta: Route.MetaFunction = () => [
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
   const { supabase } = createSSRClient(request);
+  const today = DateTime.now();
   const [dailyProducts, weeklyProducts, monthlyProducts, yearlyProducts] = await Promise.all([
-    getProductsByDateRange(supabase, {
-      startDate: DateTime.now().startOf("day"),
-      endDate: DateTime.now().endOf("day"),
+    getProductsByDateRange({
+      supabase,
+      startDate: today.startOf("day"),
+      endDate: today.endOf("day"),
       limit: 7,
     }),
-    getProductsByDateRange(supabase, {
-      startDate: DateTime.now().startOf("week"),
-      endDate: DateTime.now().endOf("week"),
+    getProductsByDateRange({
+      supabase,
+      startDate: today.startOf("week"),
+      endDate: today.endOf("week"),
       limit: 7,
     }),
-    getProductsByDateRange(supabase, {
-      startDate: DateTime.now().startOf("month"),
-      endDate: DateTime.now().endOf("month"),
+    getProductsByDateRange({
+      supabase,
+      startDate: today.startOf("month"),
+      endDate: today.endOf("month"),
       limit: 7,
     }),
-    getProductsByDateRange(supabase, {
-      startDate: DateTime.now().startOf("year"),
-      endDate: DateTime.now().endOf("year"),
+    getProductsByDateRange({
+      supabase,
+      startDate: today.startOf("year"),
+      endDate: today.endOf("year"),
       limit: 7,
     }),
   ]);

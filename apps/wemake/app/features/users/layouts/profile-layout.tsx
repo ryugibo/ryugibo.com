@@ -30,7 +30,7 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
   }
   const { username } = data;
   const { supabase } = createSSRClient(request);
-  const profile = await getProfileByUsername(supabase, { username });
+  const profile = await getProfileByUsername({ supabase, username });
   return { profile };
 };
 

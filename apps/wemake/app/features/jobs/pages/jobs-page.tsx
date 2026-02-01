@@ -30,7 +30,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
     throw data({ error_code: "invalid_params", message: "invalid params" }, { status: 400 });
   }
   const { supabase } = createSSRClient(request);
-  const jobs = await getJobs(supabase, { limit: 11, ...dataFilter });
+  const jobs = await getJobs({ supabase, limit: 11, ...dataFilter });
   return { jobs };
 };
 

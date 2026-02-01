@@ -26,7 +26,7 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
     throw data({ error_code: "idea_not_found", message: "Idea not found" }, { status: 404 });
   }
   const { supabase } = createSSRClient(request);
-  const idea = await getIdea(supabase, { id: dataId.ideaId });
+  const idea = await getIdea({ supabase, id: dataId.ideaId });
   if (!idea) {
     throw data({ error_code: "idea_not_found", message: "Idea not found" }, { status: 404 });
   }

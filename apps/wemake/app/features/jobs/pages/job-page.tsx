@@ -26,7 +26,7 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
 
   const { id } = data;
   const { supabase } = createSSRClient(request);
-  const job = await getJobById(supabase, { id });
+  const job = await getJobById({ supabase, id: Number(id) });
   return { job };
 };
 

@@ -13,7 +13,7 @@ export const meta = () => {
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
   const { supabase } = createSSRClient(request);
-  const ideas = await getIdeas(supabase, { limit: 20 });
+  const ideas = await getIdeas({ supabase, limit: 20 });
 
   return { ideas };
 };

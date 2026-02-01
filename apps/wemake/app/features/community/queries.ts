@@ -14,7 +14,7 @@ user:profiles (
 )
 `;
 
-export const getTopics = async (supabase: SupabaseClient<Database>) => {
+export const getTopics = async ({ supabase }: { supabase: SupabaseClient<Database> }) => {
   const { data, error } = await supabase.from("topics").select("name, slug");
   if (error) {
     throw error;
@@ -22,10 +22,13 @@ export const getTopics = async (supabase: SupabaseClient<Database>) => {
   return data;
 };
 
-export const getTopicIdBySlug = async (
-  supabase: SupabaseClient<Database>,
-  { slug }: { slug: string },
-) => {
+export const getTopicIdBySlug = async ({
+  supabase,
+  slug,
+}: {
+  supabase: SupabaseClient<Database>;
+  slug: string;
+}) => {
   const { data, error } = await supabase
     .from("topics")
     .select("topic_id:id")
@@ -39,22 +42,21 @@ export const getTopicIdBySlug = async (
   return data;
 };
 
-export const getPosts = async (
-  supabase: SupabaseClient<Database>,
-  {
-    limit,
-    sorting,
-    period,
-    keyword,
-    topic,
-  }: {
-    limit: number;
-    sorting: SortOption;
-    period: PeriodOption;
-    keyword?: string;
-    topic?: string;
-  },
-) => {
+export const getPosts = async ({
+  supabase,
+  limit,
+  sorting,
+  period,
+  keyword,
+  topic,
+}: {
+  supabase: SupabaseClient<Database>;
+  limit: number;
+  sorting: SortOption;
+  period: PeriodOption;
+  keyword?: string;
+  topic?: string;
+}) => {
   const query = supabase.from("community_post_list_view").select("*").limit(limit);
   if (sorting === "popular") {
     query.order("upvotes", { ascending: false });
@@ -85,7 +87,13 @@ export const getPosts = async (
   return data;
 };
 
-export const getPostById = async (supabase: SupabaseClient<Database>, { id }: { id: number }) => {
+export const getPostById = async ({
+  supabase,
+  id,
+}: {
+  supabase: SupabaseClient<Database>;
+  id: number;
+}) => {
   const { data, error } = await supabase
     .from("community_post_detail_view")
     .select("*")
@@ -99,7 +107,13 @@ export const getPostById = async (supabase: SupabaseClient<Database>, { id }: { 
   return data;
 };
 
-export const getReplies = async (supabase: SupabaseClient<Database>, { id }: { id: number }) => {
+export const getReplies = async ({
+  supabase,
+  id,
+}: {
+  supabase: SupabaseClient<Database>;
+  id: number;
+}) => {
   const { data, error } = await supabase
     .from("post_replies")
     .select(`

@@ -3,10 +3,15 @@ import type z from "zod";
 import type { Database } from "~/supabase-client.ts";
 import type { formSchema } from "./pages/team-submit-page.tsx";
 
-export const createTeam = async (
-  supabase: SupabaseClient<Database>,
-  { data, team_leader_id }: { data: z.infer<typeof formSchema>; team_leader_id: string },
-) => {
+export const createTeam = async ({
+  supabase,
+  data,
+  team_leader_id,
+}: {
+  supabase: SupabaseClient<Database>;
+  data: z.infer<typeof formSchema>;
+  team_leader_id: string;
+}) => {
   const { data: team, error } = await supabase
     .from("teams")
     .insert({ ...data, team_leader_id })

@@ -22,7 +22,10 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   const { pathname } = new URL(request.url);
   const { supabase } = createSSRClient(request);
 
-  await ensureLoggedInProfileId(supabase, resolveParentPath({ pathname, steps: 1 }));
+  await ensureLoggedInProfileId({
+    supabase,
+    redirect_path: resolveParentPath({ pathname, steps: 1 }),
+  });
 };
 
 export const formSchema = z.object({
@@ -73,7 +76,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
     const formError = parseZodError(formZodError);
     return { formError };
   }
-  const { id } = await createJob(supabase, { data });
+  const { id } = await createJob({ supabase, data });
   return redirect(`/jobs/${id}`);
 };
 

@@ -11,6 +11,6 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   if (!user) {
     return redirect("/login");
   }
-  const profile = await getProfileById(supabase, { id: user.id });
+  const profile = await getProfileById({ supabase, id: user.id });
   return redirect(`/users/${profile.username}`);
 };

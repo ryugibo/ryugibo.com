@@ -23,9 +23,9 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
   }
   const { id } = dataParams;
   const { supabase } = createSSRClient(request);
-  const category = await getCategoryById(supabase, { id });
-  const products = await getProductsByCategory(supabase, { id, page });
-  const totalPage = await getCategoryPages(supabase, { id });
+  const category = await getCategoryById({ supabase, id: Number(id) });
+  const products = await getProductsByCategory({ supabase, id: Number(id), page });
+  const totalPage = await getCategoryPages({ supabase, id: Number(id) });
 
   return { category, products, totalPage };
 };
