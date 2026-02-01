@@ -15,7 +15,7 @@ export const createTeam = async ({
   const { data: team, error } = await supabase
     .from("teams")
     .insert({ ...data, team_leader_id })
-    .select()
+    .select(`id`)
     .single();
 
   if (error) {
