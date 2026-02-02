@@ -1,0 +1,3 @@
+[submodule "apps/den-api"]
+	path = apps/den-api
+	url = https://github.com/ryugibo/den-api
