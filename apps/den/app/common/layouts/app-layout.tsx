@@ -51,7 +51,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
             <Breadcrumb>
               <BreadcrumbList>
                 {/* Mobile Home/Logo Breadcrumb */}
-                <BreadcrumbItem className="md:hidden!">
+                <BreadcrumbItem className="md:hidden">
                   <BreadcrumbLink asChild>
                     <Link to="/" className="flex items-center gap-2">
                       <div className="flex aspect-square size-6 items-center justify-center rounded-md bg-indigo-600 text-sidebar-primary-foreground">
