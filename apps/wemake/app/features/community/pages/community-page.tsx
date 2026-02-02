@@ -145,6 +145,7 @@ export default function CommunityPage({ loaderData }: Route.ComponentProps) {
                 postedAt={post.created_at}
                 expanded
                 upvotesCount={post.upvotes}
+                isUpvoted={post.is_upvoted}
               />
             ))}
           </div>
