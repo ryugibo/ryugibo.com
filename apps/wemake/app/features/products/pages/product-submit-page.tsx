@@ -1,9 +1,15 @@
 import { Button, Input, Label } from "@ryugibo/ui";
+import { parseZodError, resolveParentPath } from "@ryugibo/utils";
 import { useState } from "react";
-import { Form } from "react-router";
+import { Form, redirect } from "react-router";
+import z from "zod";
 import { Hero } from "~/common/components/hero.tsx";
 import InputPair from "~/common/components/input-pair.tsx";
 import SelectPair from "~/common/components/select-pair.tsx";
+import { ensureLoggedInProfileId } from "~/features/users/queries.ts";
+import { createSSRClient } from "~/supabase-client.ts";
+import { createProduct } from "../mutations.ts";
+import { getCategories } from "../queries.ts";
 import type { Route } from "./+types/product-submit-page";
 
 export const meta = () => [
@@ -11,7 +17,78 @@ export const meta = () => [
   { name: "description", content: "Share your product with the world" },
 ];
 
-export default function ProductSubmitPage(_: Route.ComponentProps) {
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { pathname } = new URL(request.url);
+  const { supabase } = createSSRClient(request);
+  await ensureLoggedInProfileId({
+    supabase,
+    redirect_path: resolveParentPath({ pathname, steps: 1 }),
+  });
+  const categories = await getCategories({ supabase });
+  return { categories };
+};
+
+export const formSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  tagline: z.string().min(1, "Tagline is required"),
+  url: z.url("Invalid URL"),
+  description: z.string().min(1, "Description is required"),
+  category: z.coerce.number().min(1, "Category is required"),
+  how_it_works: z.string().min(1, "How it works is required"),
+  icon: z
+    .instanceof(File)
+    .refine((file) => file.size <= 1024 * 1024 * 2, "File size must be less than 2MB")
+    .refine((file) => file.type.startsWith("image/"), "Invalid file type"),
+});
+
+export const action = async ({ request }: Route.ActionArgs) => {
+  const { pathname } = new URL(request.url);
+  const { supabase } = createSSRClient(request);
+  const profileId = await ensureLoggedInProfileId({
+    supabase,
+    redirect_path: resolveParentPath({ pathname, steps: 1 }),
+  });
+  const formData = await request.formData();
+  const {
+    success,
+    data,
+    error: errorFormZod,
+  } = formSchema.safeParse(Object.fromEntries(formData.entries()));
+  if (!success) {
+    const formError = parseZodError(errorFormZod);
+    return { formError };
+  }
+  const { icon, ...rest } = data;
+
+  const { data: dataUpload, error: errorUpload } = await supabase.storage
+    .from("wemake.icons")
+    .upload(`${profileId}/${Date.now()}`, icon, { contentType: icon.type });
+  if (errorUpload) {
+    console.log(errorUpload.message);
+    return { uploadError: { icon: [{ key: 0, message: "Failed to upload icon" }] } };
+  }
+  const {
+    data: { publicUrl: iconUrl },
+  } = await supabase.storage.from("wemake.icons").getPublicUrl(dataUpload.path);
+
+  const { id } = await createProduct({
+    supabase,
+    data: {
+      name: rest.name,
+      tagline: rest.tagline,
+      description: rest.description,
+      how_it_works: rest.how_it_works,
+      icon: iconUrl,
+      url: rest.url,
+      profile_id: profileId,
+      category_id: rest.category,
+    },
+  });
+  return redirect(`/products/${id}`);
+};
+
+export default function ProductSubmitPage({ loaderData, actionData }: Route.ComponentProps) {
+  const { categories } = loaderData;
   const [icon, setIcon] = useState<string | null>(null);
   const onChangeIcon = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) {
@@ -25,7 +102,11 @@ export default function ProductSubmitPage(_: Route.ComponentProps) {
   return (
     <div>
       <Hero title="Submit Your Product" description="Share your product with the world" />
-      <Form className="grid grid-cols-2 gap-10 max-w-5xl mx-auto">
+      <Form
+        method="post"
+        encType="multipart/form-data"
+        className="grid grid-cols-2 gap-10 max-w-5xl mx-auto"
+      >
         <div className="space-y-5">
           <InputPair
             label="Name"
@@ -36,6 +117,11 @@ export default function ProductSubmitPage(_: Route.ComponentProps) {
             required
             placeholder="Name of your product"
           />
+          {actionData?.formError?.name?.map(({ key, message }) => (
+            <p key={key} className="text-red-500">
+              {message}
+            </p>
+          ))}
           <InputPair
             label="Tagline"
             description="(60 characters or less)"
@@ -45,6 +131,11 @@ export default function ProductSubmitPage(_: Route.ComponentProps) {
             type="text"
             placeholder="A concise description of your product"
           />
+          {actionData?.formError?.tagline?.map(({ key, message }) => (
+            <p key={key} className="text-red-500">
+              {message}
+            </p>
+          ))}
           <InputPair
             label="URL"
             description="The URL of your product"
@@ -54,6 +145,11 @@ export default function ProductSubmitPage(_: Route.ComponentProps) {
             type="url"
             placeholder="https://example.com"
           />
+          {actionData?.formError?.url?.map(({ key, message }) => (
+            <p key={key} className="text-red-500">
+              {message}
+            </p>
+          ))}
           <InputPair
             label="Description"
             description="A detailed description of your product"
@@ -63,18 +159,41 @@ export default function ProductSubmitPage(_: Route.ComponentProps) {
             placeholder="A detailed description of your product"
             textarea
           />
+          {actionData?.formError?.description?.map(({ key, message }) => (
+            <p key={key} className="text-red-500">
+              {message}
+            </p>
+          ))}
+          <InputPair
+            label="How it works"
+            description="Step-by-step guide on how your product works"
+            name="how_it_works"
+            id="how_it_works"
+            required
+            placeholder="How your product works"
+            textarea
+          />
+          {actionData?.formError?.how_it_works?.map(({ key, message }) => (
+            <p key={key} className="text-red-500">
+              {message}
+            </p>
+          ))}
           <SelectPair
             label="Category"
             description="The category of your product"
             name="category"
             required
             placeholder="Select a category"
-            options={[
-              { label: "Category 1", value: "category-1" },
-              { label: "Category 2", value: "category-2" },
-              { label: "Category 3", value: "category-3" },
-            ]}
+            options={categories.map((category) => ({
+              label: category.name,
+              value: `${category.id}`,
+            }))}
           />
+          {actionData?.formError?.category?.map(({ key, message }) => (
+            <p key={key} className="text-red-500">
+              {message}
+            </p>
+          ))}
           <Button type="submit" className="w-full" size="lg">
             Submit
           </Button>
@@ -95,10 +214,20 @@ export default function ProductSubmitPage(_: Route.ComponentProps) {
             required
             className="w-1/2"
           />
+          {actionData?.formError?.icon?.map(({ key, message }) => (
+            <p key={key} className="text-red-500">
+              {message}
+            </p>
+          ))}
+          {actionData?.uploadError?.icon?.map(({ key, message }) => (
+            <p key={key} className="text-red-500">
+              {message}
+            </p>
+          ))}
           <div className="flex flex-col text-xs">
             <span className="text-muted-foreground">Recommended size: 128x128</span>
             <span className="text-muted-foreground">Allowed formats: PNG, JPEG</span>
-            <span className="text-muted-foreground">Max file size: 1MB</span>
+            <span className="text-muted-foreground">Max file size: 2MB</span>
           </div>
         </div>
       </Form>

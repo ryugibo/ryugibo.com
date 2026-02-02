@@ -195,7 +195,7 @@ export default function SettingsPage({ loaderData, actionData }: Route.Component
             <div className="flex flex-col text-xs">
               <span className="text-muted-foreground">Recommended size: 128x128</span>
               <span className="text-muted-foreground">Allowed formats: PNG, JPEG</span>
-              <span className="text-muted-foreground">Max file size: 1MB</span>
+              <span className="text-muted-foreground">Max file size: 2MB</span>
             </div>
             <Button className="w-full">Update Avatar</Button>
           </div>

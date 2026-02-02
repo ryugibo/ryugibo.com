@@ -26,3 +26,32 @@ export const createReview = async ({
 
   return data;
 };
+
+export const createProduct = async ({
+  supabase,
+  data,
+}: {
+  supabase: SupabaseClient<Database>;
+  data: {
+    name: string;
+    tagline: string;
+    description: string;
+    how_it_works: string;
+    icon: string;
+    url: string;
+    profile_id: string;
+    category_id: number;
+  };
+}) => {
+  const { data: product, error } = await supabase
+    .from("products")
+    .insert(data)
+    .select("id")
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return product;
+};
