@@ -10,10 +10,21 @@ import {
 } from "@ryugibo/ui";
 import { HomeIcon, PackageIcon, SparkleIcon } from "@ryugibo/ui/icons";
 import { Link, Outlet, useLocation } from "react-router";
+import { createSSRClient } from "~/supabase-client.ts";
+import { ensureLoggedInProfileId, getProductsByProfileId } from "../queries.ts";
 import type { Route } from "./+types/dashboard-layout";
 
-export default function DashboardLayout(_: Route.ComponentProps) {
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { supabase } = createSSRClient(request);
+  const profile_id = await ensureLoggedInProfileId({ supabase, redirect_path: "/" });
+  const products = await getProductsByProfileId({ supabase, profile_id });
+  return { products };
+};
+
+export default function DashboardLayout({ loaderData }: Route.ComponentProps) {
   const location = useLocation();
+  const { products } = loaderData;
+
   return (
     <SidebarProvider className="flex min-h-full">
       <Sidebar variant="floating" className="pt-16">
@@ -41,17 +52,19 @@ export default function DashboardLayout(_: Route.ComponentProps) {
           <SidebarGroup>
             <SidebarGroupLabel>Product Analytics</SidebarGroupLabel>
             <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  isActive={location.pathname === "/my/dashboard/products/1"}
-                >
-                  <Link to="/my/dashboard/products/1">
-                    <PackageIcon className="size-4" />
-                    <span>Product 1</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              {products.map((product) => (
+                <SidebarMenuItem key={product.id}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={location.pathname === `/my/dashboard/products/${product.id}`}
+                  >
+                    <Link to={`/my/dashboard/products/${product.id}`}>
+                      <PackageIcon className="size-4" />
+                      <span>{product.name}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
             </SidebarMenu>
           </SidebarGroup>
         </SidebarContent>

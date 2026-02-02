@@ -9,6 +9,8 @@ import {
   ChartTooltipContent,
 } from "@ryugibo/ui";
 import { CartesianGrid, Line, LineChart, XAxis } from "@ryugibo/ui/recharts";
+import { createSSRClient } from "~/supabase-client.ts";
+import { ensureLoggedInProfileId, getDashboardStats } from "../queries.ts";
 import type { Route } from "./+types/dashboard-page";
 
 export const meta = (_: Route.MetaArgs) => [
@@ -16,14 +18,13 @@ export const meta = (_: Route.MetaArgs) => [
   { name: "description", content: "Dashboard" },
 ];
 
-const chartData = [
-  { month: "January", views: 186 },
-  { month: "February", views: 305 },
-  { month: "March", views: 237 },
-  { month: "April", views: 73 },
-  { month: "May", views: 209 },
-  { month: "June", views: 214 },
-];
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { supabase } = createSSRClient(request);
+  const profile_id = await ensureLoggedInProfileId({ supabase, redirect_path: "/" });
+
+  const { stats } = await getDashboardStats({ supabase, profile_id });
+  return { stats };
+};
 
 const chartConfig = {
   views: {
@@ -32,7 +33,9 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export default function DashboardPage() {
+export default function DashboardPage({ loaderData }: Route.ComponentProps) {
+  const { stats } = loaderData;
+
   return (
     <div className="space-y-5">
       <h1 className="text-2xl font-semibold mb-6">Dashboard</h1>
@@ -44,7 +47,7 @@ export default function DashboardPage() {
           <ChartContainer config={chartConfig}>
             <LineChart
               accessibilityLayer
-              data={chartData}
+              data={stats}
               margin={{
                 left: 12,
                 right: 12,
@@ -56,7 +59,7 @@ export default function DashboardPage() {
                 tickLine={false}
                 axisLine={false}
                 tickMargin={8}
-                tickFormatter={(value) => value.slice(0, 3)}
+                padding={{ left: 12, right: 12 }}
               />
               <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
               <Line

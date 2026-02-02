@@ -80,6 +80,29 @@ export const getProductsByUsername = async ({
   return data;
 };
 
+export const getProductsByProfileId = async ({
+  supabase,
+  profile_id,
+}: {
+  supabase: SupabaseClient<Database>;
+  profile_id: string;
+}) => {
+  const { data, error } = await supabase
+    .from("products")
+    .select(`
+      id,
+      name
+    `)
+    .eq("profile_id", profile_id)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+};
+
 export const getPostsByUsername = async ({
   supabase,
   username,
@@ -121,3 +144,19 @@ export async function ensureLoggedInProfileId({
   }
   throw redirect(redirect_path);
 }
+
+export const getDashboardStats = async ({
+  supabase,
+  profile_id,
+}: {
+  supabase: SupabaseClient<Database>;
+  profile_id: string;
+}) => {
+  const { error, data } = await supabase.rpc("get_dashboard_stats", { profile_id });
+
+  if (error) {
+    throw error;
+  }
+
+  return { stats: data };
+};

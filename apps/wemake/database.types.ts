@@ -874,6 +874,13 @@ export type Database = {
       }
     }
     Functions: {
+      get_dashboard_stats: {
+        Args: { profile_id: string }
+        Returns: {
+          month: string
+          views: number
+        }[]
+      }
       track_event: {
         Args: {
           event_data: Json
