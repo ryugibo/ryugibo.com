@@ -1,28 +1,16 @@
-import {
-  bigint,
-  boolean,
-  jsonb,
-  pgSchema,
-  primaryKey,
-  text,
-  timestamp,
-  uuid,
-} from "@ryugibo/db/core";
+import { authUsers } from "@ryugibo/db";
+import { bigint, boolean, jsonb, primaryKey, text, timestamp, uuid } from "@ryugibo/db/core";
 import { pg } from "~/db.ts";
 import { posts } from "~/features/community/schema.ts";
 import { products } from "~/features/products/schema.ts";
 import { ROLE_TYPES } from "./constants.ts";
-
-const users = pgSchema("auth").table("users", {
-  id: uuid().primaryKey(),
-});
 
 export const roles = pg.enum("role", ROLE_TYPES.map((type) => type.value) as [string, ...string[]]);
 
 export const profiles = pg.table("profiles", {
   id: uuid()
     .primaryKey()
-    .references(() => users.id, { onDelete: "cascade" }),
+    .references(() => authUsers.id, { onDelete: "cascade" }),
   avatar: text(),
   name: text().notNull(),
   username: text().notNull().unique(),

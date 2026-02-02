@@ -1,12 +1,11 @@
-import { pgSchema, text, timestamp, uuid } from "@ryugibo/db/core";
+import { authUsers } from "@ryugibo/db";
+import { text, timestamp, uuid } from "@ryugibo/db/core";
 import { pg } from "db";
-
-const users = pgSchema("auth").table("users", { id: uuid().primaryKey() });
 
 export const profiles = pg.table("profiles", {
   id: uuid()
     .primaryKey()
-    .references(() => users.id, { onDelete: "cascade" }),
+    .references(() => authUsers.id, { onDelete: "cascade" }),
   name: text().notNull(),
   username: text().notNull(),
   avatar: text(),
