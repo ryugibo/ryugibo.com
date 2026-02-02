@@ -1,5 +1,5 @@
-import { sql } from "@ryugibo/db";
-import { bigint, check, integer, text, timestamp, uuid } from "@ryugibo/db/core";
+import { anonRole, authenticatedRole, authUid, sql } from "@ryugibo/db";
+import { bigint, check, integer, pgPolicy, text, timestamp, uuid } from "@ryugibo/db/core";
 import { pg } from "~/db.ts";
 import { PRODUCT_STAGE } from "~/features/teams/constants.ts";
 import { profiles } from "~/features/users/schema.ts";
@@ -29,5 +29,16 @@ export const teams = pg.table(
     check("team_size_check", sql`${table.team_size} BETWEEN 1 AND 100`),
     check("equilty_split_check", sql`${table.equity_split} BETWEEN 1 AND 100`),
     check("product_description_check", sql`LENGTH(${table.product_description}) <= 200`),
+    pgPolicy("teams-insert-policy", {
+      for: "insert",
+      to: authenticatedRole,
+      as: "permissive",
+      withCheck: sql`${authUid} = ${table.team_leader_id}`,
+    }),
+    pgPolicy("teams-select-policy", {
+      for: "select",
+      to: [anonRole, authenticatedRole],
+      as: "permissive",
+    }),
   ],
 );
