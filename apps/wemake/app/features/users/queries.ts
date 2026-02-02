@@ -160,3 +160,19 @@ export const getDashboardStats = async ({
 
   return { stats: data };
 };
+
+export const getProductStats = async ({
+  supabase,
+  product_id,
+}: {
+  supabase: SupabaseClient<Database>;
+  product_id: string;
+}) => {
+  const { error, data } = await supabase.rpc("get_product_stats", { product_id });
+
+  if (error) {
+    throw error;
+  }
+
+  return { stats: data };
+};

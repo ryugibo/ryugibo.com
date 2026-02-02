@@ -9,6 +9,8 @@ import {
   ChartTooltipContent,
 } from "@ryugibo/ui";
 import { Area, AreaChart, CartesianGrid, XAxis } from "@ryugibo/ui/recharts";
+import { createSSRClient } from "~/supabase-client.ts";
+import { ensureLoggedInProfileId, getProductStats } from "../queries.ts";
 import type { Route } from "./+types/dashboard-product-page";
 
 export const meta: Route.MetaFunction = () => [
@@ -16,27 +18,28 @@ export const meta: Route.MetaFunction = () => [
   { name: "description", content: "Product Dashboard" },
 ];
 
-const chartData = [
-  { month: "January", views: 186, visitors: 123 },
-  { month: "February", views: 305, visitors: 234 },
-  { month: "March", views: 237, visitors: 345 },
-  { month: "April", views: 73, visitors: 456 },
-  { month: "May", views: 209, visitors: 567 },
-  { month: "June", views: 214, visitors: 678 },
-];
+export const loader = async ({ params, request }: Route.LoaderArgs) => {
+  const { supabase } = createSSRClient(request);
+  await ensureLoggedInProfileId({ supabase, redirect_path: "/" });
+  // @TODO: should ensure profile_id is the owner of the product
+  const { productId: product_id } = params;
+  const { stats } = await getProductStats({ supabase, product_id });
+  return { stats };
+};
 
 const chartConfig = {
-  views: {
+  product_views: {
     label: "Page views",
     color: "var(--chart-1)",
   },
-  visitors: {
+  product_visits: {
     label: "Visitors",
     color: "var(--chart-2)",
   },
 } satisfies ChartConfig;
 
-export default function DashboardProductPage() {
+export default function DashboardProductPage({ loaderData }: Route.ComponentProps) {
+  const { stats } = loaderData;
   return (
     <div className="space-y-5">
       <h1 className="text-2xl font-semibold mb-6">Analytics</h1>
@@ -48,7 +51,7 @@ export default function DashboardProductPage() {
           <ChartContainer config={chartConfig}>
             <AreaChart
               accessibilityLayer
-              data={chartData}
+              data={stats}
               margin={{
                 left: 12,
                 right: 12,
@@ -68,18 +71,18 @@ export default function DashboardProductPage() {
                 wrapperStyle={{ minWidth: "200px" }}
               />
               <Area
-                dataKey="views"
+                dataKey="product_views"
                 type="natural"
-                stroke="var(--color-views)"
-                fill="var(--color-views)"
+                stroke="var(--color-product-views)"
+                fill="var(--color-product-views)"
                 strokeWidth={2}
                 dot={false}
               />
               <Area
-                dataKey="visitors"
+                dataKey="product_visits"
                 type="natural"
-                stroke="var(--color-visitors)"
-                fill="var(--color-visitors)"
+                stroke="var(--color-product-visitors)"
+                fill="var(--color-product-visitors)"
                 strokeWidth={2}
                 dot={false}
               />
