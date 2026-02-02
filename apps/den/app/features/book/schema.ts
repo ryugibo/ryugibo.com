@@ -1,7 +1,7 @@
 import { bigint, text, timestamp } from "@ryugibo/db/core";
-import { schema } from "db";
+import { pg } from "db";
 
-export const books = schema.table("books", {
+export const books = pg.table("books", {
   id: bigint({ mode: "number" }).primaryKey().generatedAlwaysAsIdentity(),
   isbn: text(),
   title: text().notNull(),

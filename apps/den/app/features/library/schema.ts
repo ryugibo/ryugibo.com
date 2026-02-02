@@ -1,17 +1,17 @@
 import { bigint, text, timestamp, uuid } from "@ryugibo/db/core";
-import { schema } from "db";
+import { pg } from "db";
 import { books } from "~/features/book/schema.ts";
 import { BOOK_SOURCES, READ_STATE } from "~/features/library/constant.ts";
 import { profiles } from "~/features/profile/schema.ts";
 
-export const readState = schema.enum("read_state", READ_STATE);
+export const readState = pg.enum("read_state", READ_STATE);
 
-export const bookSources = schema.enum(
+export const bookSources = pg.enum(
   "book_sources",
   BOOK_SOURCES.map((source) => source.value) as [string, ...string[]],
 );
 
-export const profileBooks = schema.table("profile_books", {
+export const profileBooks = pg.table("profile_books", {
   profile_id: uuid().references(() => profiles.id, { onDelete: "cascade" }),
   book_id: bigint({ mode: "number" }).references(() => books.id, { onDelete: "cascade" }),
   source: bookSources().notNull(),
