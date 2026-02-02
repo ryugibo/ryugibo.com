@@ -1,0 +1,1 @@
+ALTER TABLE "wemake"."posts" ALTER COLUMN "profile_id" SET NOT NULL;
