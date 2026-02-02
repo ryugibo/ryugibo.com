@@ -5,10 +5,20 @@ import z from "zod";
 import SelectPair from "~/common/components/select-pair.tsx";
 import { createSSRClient } from "~/supabase-client.ts";
 import { ROLE_TYPES } from "../constants.ts";
+import { ensureLoggedInProfileId, getProfileById } from "../queries.ts";
 import type { Route } from "./+types/make-profile-page";
 
 export const meta: Route.MetaFunction = () => {
   return [{ title: "Create Profile | wemake" }];
+};
+
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { supabase } = createSSRClient(request);
+  const id = await ensureLoggedInProfileId({ supabase, redirect_path: "/" });
+  const profile = await getProfileById({ supabase, id });
+  if (profile) {
+    return redirect("/");
+  }
 };
 
 const formSchema = z.object({
