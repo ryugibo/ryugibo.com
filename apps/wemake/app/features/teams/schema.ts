@@ -39,6 +39,7 @@ export const teams = pg.table(
       for: "select",
       to: [anonRole, authenticatedRole],
       as: "permissive",
+      using: sql`true`,
     }),
   ],
 );
