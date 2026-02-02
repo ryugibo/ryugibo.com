@@ -17,4 +17,4 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-SELECT * FROM wemake.get_prodct_stats('3');
+SELECT * FROM wemake.get_product_stats('3');
