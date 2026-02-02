@@ -43,7 +43,10 @@ export const getProfileById = async ({
       id,
       name,
       username,
-      avatar
+      avatar,
+      headline,
+      bio,
+      role
     `)
     .eq("id", id)
     .single();

@@ -1,8 +1,14 @@
-import { Button, Input, Label } from "@ryugibo/ui";
+import { Alert, AlertDescription, AlertTitle, Button, Input, Label } from "@ryugibo/ui";
+import { parseZodError } from "@ryugibo/utils";
 import { useState } from "react";
 import { Form } from "react-router";
+import z from "zod";
 import InputPair from "~/common/components/input-pair.tsx";
 import SelectPair from "~/common/components/select-pair.tsx";
+import { createSSRClient } from "~/supabase-client.ts";
+import { ROLE_TYPES } from "../constants.ts";
+import { updateAvatar, updateProfile } from "../mutations.ts";
+import { ensureLoggedInProfileId, getProfileById } from "../queries.ts";
 import type { Route } from "./+types/settings-page";
 
 export const meta = () => [
@@ -10,8 +16,65 @@ export const meta = () => [
   { name: "description", content: "Settings" },
 ];
 
-export default function SettingsPage(_: Route.ComponentProps) {
-  const [avatar, setAvatar] = useState<string | null>(null);
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { supabase } = createSSRClient(request);
+  const id = await ensureLoggedInProfileId({ supabase, redirect_path: "/" });
+  const user = await getProfileById({ supabase, id });
+  return { user };
+};
+
+export const formSchema = z.object({
+  name: z.string().min(3).max(50),
+  role: z.enum(ROLE_TYPES.map((type) => type.value)),
+  headline: z.string().max(100).default(""),
+  bio: z.string().max(1000).default(""),
+});
+
+export const action = async ({ request }: Route.ActionArgs) => {
+  const { supabase } = createSSRClient(request);
+  const profile_id = await ensureLoggedInProfileId({ supabase, redirect_path: "/" });
+
+  const formData = await request.formData();
+  const avatarFile = formData.get("avatar");
+  if (avatarFile) {
+    if (
+      avatarFile instanceof File &&
+      avatarFile.type.startsWith("image/") &&
+      avatarFile.size <= 1024 * 1024 * 2
+    ) {
+      const { data: dataUpload, error } = await supabase.storage
+        .from("wemake.avatars")
+        .upload(`${profile_id}/${Date.now()}`, avatarFile, {
+          contentType: avatarFile.type,
+        });
+      if (error) {
+        return { avatarError: { message: error.message } };
+      }
+      const {
+        data: { publicUrl: avatar },
+      } = await supabase.storage.from("wemake.avatars").getPublicUrl(dataUpload.path);
+      await updateAvatar({ supabase, profile_id, avatar });
+    } else {
+      return { avatarError: { message: "Invalid avatar" } };
+    }
+  } else {
+    const {
+      success,
+      data,
+      error: errorFormZod,
+    } = formSchema.safeParse(Object.fromEntries(formData));
+    if (!success) {
+      const formError = parseZodError(errorFormZod);
+      return { formError };
+    }
+    await updateProfile({ supabase, profile_id, data });
+    return { success: true };
+  }
+};
+
+export default function SettingsPage({ loaderData, actionData }: Route.ComponentProps) {
+  const { user } = loaderData;
+  const [avatar, setAvatar] = useState<string | null>(user.avatar);
   const onChangeAvatar = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) {
       return;
@@ -25,8 +88,14 @@ export default function SettingsPage(_: Route.ComponentProps) {
     <div className="space-y-20">
       <div className="grid grid-cols-6 gap-40">
         <div className="col-span-4 flex flex-col gap-10">
+          {actionData?.success && (
+            <Alert>
+              <AlertTitle>Success</AlertTitle>
+              <AlertDescription>Profile updated successfully</AlertDescription>
+            </Alert>
+          )}
           <h2 className="text-2xl font-semibold">Edit Profile</h2>
-          <Form className="flex flex-col w-1/2 gap-5">
+          <Form method="post" className="flex flex-col w-1/2 gap-5">
             <InputPair
               label="Name"
               description="Your public name"
@@ -34,20 +103,29 @@ export default function SettingsPage(_: Route.ComponentProps) {
               name="name"
               required
               placeholder="John Doe"
+              defaultValue={user.name}
             />
+            {actionData?.formError?.name?.map(({ key, message }) => (
+              <Alert key={key}>
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>{message}</AlertDescription>
+              </Alert>
+            ))}
             <SelectPair
               label="Role"
               description="What role do you play in the community?"
               name="role"
               required
-              options={[
-                { label: "Developer", value: "developer" },
-                { label: "Designer", value: "designer" },
-                { label: "Manager", value: "manager" },
-                { label: "Other", value: "other" },
-              ]}
+              options={ROLE_TYPES}
               placeholder="Select your role"
+              defaultValue={user.role}
             />
+            {actionData?.formError?.role?.map(({ key, message }) => (
+              <Alert key={key}>
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>{message}</AlertDescription>
+              </Alert>
+            ))}
             <InputPair
               label="Headline"
               description="An introdunction to your profile"
@@ -56,7 +134,14 @@ export default function SettingsPage(_: Route.ComponentProps) {
               required
               textarea
               placeholder="Tell us about yourself"
+              defaultValue={user.headline || ""}
             />
+            {actionData?.formError?.headline?.map(({ key, message }) => (
+              <Alert key={key}>
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>{message}</AlertDescription>
+              </Alert>
+            ))}
             <InputPair
               label="Bio"
               description="Your public bio"
@@ -65,13 +150,24 @@ export default function SettingsPage(_: Route.ComponentProps) {
               required
               textarea
               placeholder="Tell us about yourself"
+              defaultValue={user.bio || ""}
             />
+            {actionData?.formError?.bio?.map(({ key, message }) => (
+              <Alert key={key}>
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>{message}</AlertDescription>
+              </Alert>
+            ))}
             <Button type="submit" className="w-full" size="lg">
               Update Profile
             </Button>
           </Form>
         </div>
-        <aside className="col-span-2 p-6 rounded-lg border shadow-md">
+        <Form
+          method="post"
+          encType="multipart/form-data"
+          className="col-span-2 p-6 rounded-lg border shadow-md"
+        >
           <div className="space-y-5">
             <Label htmlFor="avatar" className="flex flex-col items-start">
               Avatar
@@ -90,6 +186,12 @@ export default function SettingsPage(_: Route.ComponentProps) {
               required
               className="w-1/2"
             />
+            {actionData?.avatarError && (
+              <Alert>
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>{actionData.avatarError.message}</AlertDescription>
+              </Alert>
+            )}
             <div className="flex flex-col text-xs">
               <span className="text-muted-foreground">Recommended size: 128x128</span>
               <span className="text-muted-foreground">Allowed formats: PNG, JPEG</span>
@@ -97,7 +199,7 @@ export default function SettingsPage(_: Route.ComponentProps) {
             </div>
             <Button className="w-full">Update Avatar</Button>
           </div>
-        </aside>
+        </Form>
       </div>
     </div>
   );

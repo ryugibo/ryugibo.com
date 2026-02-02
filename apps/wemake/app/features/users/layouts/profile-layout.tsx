@@ -14,8 +14,9 @@ import {
   DialogTrigger,
   Textarea,
 } from "@ryugibo/ui";
-import { Form, Link, NavLink, Outlet } from "react-router";
+import { Form, Link, NavLink, Outlet, useOutletContext } from "react-router";
 import { z } from "zod";
+import type { OutletContext } from "~/common/layouts/home-layout.tsx";
 import { createSSRClient } from "~/supabase-client.ts";
 import { getProfileByUsername } from "../queries.ts";
 import type { Route } from "./+types/profile-layout";
@@ -23,6 +24,7 @@ import type { Route } from "./+types/profile-layout";
 const paramsSchema = z.object({
   username: z.string(),
 });
+
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
   const { success, data } = paramsSchema.safeParse(params);
   if (!success) {
@@ -35,7 +37,9 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
 };
 
 export default function ProfileLayout({ loaderData }: Route.ComponentProps) {
+  const { isLoggedIn, username } = useOutletContext<OutletContext>();
   const { profile } = loaderData;
+
   return (
     <div className="space-y-10">
       <div className="flex items-center gap-4">
@@ -46,29 +50,35 @@ export default function ProfileLayout({ loaderData }: Route.ComponentProps) {
         <div className="space-y-4">
           <div className="flex gap-2">
             <h1 className="text-2xl font-semibold">{profile.name}</h1>
-            <Button variant="outline" asChild>
-              <Link to="/my/settings">Edit Profile</Link>
-            </Button>
-            <Button variant="secondary">Follow</Button>
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="secondary">Message</Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Message</DialogTitle>
-                </DialogHeader>
-                <DialogDescription className="space-y-50">
-                  <span className="text-sm text-muted-foreground">
-                    Send a message to {profile.name}
-                  </span>
-                  <Form className="space-y-4">
-                    <Textarea placeholder="message" className="resize-none" rows={4} />
-                    <Button type="submit">Send</Button>
-                  </Form>
-                </DialogDescription>
-              </DialogContent>
-            </Dialog>
+            {isLoggedIn && username === profile.username && (
+              <Button variant="outline" asChild>
+                <Link to="/my/settings">Edit Profile</Link>
+              </Button>
+            )}
+            {isLoggedIn && username !== profile.username && (
+              <>
+                <Button variant="secondary">Follow</Button>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="secondary">Message</Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Message</DialogTitle>
+                    </DialogHeader>
+                    <DialogDescription className="space-y-50">
+                      <span className="text-sm text-muted-foreground">
+                        Send a message to {profile.name}
+                      </span>
+                      <Form className="space-y-4">
+                        <Textarea placeholder="message" className="resize-none" rows={4} />
+                        <Button type="submit">Send</Button>
+                      </Form>
+                    </DialogDescription>
+                  </DialogContent>
+                </Dialog>
+              </>
+            )}
           </div>
           <div className="flex gap-2 items-center">
             <span className="text-sm text-muted-foreground">@{profile.username}</span>

@@ -1,5 +1,6 @@
 export * from "./loading-button.tsx";
 
+export * from "./ui/alert.tsx";
 export * from "./ui/aspect-ratio.tsx";
 export * from "./ui/avatar.tsx";
 export * from "./ui/badge.tsx";
