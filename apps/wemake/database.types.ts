@@ -506,7 +506,7 @@ export type Database = {
           content: string
           created_at: string
           id: number
-          profile_id: string | null
+          profile_id: string
           title: string
           topic_id: number
           updated_at: string
@@ -516,7 +516,7 @@ export type Database = {
           content: string
           created_at?: string
           id?: never
-          profile_id?: string | null
+          profile_id: string
           title: string
           topic_id: number
           updated_at?: string
@@ -526,7 +526,7 @@ export type Database = {
           content?: string
           created_at?: string
           id?: never
-          profile_id?: string | null
+          profile_id?: string
           title?: string
           topic_id?: number
           updated_at?: string
@@ -890,6 +890,10 @@ export type Database = {
           product_views: number
           product_visits: number
         }[]
+      }
+      toggle_post_upvote: {
+        Args: { post_id: number; profile_id: string }
+        Returns: undefined
       }
       track_event: {
         Args: {
