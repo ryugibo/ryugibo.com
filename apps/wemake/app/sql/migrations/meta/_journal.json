@@ -155,6 +155,13 @@
       "when": 1770100588503,
       "tag": "0021_flat_omega_red",
       "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1770108436444,
+      "tag": "0022_powerful_cardiac",
+      "breakpoints": true
     }
   ]
 }
