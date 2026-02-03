@@ -1,7 +1,7 @@
 import { Alert, AlertDescription, AlertTitle, Button, Input, Label } from "@ryugibo/ui";
 import { parseZodError } from "@ryugibo/utils";
 import { useState } from "react";
-import { Form, redirect } from "react-router";
+import { data, Form, redirect } from "react-router";
 import z from "zod";
 import InputPair from "~/common/components/input-pair.tsx";
 import SelectPair from "~/common/components/select-pair.tsx";
@@ -17,14 +17,14 @@ export const meta = () => [
 ];
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
-  const { supabase, getAuthUser } = createSSRClient(request);
+  const { supabase, getAuthUser, headers } = createSSRClient(request);
   const user = await getAuthUser();
   if (!user) {
-    throw redirect("/");
+    return redirect("/", { headers });
   }
   const { id } = user;
   const profile = await getProfileById({ supabase, id });
-  return { user: profile };
+  return data({ user: profile }, { headers });
 };
 
 export const formSchema = z.object({
@@ -35,10 +35,10 @@ export const formSchema = z.object({
 });
 
 export const action = async ({ request }: Route.ActionArgs) => {
-  const { supabase, getAuthUser } = createSSRClient(request);
+  const { supabase, getAuthUser, headers } = createSSRClient(request);
   const user = await getAuthUser();
   if (!user) {
-    throw redirect("/");
+    return redirect("/", { headers });
   }
   const { id: profile_id } = user;
 

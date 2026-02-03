@@ -47,7 +47,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
       { status: 400 },
     );
   }
-  const { supabase } = createSSRClient(request);
+  const { supabase, headers } = createSSRClient(request);
   const [topics, posts] = await Promise.all([
     getTopics({ supabase }),
     getPosts({
@@ -59,7 +59,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
       topic: dataSort.topic,
     }),
   ]);
-  return { topics, posts };
+  return data({ topics, posts }, { headers });
 };
 
 export default function CommunityPage({ loaderData }: Route.ComponentProps) {

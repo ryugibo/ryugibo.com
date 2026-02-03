@@ -1,5 +1,5 @@
 import { cn } from "@ryugibo/ui";
-import { Outlet, redirect } from "react-router";
+import { data, Outlet, redirect } from "react-router";
 import { getProfileById } from "~/features/users/queries.ts";
 import { createSSRClient } from "~/supabase-client.ts";
 import Navigation from "../components/navigation.tsx";
@@ -8,10 +8,10 @@ import type { Route } from "./+types/home-layout";
 export const loader = async ({ request }: Route.LoaderArgs) => {
   const url = new URL(request.url);
   const { origin } = url;
-  const { supabase, getAuthUser } = createSSRClient(request);
+  const { supabase, getAuthUser, headers } = createSSRClient(request);
   const user = await getAuthUser();
   if (!user) {
-    return { isLoggedIn: false, profile: null, origin };
+    return data({ isLoggedIn: false, profile: null, origin }, { headers });
   }
   const { id } = user;
 
@@ -19,14 +19,14 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   try {
     const profile = await getProfileById({ supabase, id });
     if (isMakeProfilePage) {
-      return redirect("/");
+      return redirect("/", { headers });
     }
-    return { isLoggedIn: true, profile, origin };
+    return data({ isLoggedIn: true, profile, origin }, { headers });
   } catch (_error) {
     if (!isMakeProfilePage) {
-      return redirect("/make-profile");
+      return redirect("/make-profile", { headers });
     }
-    return { isLoggedIn: false, profile: null, origin };
+    return data({ isLoggedIn: false, profile: null, origin }, { headers });
   }
 };
 

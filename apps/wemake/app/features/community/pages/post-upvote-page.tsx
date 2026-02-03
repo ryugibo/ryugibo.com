@@ -17,10 +17,10 @@ export const action = async ({ params, request }: Route.ActionArgs) => {
     throw new Error("Invalid params");
   }
   const { id: post_id } = data;
-  const { supabase, getAuthUser } = await createSSRClient(request);
+  const { supabase, getAuthUser, headers } = await createSSRClient(request);
   const user = await getAuthUser();
   if (!user) {
-    throw redirect("/");
+    return redirect("/", { headers });
   }
   const { id: profile_id } = user;
   await toggleUpvote({

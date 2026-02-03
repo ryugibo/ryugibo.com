@@ -16,10 +16,10 @@ export const meta = () => {
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
   const { pathname } = new URL(request.url);
-  const { getAuthUser } = createSSRClient(request);
+  const { getAuthUser, headers } = createSSRClient(request);
   const user = await getAuthUser();
   if (!user) {
-    throw redirect(resolveParentPath({ pathname, steps: 1 }));
+    throw redirect(resolveParentPath({ pathname, steps: 1 }), { headers });
   }
 };
 
@@ -41,10 +41,10 @@ export const formSchema = z.object({
 export const action = async ({ request }: Route.ActionArgs) => {
   const formData = await request.formData();
   const { pathname } = new URL(request.url);
-  const { supabase, getAuthUser } = createSSRClient(request);
+  const { supabase, getAuthUser, headers } = createSSRClient(request);
   const user = await getAuthUser();
   if (!user) {
-    throw redirect(resolveParentPath({ pathname, steps: 1 }));
+    return redirect(resolveParentPath({ pathname, steps: 1 }), { headers });
   }
   const { id: profile_id } = user;
   const { success, error: formZodError, data } = formSchema.safeParse(Object.fromEntries(formData));
@@ -53,7 +53,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
     return { formError };
   }
   const { id } = await createTeam({ supabase, data, team_leader_id: profile_id });
-  return redirect(`/teams/${id}`);
+  return redirect(`/teams/${id}`, { headers });
 };
 
 export default function TeamSubmitPage({ actionData }: Route.ComponentProps) {

@@ -4,12 +4,12 @@ import { getProfileById } from "../queries.ts";
 import type { Route } from "./+types/my-profile-page";
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
-  const { supabase, getAuthUser } = createSSRClient(request);
+  const { supabase, getAuthUser, headers } = createSSRClient(request);
   const user = await getAuthUser();
   if (!user) {
-    throw redirect("/");
+    return redirect("/", { headers });
   }
   const { id } = user;
   const profile = await getProfileById({ supabase, id });
-  return redirect(`/users/${profile.username}`);
+  return redirect(`/users/${profile.username}`, { headers });
 };

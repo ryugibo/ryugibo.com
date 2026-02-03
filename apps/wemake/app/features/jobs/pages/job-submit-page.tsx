@@ -19,10 +19,10 @@ export const meta = () => {
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
   const { pathname } = new URL(request.url);
-  const { getAuthUser } = createSSRClient(request);
+  const { getAuthUser, headers } = createSSRClient(request);
   const user = await getAuthUser();
   if (!user) {
-    throw redirect(resolveParentPath({ pathname, steps: 1 }));
+    return redirect(resolveParentPath({ pathname, steps: 1 }), { headers });
   }
 };
 
@@ -67,7 +67,12 @@ export const formSchema = z.object({
 });
 
 export const action = async ({ request }: Route.ActionArgs) => {
-  const { supabase } = createSSRClient(request);
+  const { pathname } = new URL(request.url);
+  const { supabase, getAuthUser, headers } = createSSRClient(request);
+  const user = await getAuthUser();
+  if (!user) {
+    return redirect(resolveParentPath({ pathname, steps: 1 }), { headers });
+  }
   const formData = await request.formData();
   const { success, data, error: formZodError } = formSchema.safeParse(Object.fromEntries(formData));
   if (!success) {
@@ -75,7 +80,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
     return { formError };
   }
   const { id } = await createJob({ supabase, data });
-  return redirect(`/jobs/${id}`);
+  return redirect(`/jobs/${id}`, { headers });
 };
 
 export default function JobSubmitPage({ actionData }: Route.ComponentProps) {

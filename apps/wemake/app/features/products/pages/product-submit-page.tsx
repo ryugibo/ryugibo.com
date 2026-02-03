@@ -1,7 +1,7 @@
 import { Button, Input, Label } from "@ryugibo/ui";
 import { parseZodError, resolveParentPath } from "@ryugibo/utils";
 import { useState } from "react";
-import { Form, redirect } from "react-router";
+import { data, Form, redirect } from "react-router";
 import z from "zod";
 import { Hero } from "~/common/components/hero.tsx";
 import InputPair from "~/common/components/input-pair.tsx";
@@ -18,10 +18,10 @@ export const meta = () => [
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
   const { pathname } = new URL(request.url);
-  const { supabase, getAuthUser } = createSSRClient(request);
+  const { supabase, getAuthUser, headers } = createSSRClient(request);
   const user = await getAuthUser();
   if (!user) {
-    throw redirect(resolveParentPath({ pathname, steps: 1 }));
+    throw redirect(resolveParentPath({ pathname, steps: 1 }), { headers });
   }
   const categories = await getCategories({ supabase });
   return { categories };
@@ -42,34 +42,44 @@ export const formSchema = z.object({
 
 export const action = async ({ request }: Route.ActionArgs) => {
   const { pathname } = new URL(request.url);
-  const { supabase, getAuthUser } = createSSRClient(request);
+  const { supabase, getAuthUser, headers } = createSSRClient(request);
   const user = await getAuthUser();
   if (!user) {
-    throw redirect(resolveParentPath({ pathname, steps: 1 }));
+    throw redirect(resolveParentPath({ pathname, steps: 1 }), { headers });
   }
   const { id: profileId } = user;
   const formData = await request.formData();
   const {
     success,
-    data,
-    error: errorFormZod,
-  } = formSchema.safeParse(Object.fromEntries(formData.entries()));
+    data: dataForm,
+    error: formZodError,
+  } = formSchema.safeParse(Object.fromEntries(formData));
+
   if (!success) {
-    const formError = parseZodError(errorFormZod);
-    return { formError };
+    const formError = parseZodError(formZodError);
+    return data({ formError, uploadError: null }, { headers });
   }
-  const { icon, ...rest } = data;
+
+  const { icon, ...rest } = dataForm;
 
   const { data: dataUpload, error: errorUpload } = await supabase.storage
     .from("wemake.icons")
     .upload(`${profileId}/${Date.now()}`, icon, { contentType: icon.type });
+
   if (errorUpload) {
     console.log(errorUpload.message);
-    return { uploadError: { icon: [{ key: 0, message: "Failed to upload icon" }] } };
+    return data(
+      {
+        formError: null,
+        uploadError: { icon: [{ key: 0, message: "Failed to upload icon" }] },
+      },
+      { headers },
+    );
   }
+
   const {
     data: { publicUrl: iconUrl },
-  } = await supabase.storage.from("wemake.icons").getPublicUrl(dataUpload.path);
+  } = supabase.storage.from("wemake.icons").getPublicUrl(dataUpload.path);
 
   const { id } = await createProduct({
     supabase,
@@ -84,7 +94,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
       category_id: rest.category,
     },
   });
-  return redirect(`/products/${id}`);
+  return redirect(`/products/${id}`, { headers });
 };
 
 export default function ProductSubmitPage({ loaderData, actionData }: Route.ComponentProps) {

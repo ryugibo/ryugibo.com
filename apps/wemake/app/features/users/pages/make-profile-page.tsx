@@ -13,15 +13,15 @@ export const meta: Route.MetaFunction = () => {
 };
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
-  const { supabase, getAuthUser } = createSSRClient(request);
+  const { supabase, getAuthUser, headers } = createSSRClient(request);
   const user = await getAuthUser();
   if (!user) {
-    throw redirect("/");
+    return redirect("/", { headers });
   }
   const { id } = user;
   const profile = await getProfileById({ supabase, id });
   if (profile) {
-    return redirect("/");
+    return redirect("/", { headers });
   }
 };
 

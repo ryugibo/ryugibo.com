@@ -14,7 +14,7 @@ import {
   DialogTrigger,
   Textarea,
 } from "@ryugibo/ui";
-import { Form, Link, NavLink, Outlet, useOutletContext } from "react-router";
+import { data, Form, Link, NavLink, Outlet, useOutletContext } from "react-router";
 import { z } from "zod";
 import type { OutletContext } from "~/common/layouts/home-layout.tsx";
 import { createSSRClient } from "~/supabase-client.ts";
@@ -26,14 +26,14 @@ const paramsSchema = z.object({
 });
 
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
-  const { success, data } = paramsSchema.safeParse(params);
+  const { success, data: dataParams } = paramsSchema.safeParse(params);
   if (!success) {
     throw new Error("Invalid params");
   }
-  const { username } = data;
-  const { supabase } = createSSRClient(request);
+  const { username } = dataParams;
+  const { supabase, headers } = createSSRClient(request);
   const profile = await getProfileByUsername({ supabase, username });
-  return { profile };
+  return data({ profile }, { headers });
 };
 
 export default function ProfileLayout({ loaderData }: Route.ComponentProps) {

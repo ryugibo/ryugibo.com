@@ -9,7 +9,7 @@ import {
   ChartTooltipContent,
 } from "@ryugibo/ui";
 import { Area, AreaChart, CartesianGrid, XAxis } from "@ryugibo/ui/recharts";
-import { redirect } from "react-router";
+import { data, redirect } from "react-router";
 import { createSSRClient } from "~/supabase-client.ts";
 import { getProductStats } from "../queries.ts";
 import type { Route } from "./+types/dashboard-product-page";
@@ -19,16 +19,16 @@ export const meta: Route.MetaFunction = () => [
   { name: "description", content: "Product Dashboard" },
 ];
 
-export const loader = async ({ params, request }: Route.LoaderArgs) => {
-  const { supabase, getAuthUser } = createSSRClient(request);
+export const loader = async ({ request, params }: Route.LoaderArgs) => {
+  const { productId: product_id } = params;
+  const { supabase, getAuthUser, headers } = createSSRClient(request);
   const user = await getAuthUser();
   if (!user) {
-    throw redirect("/");
+    return redirect("/", { headers });
   }
   // @TODO: should ensure profile_id is the owner of the product
-  const { productId: product_id } = params;
   const { stats } = await getProductStats({ supabase, product_id });
-  return { stats };
+  return data({ stats }, { headers });
 };
 
 const chartConfig = {
