@@ -17,7 +17,7 @@ import { ChevronUpIcon, DotIcon } from "@ryugibo/ui/icons";
 import { parseZodError } from "@ryugibo/utils";
 import { DateTime } from "luxon";
 import { useEffect, useRef } from "react";
-import { Form, Link, useOutletContext } from "react-router";
+import { Form, Link, useFetcher, useOutletContext } from "react-router";
 import z from "zod";
 import type { OutletContext } from "~/common/layouts/home-layout.tsx";
 import { Reply } from "~/features/community/components/reply.tsx";
@@ -92,6 +92,7 @@ export default function PostPage({ loaderData, actionData }: Route.ComponentProp
   const { isLoggedIn, name, avatar } = useOutletContext<OutletContext>();
   const { post, replies } = loaderData;
   const formRef = useRef<HTMLFormElement>(null);
+  const fetcher = useFetcher();
 
   useEffect(() => {
     if (actionData?.success && actionData.post_id === post.id) {
@@ -123,13 +124,18 @@ export default function PostPage({ loaderData, actionData }: Route.ComponentProp
       <div className="grid grid-cols-6 gap-40 items-start">
         <div className="col-span-4 space-y-10">
           <div className="flex w-full items-start gap-10">
-            <Button
-              variant="outline"
-              className={cn("flex flex-col h-14", post.is_upvoted && "border-primary text-primary")}
-            >
-              <ChevronUpIcon className="size-4 shrink-0" />
-              <span>{post.upvotes}</span>
-            </Button>
+            <fetcher.Form method="post" action={`/community/${post.id}/upvote`}>
+              <Button
+                variant="outline"
+                className={cn(
+                  "flex flex-col h-14",
+                  post.is_upvoted && "border-primary text-primary",
+                )}
+              >
+                <ChevronUpIcon className="size-4 shrink-0" />
+                <span>{post.upvotes}</span>
+              </Button>
+            </fetcher.Form>
             <div className="space-y-20 w-full">
               <div className="space-y-2">
                 <h2 className="text-3xl font-bold">{post.title}</h2>

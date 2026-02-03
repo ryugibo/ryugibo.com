@@ -56,3 +56,22 @@ export const createReply = async ({
     throw error;
   }
 };
+
+export const toggleUpvote = async ({
+  supabase,
+  profile_id,
+  post_id,
+}: {
+  supabase: SupabaseClient<Database>;
+  profile_id: string;
+  post_id: number;
+}) => {
+  const { error } = await supabase.rpc("toggle_post_upvote", {
+    post_id,
+    profile_id,
+  });
+
+  if (error) {
+    throw error;
+  }
+};

@@ -11,7 +11,7 @@ import {
 } from "@ryugibo/ui";
 import { ChevronUpIcon, DotIcon } from "@ryugibo/ui/icons";
 import { DateTime } from "luxon";
-import { Link } from "react-router";
+import { Link, useFetcher } from "react-router";
 
 interface PostCardProps {
   id: number;
@@ -36,6 +36,11 @@ export function PostCard({
   upvotesCount = 0,
   isUpvoted = false,
 }: PostCardProps) {
+  const fetcher = useFetcher();
+  const onClickUpvote = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    fetcher.submit(null, { method: "post", action: `/community/${id}/upvote` });
+  };
   return (
     <Link to={`/community/${id}`} className="block">
       <Card
@@ -67,6 +72,7 @@ export function PostCard({
         {expanded && (
           <CardFooter className="flex justify-end">
             <Button
+              onClick={onClickUpvote}
               variant="outline"
               className={cn("flex flex-col h-14", isUpvoted && "border-primary text-primary")}
             >
