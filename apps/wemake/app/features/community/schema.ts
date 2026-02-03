@@ -28,7 +28,7 @@ export const topics = pg.table(
     }),
     pgPolicy("topics-select-policy", {
       for: "select",
-      to: anonRole,
+      to: [anonRole, authenticatedRole],
       as: "permissive",
       using: sql`true`,
     }),
@@ -72,7 +72,7 @@ export const posts = pg.table(
     }),
     pgPolicy("posts-select-policy", {
       for: "select",
-      to: anonRole,
+      to: [anonRole, authenticatedRole],
       as: "permissive",
       using: sql`true`,
     }),
@@ -105,7 +105,7 @@ export const postUpvotes = pg.table(
     }),
     pgPolicy("post_upvotes-select-policy", {
       for: "select",
-      to: anonRole,
+      to: [anonRole, authenticatedRole],
       as: "permissive",
       using: sql`true`,
     }),
