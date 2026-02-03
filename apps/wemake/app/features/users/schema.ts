@@ -97,6 +97,7 @@ export const notifications = pg.table(
     product_id: bigint({ mode: "number" }).references(() => products.id, { onDelete: "cascade" }),
     post_id: bigint({ mode: "number" }).references(() => posts.id, { onDelete: "cascade" }),
     type: notificationTypes().notNull(),
+    seen: boolean().default(false).notNull(),
     created_at: timestamp().notNull().defaultNow(),
   },
   () => [
