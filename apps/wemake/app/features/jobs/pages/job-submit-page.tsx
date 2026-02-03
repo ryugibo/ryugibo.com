@@ -6,7 +6,6 @@ import { Hero } from "~/common/components/hero.tsx";
 import InputPair from "~/common/components/input-pair.tsx";
 import SelectPair from "~/common/components/select-pair.tsx";
 import { JOB_TYPES, LOCATION_TYPES, SALARY_RANGE } from "~/features/jobs/constants.ts";
-import { ensureLoggedInProfileId } from "~/features/users/queries.ts";
 import { createSSRClient } from "~/supabase-client.ts";
 import { createJob } from "../mutation.ts";
 import type { Route } from "./+types/job-submit-page";
@@ -20,12 +19,11 @@ export const meta = () => {
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
   const { pathname } = new URL(request.url);
-  const { supabase } = createSSRClient(request);
-
-  await ensureLoggedInProfileId({
-    supabase,
-    redirect_path: resolveParentPath({ pathname, steps: 1 }),
-  });
+  const { getAuthUser } = createSSRClient(request);
+  const user = await getAuthUser();
+  if (!user) {
+    throw redirect(resolveParentPath({ pathname, steps: 1 }));
+  }
 };
 
 export const formSchema = z.object({

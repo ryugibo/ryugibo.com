@@ -5,7 +5,6 @@ import { DateTime } from "luxon";
 import { data, Form, redirect } from "react-router";
 import { z } from "zod";
 import { Hero } from "~/common/components/hero.tsx";
-import { ensureLoggedInProfileId } from "~/features/users/queries.ts";
 import { createSSRClient } from "~/supabase-client.ts";
 import { claimIdea } from "../mutations.ts";
 import { getIdea } from "../queries.ts";
@@ -48,8 +47,12 @@ const formSchema = z.object({
 
 export const action = async ({ request }: Route.ActionArgs) => {
   const { pathname } = new URL(request.url);
-  const { supabase } = createSSRClient(request);
-  const claimed_by = await ensureLoggedInProfileId({ supabase, redirect_path: pathname });
+  const { supabase, getAuthUser } = createSSRClient(request);
+  const user = await getAuthUser();
+  if (!user) {
+    throw redirect(pathname);
+  }
+  const { id: claimed_by } = user;
   const { success, data } = formSchema.safeParse(Object.fromEntries(await request.formData()));
   if (!success) {
     throw new Error("Invalid form");

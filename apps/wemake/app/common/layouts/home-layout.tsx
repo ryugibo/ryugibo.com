@@ -8,26 +8,25 @@ import type { Route } from "./+types/home-layout";
 export const loader = async ({ request }: Route.LoaderArgs) => {
   const url = new URL(request.url);
   const { origin } = url;
-  const { supabase } = createSSRClient(request);
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { supabase, getAuthUser } = createSSRClient(request);
+  const user = await getAuthUser();
   if (!user) {
-    return { user, profile: null, origin };
+    return { isLoggedIn: false, profile: null, origin };
   }
+  const { id } = user;
 
   const isMakeProfilePage = url.pathname === "/make-profile";
   try {
-    const profile = await getProfileById({ supabase, id: user.id });
+    const profile = await getProfileById({ supabase, id });
     if (isMakeProfilePage) {
       return redirect("/");
     }
-    return { user, profile, origin };
+    return { isLoggedIn: true, profile, origin };
   } catch (_error) {
     if (!isMakeProfilePage) {
       return redirect("/make-profile");
     }
-    return { user, profile: null, origin };
+    return { isLoggedIn: false, profile: null, origin };
   }
 };
 
@@ -46,7 +45,7 @@ export type OutletContext =
     };
 
 export default function HomeLayout({ loaderData }: Route.ComponentProps) {
-  const isLoggedIn = loaderData.user !== null;
+  const { isLoggedIn } = loaderData;
   return (
     <div className={cn("py-28 px-5 lg:px-20")}>
       <Navigation

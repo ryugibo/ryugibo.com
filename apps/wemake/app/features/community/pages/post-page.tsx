@@ -21,7 +21,6 @@ import { Form, Link, useFetcher, useOutletContext } from "react-router";
 import z from "zod";
 import type { OutletContext } from "~/common/layouts/home-layout.tsx";
 import { Reply } from "~/features/community/components/reply.tsx";
-import { getLoggedInProfileId } from "~/features/users/queries.ts";
 import { createSSRClient } from "~/supabase-client.ts";
 import { createReply } from "../mutations.ts";
 import { getPostById, getReplies } from "../queries.ts";
@@ -66,7 +65,7 @@ const formSchema = z
   );
 
 export const action = async ({ request }: Route.ActionArgs) => {
-  const { supabase } = createSSRClient(request);
+  const { supabase, getAuthUser } = createSSRClient(request);
   const {
     success: successForm,
     data: dataForm,
@@ -77,13 +76,14 @@ export const action = async ({ request }: Route.ActionArgs) => {
     return { success: false, formError };
   }
   const { content, post_id, parent_id } = dataForm;
-  const profile_id = await getLoggedInProfileId({ supabase });
-  if (!profile_id) {
+  const user = await getAuthUser();
+  if (!user) {
     return {
       success: false,
       formError: { content: [{ key: "content", message: "You must be logged in to reply" }] },
     };
   }
+  const { id: profile_id } = user;
   await createReply({ supabase, profile_id, post_id, parent_id, content });
   return { success: true, post_id, parent_id };
 };

@@ -6,7 +6,6 @@ import z from "zod";
 import { Hero } from "~/common/components/hero.tsx";
 import InputPair from "~/common/components/input-pair.tsx";
 import SelectPair from "~/common/components/select-pair.tsx";
-import { ensureLoggedInProfileId } from "~/features/users/queries.ts";
 import { createSSRClient } from "~/supabase-client.ts";
 import { createProduct } from "../mutations.ts";
 import { getCategories } from "../queries.ts";
@@ -19,11 +18,11 @@ export const meta = () => [
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
   const { pathname } = new URL(request.url);
-  const { supabase } = createSSRClient(request);
-  await ensureLoggedInProfileId({
-    supabase,
-    redirect_path: resolveParentPath({ pathname, steps: 1 }),
-  });
+  const { supabase, getAuthUser } = createSSRClient(request);
+  const user = await getAuthUser();
+  if (!user) {
+    throw redirect(resolveParentPath({ pathname, steps: 1 }));
+  }
   const categories = await getCategories({ supabase });
   return { categories };
 };
@@ -43,11 +42,12 @@ export const formSchema = z.object({
 
 export const action = async ({ request }: Route.ActionArgs) => {
   const { pathname } = new URL(request.url);
-  const { supabase } = createSSRClient(request);
-  const profileId = await ensureLoggedInProfileId({
-    supabase,
-    redirect_path: resolveParentPath({ pathname, steps: 1 }),
-  });
+  const { supabase, getAuthUser } = createSSRClient(request);
+  const user = await getAuthUser();
+  if (!user) {
+    throw redirect(resolveParentPath({ pathname, steps: 1 }));
+  }
+  const { id: profileId } = user;
   const formData = await request.formData();
   const {
     success,

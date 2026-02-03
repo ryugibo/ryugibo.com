@@ -9,8 +9,9 @@ import {
   ChartTooltipContent,
 } from "@ryugibo/ui";
 import { Area, AreaChart, CartesianGrid, XAxis } from "@ryugibo/ui/recharts";
+import { redirect } from "react-router";
 import { createSSRClient } from "~/supabase-client.ts";
-import { ensureLoggedInProfileId, getProductStats } from "../queries.ts";
+import { getProductStats } from "../queries.ts";
 import type { Route } from "./+types/dashboard-product-page";
 
 export const meta: Route.MetaFunction = () => [
@@ -19,8 +20,11 @@ export const meta: Route.MetaFunction = () => [
 ];
 
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
-  const { supabase } = createSSRClient(request);
-  await ensureLoggedInProfileId({ supabase, redirect_path: "/" });
+  const { supabase, getAuthUser } = createSSRClient(request);
+  const user = await getAuthUser();
+  if (!user) {
+    throw redirect("/");
+  }
   // @TODO: should ensure profile_id is the owner of the product
   const { productId: product_id } = params;
   const { stats } = await getProductStats({ supabase, product_id });

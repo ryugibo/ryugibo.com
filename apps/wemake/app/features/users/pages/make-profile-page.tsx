@@ -5,7 +5,7 @@ import z from "zod";
 import SelectPair from "~/common/components/select-pair.tsx";
 import { createSSRClient } from "~/supabase-client.ts";
 import { ROLE_TYPES } from "../constants.ts";
-import { ensureLoggedInProfileId, getProfileById } from "../queries.ts";
+import { getProfileById } from "../queries.ts";
 import type { Route } from "./+types/make-profile-page";
 
 export const meta: Route.MetaFunction = () => {
@@ -13,8 +13,12 @@ export const meta: Route.MetaFunction = () => {
 };
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
-  const { supabase } = createSSRClient(request);
-  const id = await ensureLoggedInProfileId({ supabase, redirect_path: "/" });
+  const { supabase, getAuthUser } = createSSRClient(request);
+  const user = await getAuthUser();
+  if (!user) {
+    throw redirect("/");
+  }
+  const { id } = user;
   const profile = await getProfileById({ supabase, id });
   if (profile) {
     return redirect("/");
@@ -38,17 +42,15 @@ export const action = async ({ request }: Route.ActionArgs) => {
   }
 
   const { name, username, role, bio, headline } = data;
-  const { supabase } = createSSRClient(request);
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
+  const { supabase, getAuthUser } = createSSRClient(request);
+  const user = await getAuthUser();
   if (!user) {
-    return redirect("/login");
+    throw redirect("/");
   }
+  const { id: user_id } = user;
 
   const { error: insertError } = await supabase.from("profiles").insert({
-    id: user.id,
+    id: user_id,
     name,
     username,
     role: role as (typeof ROLE_TYPES)[number]["value"],

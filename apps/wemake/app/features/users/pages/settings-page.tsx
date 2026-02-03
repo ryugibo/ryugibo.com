@@ -1,14 +1,14 @@
 import { Alert, AlertDescription, AlertTitle, Button, Input, Label } from "@ryugibo/ui";
 import { parseZodError } from "@ryugibo/utils";
 import { useState } from "react";
-import { Form } from "react-router";
+import { Form, redirect } from "react-router";
 import z from "zod";
 import InputPair from "~/common/components/input-pair.tsx";
 import SelectPair from "~/common/components/select-pair.tsx";
 import { createSSRClient } from "~/supabase-client.ts";
 import { ROLE_TYPES } from "../constants.ts";
 import { updateAvatar, updateProfile } from "../mutations.ts";
-import { ensureLoggedInProfileId, getProfileById } from "../queries.ts";
+import { getProfileById } from "../queries.ts";
 import type { Route } from "./+types/settings-page";
 
 export const meta = () => [
@@ -17,10 +17,14 @@ export const meta = () => [
 ];
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
-  const { supabase } = createSSRClient(request);
-  const id = await ensureLoggedInProfileId({ supabase, redirect_path: "/" });
-  const user = await getProfileById({ supabase, id });
-  return { user };
+  const { supabase, getAuthUser } = createSSRClient(request);
+  const user = await getAuthUser();
+  if (!user) {
+    throw redirect("/");
+  }
+  const { id } = user;
+  const profile = await getProfileById({ supabase, id });
+  return { user: profile };
 };
 
 export const formSchema = z.object({
@@ -31,8 +35,12 @@ export const formSchema = z.object({
 });
 
 export const action = async ({ request }: Route.ActionArgs) => {
-  const { supabase } = createSSRClient(request);
-  const profile_id = await ensureLoggedInProfileId({ supabase, redirect_path: "/" });
+  const { supabase, getAuthUser } = createSSRClient(request);
+  const user = await getAuthUser();
+  if (!user) {
+    throw redirect("/");
+  }
+  const { id: profile_id } = user;
 
   const formData = await request.formData();
   const avatarFile = formData.get("avatar");

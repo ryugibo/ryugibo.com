@@ -1,5 +1,4 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { redirect } from "react-router";
 import type { Database } from "~/supabase-client.ts";
 import { PRODUCT_SELECT } from "../products/queries.ts";
 
@@ -125,28 +124,6 @@ export const getPostsByUsername = async ({
 
   return data;
 };
-
-export async function getLoggedInProfileId({ supabase }: { supabase: SupabaseClient<Database> }) {
-  const { data, error } = await supabase.auth.getUser();
-  if (error) {
-    return null;
-  }
-  return data.user.id;
-}
-
-export async function ensureLoggedInProfileId({
-  supabase,
-  redirect_path,
-}: {
-  supabase: SupabaseClient<Database>;
-  redirect_path: string;
-}) {
-  const profile_id = await getLoggedInProfileId({ supabase });
-  if (profile_id) {
-    return profile_id;
-  }
-  throw redirect(redirect_path);
-}
 
 export const getDashboardStats = async ({
   supabase,

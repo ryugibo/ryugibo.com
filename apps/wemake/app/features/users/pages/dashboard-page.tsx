@@ -9,8 +9,9 @@ import {
   ChartTooltipContent,
 } from "@ryugibo/ui";
 import { CartesianGrid, Line, LineChart, XAxis } from "@ryugibo/ui/recharts";
+import { redirect } from "react-router";
 import { createSSRClient } from "~/supabase-client.ts";
-import { ensureLoggedInProfileId, getDashboardStats } from "../queries.ts";
+import { getDashboardStats } from "../queries.ts";
 import type { Route } from "./+types/dashboard-page";
 
 export const meta = (_: Route.MetaArgs) => [
@@ -19,9 +20,12 @@ export const meta = (_: Route.MetaArgs) => [
 ];
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
-  const { supabase } = createSSRClient(request);
-  const profile_id = await ensureLoggedInProfileId({ supabase, redirect_path: "/" });
-
+  const { supabase, getAuthUser } = createSSRClient(request);
+  const user = await getAuthUser();
+  if (!user) {
+    throw redirect("/");
+  }
+  const { id: profile_id } = user;
   const { stats } = await getDashboardStats({ supabase, profile_id });
   return { stats };
 };

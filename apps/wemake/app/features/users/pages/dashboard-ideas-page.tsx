@@ -1,7 +1,7 @@
+import { redirect } from "react-router";
 import { IdeaCard } from "~/features/ideas/components/idea-card.tsx";
 import { getClaimedIdeas } from "~/features/ideas/queries.ts";
 import { createSSRClient } from "~/supabase-client.ts";
-import { ensureLoggedInProfileId } from "../queries.ts";
 import type { Route } from "./+types/dashboard-ideas-page";
 
 export const meta = (_: Route.MetaArgs) => [
@@ -10,8 +10,12 @@ export const meta = (_: Route.MetaArgs) => [
 ];
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
-  const { supabase } = createSSRClient(request);
-  const claimed_by = await ensureLoggedInProfileId({ supabase, redirect_path: "/" });
+  const { supabase, getAuthUser } = createSSRClient(request);
+  const user = await getAuthUser();
+  if (!user) {
+    throw redirect("/");
+  }
+  const { id: claimed_by } = user;
   const ideas = await getClaimedIdeas({ supabase, claimed_by });
   return { ideas };
 };

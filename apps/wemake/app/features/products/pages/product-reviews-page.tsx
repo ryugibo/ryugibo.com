@@ -1,11 +1,10 @@
 import { Button, Dialog, DialogTrigger } from "@ryugibo/ui";
 import { parseZodError } from "@ryugibo/utils";
 import { useEffect, useState } from "react";
-import { useOutletContext } from "react-router";
+import { redirect, useOutletContext } from "react-router";
 import z from "zod";
 import CreateReviewDialog from "~/common/components/create-review-dialog.tsx";
 import { ReviewCard } from "~/features/products/components/review-card.tsx";
-import { ensureLoggedInProfileId } from "~/features/users/queries.ts";
 import { createSSRClient } from "~/supabase-client.ts";
 import { createReview } from "../mutations.ts";
 import { getReviewsByProductId } from "../queries.ts";
@@ -38,8 +37,12 @@ const reviewSchema = z.object({
 
 export const action = async ({ request }: Route.ActionArgs) => {
   const { pathname } = new URL(request.url);
-  const { supabase } = createSSRClient(request);
-  const profile_id = await ensureLoggedInProfileId({ supabase, redirect_path: pathname });
+  const { supabase, getAuthUser } = createSSRClient(request);
+  const user = await getAuthUser();
+  if (!user) {
+    throw redirect(pathname);
+  }
+  const { id: profile_id } = user;
   const {
     success,
     data,

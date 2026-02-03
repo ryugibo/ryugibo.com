@@ -1,5 +1,5 @@
+import { redirect } from "react-router";
 import z from "zod";
-import { ensureLoggedInProfileId } from "~/features/users/queries.ts";
 import { createSSRClient } from "~/supabase-client.ts";
 import { toggleUpvote } from "../mutations.ts";
 import type { Route } from "./+types/post-upvote-page";
@@ -17,8 +17,12 @@ export const action = async ({ params, request }: Route.ActionArgs) => {
     throw new Error("Invalid params");
   }
   const { id: post_id } = data;
-  const { supabase } = await createSSRClient(request);
-  const profile_id = await ensureLoggedInProfileId({ supabase, redirect_path: "/" });
+  const { supabase, getAuthUser } = await createSSRClient(request);
+  const user = await getAuthUser();
+  if (!user) {
+    throw redirect("/");
+  }
+  const { id: profile_id } = user;
   await toggleUpvote({
     supabase,
     profile_id,

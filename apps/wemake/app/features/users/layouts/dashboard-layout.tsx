@@ -9,14 +9,18 @@ import {
   SidebarProvider,
 } from "@ryugibo/ui";
 import { HomeIcon, PackageIcon, SparkleIcon } from "@ryugibo/ui/icons";
-import { Link, Outlet, useLocation } from "react-router";
+import { Link, Outlet, redirect, useLocation } from "react-router";
 import { createSSRClient } from "~/supabase-client.ts";
-import { ensureLoggedInProfileId, getProductsByProfileId } from "../queries.ts";
+import { getProductsByProfileId } from "../queries.ts";
 import type { Route } from "./+types/dashboard-layout";
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
-  const { supabase } = createSSRClient(request);
-  const profile_id = await ensureLoggedInProfileId({ supabase, redirect_path: "/" });
+  const { supabase, getAuthUser } = createSSRClient(request);
+  const user = await getAuthUser();
+  if (!user) {
+    throw redirect("/");
+  }
+  const { id: profile_id } = user;
   const products = await getProductsByProfileId({ supabase, profile_id });
   return { products };
 };
