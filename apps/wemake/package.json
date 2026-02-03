@@ -14,16 +14,17 @@
     "lint:routes": "rr-kit check-types"
   },
   "dependencies": {
-    "@ryugibo/db": "workspace:*",
-    "@ryugibo/ui": "workspace:*",
-    "@ryugibo/vite-config": "workspace:*",
-    "@ryugibo/utils": "workspace:*",
     "@icons-pack/react-simple-icons": "catalog:",
     "@react-router/node": "catalog:",
     "@react-router/serve": "catalog:",
+    "@ryugibo/db": "workspace:*",
+    "@ryugibo/ui": "workspace:*",
+    "@ryugibo/utils": "workspace:*",
+    "@ryugibo/vite-config": "workspace:*",
     "@supabase/ssr": "catalog:",
     "@supabase/supabase-js": "catalog:",
     "isbot": "catalog:",
+    "lodash-es": "^4.17.23",
     "luxon": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
@@ -31,9 +32,10 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@ryugibo/react-router-kit": "workspace:*",
     "@react-router/dev": "catalog:",
+    "@ryugibo/react-router-kit": "workspace:*",
     "@tailwindcss/vite": "catalog:",
+    "@types/lodash-es": "^4.17.12",
     "@types/luxon": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
