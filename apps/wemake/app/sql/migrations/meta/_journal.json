@@ -148,6 +148,13 @@
       "when": 1770094100942,
       "tag": "0020_gray_demogoblin",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1770100588503,
+      "tag": "0021_flat_omega_red",
+      "breakpoints": true
     }
   ]
 }
