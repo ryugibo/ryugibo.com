@@ -1,0 +1,1 @@
+ALTER TABLE "wemake"."notifications" ADD COLUMN "seen" boolean DEFAULT false NOT NULL;
