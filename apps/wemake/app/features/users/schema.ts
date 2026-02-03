@@ -54,8 +54,12 @@ export const profiles = pg.table(
 export const follows = pg.table(
   "follows",
   {
-    follower_id: uuid().references(() => profiles.id, { onDelete: "cascade" }),
-    following_id: uuid().references(() => profiles.id, { onDelete: "cascade" }),
+    follower_id: uuid()
+      .notNull()
+      .references(() => profiles.id, { onDelete: "cascade" }),
+    following_id: uuid()
+      .notNull()
+      .references(() => profiles.id, { onDelete: "cascade" }),
     created_at: timestamp().notNull().defaultNow(),
   },
   (table) => [
@@ -80,17 +84,12 @@ export const follows = pg.table(
   ],
 );
 
-export const notificationTypes = pg.enum("notification_type", [
-  "follow",
-  "review",
-  "reply",
-  "mention",
-]);
+export const notificationTypes = pg.enum("notification_type", ["follow", "review", "reply"]);
 
 export const notifications = pg.table(
   "notifications",
   {
-    id: uuid().primaryKey(),
+    id: bigint({ mode: "number" }).primaryKey().generatedAlwaysAsIdentity(),
     target_id: uuid()
       .notNull()
       .references(() => profiles.id, { onDelete: "cascade" }),
