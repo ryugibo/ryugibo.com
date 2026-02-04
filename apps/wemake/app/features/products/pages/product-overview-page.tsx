@@ -1,14 +1,14 @@
-import { useOutletContext } from "react-router";
+import { data, useOutletContext } from "react-router";
 import { createSSRClient } from "~/supabase-client.ts";
 import type { Route } from "./+types/product-overview-page";
 
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
-  const { supabase } = createSSRClient(request);
+  const { supabase, headers } = createSSRClient(request);
   await supabase.rpc("track_event", {
     event_type: "product_view",
     event_data: { product_id: params.id },
   });
-  return null;
+  return data(null, { headers });
 };
 
 export default function ProductOverviewPage(_: Route.ComponentProps) {

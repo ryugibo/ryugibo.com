@@ -36,6 +36,14 @@ export const formSchema = z.object({
 
 export const action = async ({ request }: Route.ActionArgs) => {
   const { supabase, getAuthUser, headers } = createSSRClient(request);
+
+  const defaultReturn = {
+    data: null,
+    formError: null,
+    avatarError: null,
+    success: false,
+  };
+
   const user = await getAuthUser();
   if (!user) {
     return redirect("/", { headers });
@@ -44,39 +52,36 @@ export const action = async ({ request }: Route.ActionArgs) => {
 
   const formData = await request.formData();
   const avatarFile = formData.get("avatar");
-  if (avatarFile) {
-    if (
-      avatarFile instanceof File &&
-      avatarFile.type.startsWith("image/") &&
-      avatarFile.size <= 1024 * 1024 * 2
-    ) {
+  if (avatarFile && avatarFile instanceof File && avatarFile.size > 0) {
+    if (avatarFile.type.startsWith("image/") && avatarFile.size <= 1024 * 1024 * 2) {
       const { data: dataUpload, error } = await supabase.storage
         .from("wemake.avatars")
         .upload(`${profile_id}/${Date.now()}`, avatarFile, {
           contentType: avatarFile.type,
         });
       if (error) {
-        return { avatarError: { message: error.message } };
+        return data({ ...defaultReturn, avatarError: { message: error.message } }, { headers });
       }
       const {
         data: { publicUrl: avatar },
       } = await supabase.storage.from("wemake.avatars").getPublicUrl(dataUpload.path);
       await updateAvatar({ supabase, profile_id, avatar });
+      return data({ ...defaultReturn, success: true }, { headers });
     } else {
-      return { avatarError: { message: "Invalid avatar" } };
+      return data({ ...defaultReturn, avatarError: { message: "Invalid avatar" } }, { headers });
     }
   } else {
     const {
-      success,
-      data,
+      success: successForm,
+      data: dataForm,
       error: errorFormZod,
     } = formSchema.safeParse(Object.fromEntries(formData));
-    if (!success) {
+    if (!successForm) {
       const formError = parseZodError(errorFormZod);
-      return { formError };
+      return data({ ...defaultReturn, formError }, { headers });
     }
-    await updateProfile({ supabase, profile_id, data });
-    return { success: true };
+    await updateProfile({ supabase, profile_id, data: dataForm });
+    return data({ ...defaultReturn, success: true }, { headers });
   }
 };
 

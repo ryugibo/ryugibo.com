@@ -1,7 +1,7 @@
 import { Input, Label, LoadingButton } from "@ryugibo/ui";
 import { parseZodError } from "@ryugibo/utils";
-import { Form, redirect, useNavigation } from "react-router";
-import z from "zod";
+import { data, Form, redirect, useNavigation } from "react-router";
+import { z } from "zod";
 import SelectPair from "~/common/components/select-pair.tsx";
 import { createSSRClient } from "~/supabase-client.ts";
 import { ROLE_TYPES } from "../constants.ts";
@@ -23,6 +23,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   if (profile) {
     return redirect("/", { headers });
   }
+  return data(null, { headers });
 };
 
 const formSchema = z.object({
@@ -34,18 +35,29 @@ const formSchema = z.object({
 });
 
 export const action = async ({ request }: Route.ActionArgs) => {
+  const { supabase, headers, getAuthUser } = createSSRClient(request);
+
+  const defaultReturn = {
+    data: null,
+    formError: null,
+    insertError: null,
+  };
+
   const formData = await request.formData();
-  const { success, error: formZodError, data } = formSchema.safeParse(Object.fromEntries(formData));
-  if (!success) {
-    const formError = parseZodError(formZodError);
-    return { formError };
+  const {
+    success: successForm,
+    error: errorForm,
+    data: dataForm,
+  } = formSchema.safeParse(Object.fromEntries(formData));
+
+  if (!successForm) {
+    return data({ ...defaultReturn, formError: parseZodError(errorForm) }, { headers });
   }
 
-  const { name, username, role, bio, headline } = data;
-  const { supabase, getAuthUser } = createSSRClient(request);
+  const { name, username, role, bio, headline } = dataForm;
   const user = await getAuthUser();
   if (!user) {
-    throw redirect("/");
+    return redirect("/", { headers });
   }
   const { id: user_id } = user;
 
@@ -61,14 +73,20 @@ export const action = async ({ request }: Route.ActionArgs) => {
   if (insertError) {
     const { code } = insertError;
     if (code === "23505") {
-      return { formError: { username: [{ key: 0, message: "Username already exists" }] } };
+      return data(
+        {
+          ...defaultReturn,
+          insertError: { username: [{ key: 0, message: "Username already exists" }] },
+        },
+        { headers },
+      );
     } else {
       console.log(insertError);
-      return { insertError };
+      return data(defaultReturn, { headers });
     }
   }
 
-  return redirect("/");
+  return redirect("/", { headers });
 };
 
 export default function MakeProfilePage({ actionData }: Route.ComponentProps) {
@@ -99,6 +117,11 @@ export default function MakeProfilePage({ actionData }: Route.ComponentProps) {
           <p className="text-xs text-muted-foreground">This will be your unique handle.</p>
         </div>
         {actionData?.formError?.username?.map(({ key, message }) => (
+          <p key={key} className="text-sm text-red-500">
+            {message}
+          </p>
+        ))}
+        {actionData?.insertError?.username?.map(({ key, message }) => (
           <p key={key} className="text-sm text-red-500">
             {message}
           </p>

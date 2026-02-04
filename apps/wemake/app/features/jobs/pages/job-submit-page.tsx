@@ -1,6 +1,6 @@
 import { LoadingButton } from "@ryugibo/ui";
 import { parseZodError, resolveParentPath } from "@ryugibo/utils";
-import { Form, redirect, useNavigation } from "react-router";
+import { data, Form, redirect, useNavigation } from "react-router";
 import z from "zod";
 import { Hero } from "~/common/components/hero.tsx";
 import InputPair from "~/common/components/input-pair.tsx";
@@ -24,6 +24,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   if (!user) {
     return redirect(resolveParentPath({ pathname, steps: 1 }), { headers });
   }
+  return data(null, { headers });
 };
 
 export const formSchema = z.object({
@@ -69,17 +70,26 @@ export const formSchema = z.object({
 export const action = async ({ request }: Route.ActionArgs) => {
   const { pathname } = new URL(request.url);
   const { supabase, getAuthUser, headers } = createSSRClient(request);
+
+  const defaultReturn = {
+    data: null,
+    formError: null,
+  };
+
   const user = await getAuthUser();
   if (!user) {
     return redirect(resolveParentPath({ pathname, steps: 1 }), { headers });
   }
-  const formData = await request.formData();
-  const { success, data, error: formZodError } = formSchema.safeParse(Object.fromEntries(formData));
-  if (!success) {
-    const formError = parseZodError(formZodError);
-    return { formError };
+  const {
+    success: successForm,
+    data: dataForm,
+    error: formZodError,
+  } = formSchema.safeParse(Object.fromEntries(await request.formData()));
+
+  if (!successForm) {
+    return data({ ...defaultReturn, formError: parseZodError(formZodError) }, { headers });
   }
-  const { id } = await createJob({ supabase, data });
+  const { id } = await createJob({ supabase, data: dataForm });
   return redirect(`/jobs/${id}`, { headers });
 };
 

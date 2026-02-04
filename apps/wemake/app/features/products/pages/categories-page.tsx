@@ -1,18 +1,21 @@
+import { data } from "react-router";
 import { Hero } from "~/common/components/hero.tsx";
 import { CategoryCard } from "~/features/products/components/category-card.tsx";
 import { createSSRClient } from "~/supabase-client.ts";
 import { getCategories } from "../queries.ts";
-import type { Route } from "./+types/categories-page.ts";
+import type { Route } from "./+types/categories-page";
 
-export const meta = (_: Route.MetaArgs) => [
-  { title: "Categories | wemake" },
-  { name: "description", content: "Product Categories" },
-];
+export const meta = () => {
+  return [
+    { title: "Categories | wemake" },
+    { name: "description", content: "Browse products by category" },
+  ];
+};
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
-  const { supabase } = createSSRClient(request);
+  const { supabase, headers } = createSSRClient(request);
   const categories = await getCategories({ supabase });
-  return { categories };
+  return data({ categories }, { headers });
 };
 
 export default function CategoriesPage({ loaderData }: Route.ComponentProps) {

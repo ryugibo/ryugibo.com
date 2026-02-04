@@ -1,6 +1,6 @@
 import { Button, buttonVariants, cn } from "@ryugibo/ui";
 import { ChevronUpIcon, StarIcon } from "@ryugibo/ui/icons";
-import { Link, NavLink, Outlet } from "react-router";
+import { data, Link, NavLink, Outlet } from "react-router";
 import { z } from "zod";
 import { createSSRClient } from "~/supabase-client.ts";
 import { getProductById } from "../queries.ts";
@@ -18,14 +18,14 @@ const paramsSchema = z.object({
 });
 
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
-  const { success, data } = paramsSchema.safeParse(params);
+  const { success, data: paramsData } = paramsSchema.safeParse(params);
   if (!success) {
     throw new Error("Invalid params");
   }
-  const { id } = data;
-  const { supabase } = createSSRClient(request);
+  const { id } = paramsData;
+  const { supabase, headers } = createSSRClient(request);
   const product = await getProductById({ supabase, id: Number(id) });
-  return { product };
+  return data({ product }, { headers });
 };
 export default function ProductLayout({ loaderData }: Route.ComponentProps) {
   const { product } = loaderData;

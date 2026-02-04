@@ -1,3 +1,4 @@
+import { data } from "react-router";
 import z from "zod";
 import { Hero } from "~/common/components/hero.tsx";
 import { ProductPagination } from "~/common/components/product-pagination.tsx";
@@ -22,12 +23,12 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
     throw new Response("Invalid params", { status: 400 });
   }
   const { id } = dataParams;
-  const { supabase } = createSSRClient(request);
+  const { supabase, headers } = createSSRClient(request);
   const category = await getCategoryById({ supabase, id: Number(id) });
   const products = await getProductsByCategory({ supabase, id: Number(id), page });
   const totalPage = await getCategoryPages({ supabase, id: Number(id) });
 
-  return { category, products, totalPage };
+  return data({ category, products, totalPage }, { headers });
 };
 
 export default function CategoryPage({ loaderData }: Route.ComponentProps) {

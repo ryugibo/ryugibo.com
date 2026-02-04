@@ -1,6 +1,6 @@
 import { LoadingButton } from "@ryugibo/ui";
 import { parseZodError, resolveParentPath } from "@ryugibo/utils";
-import { Form, redirect, useNavigation } from "react-router";
+import { data, Form, redirect, useNavigation } from "react-router";
 import z from "zod";
 import { Hero } from "~/common/components/hero.tsx";
 import InputPair from "~/common/components/input-pair.tsx";
@@ -23,13 +23,13 @@ export const meta = () => {
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
   const { pathname } = new URL(request.url);
-  const { supabase, getAuthUser } = createSSRClient(request);
+  const { supabase, headers, getAuthUser } = createSSRClient(request);
   const user = await getAuthUser();
   if (!user) {
-    throw redirect(resolveParentPath({ pathname, steps: 1 }));
+    return redirect(resolveParentPath({ pathname, steps: 1 }), { headers });
   }
   const topics = await getTopics({ supabase });
-  return { topics };
+  return data({ topics }, { headers });
 };
 
 const formSchema = z.object({
@@ -43,20 +43,32 @@ const formSchema = z.object({
 
 export const action = async ({ request }: Route.ActionArgs) => {
   const { pathname } = new URL(request.url);
-  const { supabase, getAuthUser } = createSSRClient(request);
+  const { supabase, headers, getAuthUser } = createSSRClient(request);
+
+  const defaultReturn = {
+    data: null,
+    formError: null,
+  };
+
   const user = await getAuthUser();
   if (!user) {
-    throw redirect(resolveParentPath({ pathname, steps: 1 }));
+    return redirect(resolveParentPath({ pathname, steps: 1 }), { headers });
   }
   const { id: profile_id } = user;
 
   const formData = await request.formData();
-  const { success, data, error: formZodError } = formSchema.safeParse(Object.fromEntries(formData));
+  const {
+    success,
+    data: dataForm,
+    error: formZodError,
+  } = formSchema.safeParse(Object.fromEntries(formData));
+
   if (!success) {
     const formError = parseZodError(formZodError);
-    return { formError };
+    return data({ ...defaultReturn, formError }, { headers });
   }
-  const { title, category, content } = data;
+
+  const { title, category, content } = dataForm;
   const { topic_id } = await getTopicIdBySlug({ supabase, slug: category });
   const post = await createPost({
     supabase,
@@ -65,7 +77,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
     topic_id,
     content,
   });
-  return redirect(`/community/${post.id}`);
+  return redirect(`/community/${post.id}`, { headers });
 };
 
 export default function PostSubmitPage({ loaderData, actionData }: Route.ComponentProps) {

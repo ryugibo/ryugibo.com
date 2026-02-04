@@ -42,10 +42,10 @@ export function Reply({
   const actionData = useActionData<typeof action>();
 
   useEffect(() => {
-    if (actionData?.success && actionData.parent_id === id) {
+    if (actionData?.data?.parent_id === id) {
       setReplying(false);
     }
-  }, [actionData]);
+  }, [actionData, id]);
 
   return (
     <div className="flex flex-col gap-2 w-full">

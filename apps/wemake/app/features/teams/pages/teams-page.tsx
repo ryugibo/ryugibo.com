@@ -1,3 +1,4 @@
+import { data } from "react-router";
 import { Hero } from "~/common/components/hero.tsx";
 import { TeamCard } from "~/features/teams/components/team-card.tsx";
 import { getTeams } from "~/features/teams/queries.ts";
@@ -9,9 +10,9 @@ export const meta = () => {
 };
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
-  const { supabase } = createSSRClient(request);
+  const { supabase, headers } = createSSRClient(request);
   const teams = await getTeams({ supabase, limit: 7 });
-  return { teams };
+  return data({ teams }, { headers });
 };
 export default function TeamsPage({ loaderData }: Route.ComponentProps) {
   return (

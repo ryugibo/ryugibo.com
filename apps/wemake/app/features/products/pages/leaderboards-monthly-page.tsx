@@ -41,7 +41,7 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
     throw data({ error_code: "future_date", message: "future date" }, { status: 400 });
   }
   const url = new URL(request.url);
-  const { supabase } = createSSRClient(request);
+  const { supabase, headers } = createSSRClient(request);
   const page = Number(url.searchParams.get("page")) || 1;
   const products = await getProductsByDateRange({
     supabase,
@@ -54,11 +54,14 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
     startDate: date.startOf("month"),
     endDate: date.endOf("month"),
   });
-  return {
-    dateObject: parsedData,
-    products,
-    totalPages,
-  };
+  return data(
+    {
+      dateObject: parsedData,
+      products,
+      totalPages,
+    },
+    { headers },
+  );
 };
 
 export default function LeaderboardsMonthlyPage({ loaderData }: Route.ComponentProps) {

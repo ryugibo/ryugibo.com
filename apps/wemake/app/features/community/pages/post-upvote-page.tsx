@@ -1,4 +1,4 @@
-import { redirect } from "react-router";
+import { data, redirect } from "react-router";
 import z from "zod";
 import { createSSRClient } from "~/supabase-client.ts";
 import { toggleUpvote } from "../mutations.ts";
@@ -12,12 +12,12 @@ export const action = async ({ params, request }: Route.ActionArgs) => {
   if (request.method !== "POST") {
     throw new Response("Invalid method", { status: 405 });
   }
-  const { success, data } = paramsSchema.safeParse(params);
+  const { success, data: dataParams } = paramsSchema.safeParse(params);
   if (!success) {
     throw new Error("Invalid params");
   }
-  const { id: post_id } = data;
-  const { supabase, getAuthUser, headers } = await createSSRClient(request);
+  const { id: post_id } = dataParams;
+  const { supabase, headers, getAuthUser } = await createSSRClient(request);
   const user = await getAuthUser();
   if (!user) {
     return redirect("/", { headers });
@@ -28,4 +28,6 @@ export const action = async ({ params, request }: Route.ActionArgs) => {
     profile_id,
     post_id,
   });
+
+  return data(null, { headers });
 };

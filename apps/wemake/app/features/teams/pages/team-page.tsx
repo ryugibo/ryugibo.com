@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@ryugibo/ui";
-import { Form } from "react-router";
+import { data, Form } from "react-router";
 import z from "zod";
 import { Hero } from "~/common/components/hero.tsx";
 import InputPair from "~/common/components/input-pair.tsx";
@@ -24,15 +24,16 @@ export const meta = () => {
 const paramsSchema = z.object({
   id: z.coerce.number(),
 });
+
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
-  const { success, data } = paramsSchema.safeParse(params);
+  const { success, data: dataParams } = paramsSchema.safeParse(params);
   if (!success) {
     throw new Error("Invalid params");
   }
-  const { id } = data;
-  const { supabase } = createSSRClient(request);
+  const { id } = dataParams;
+  const { supabase, headers } = createSSRClient(request);
   const team = await getTeamById({ supabase, id: Number(id) });
-  return { team };
+  return data({ team }, { headers });
 };
 
 export default function TeamPage({ loaderData }: Route.ComponentProps) {

@@ -1,3 +1,4 @@
+import { data } from "react-router";
 import { z } from "zod";
 import { PostCard } from "~/features/community/components/post-card.tsx";
 import { createSSRClient } from "~/supabase-client.ts";
@@ -9,14 +10,14 @@ const paramsSchema = z.object({
 });
 
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
-  const { success, data } = paramsSchema.safeParse(params);
+  const { success, data: dataParams } = paramsSchema.safeParse(params);
   if (!success) {
     throw new Error("Invalid params");
   }
-  const { username } = data;
-  const { supabase } = createSSRClient(request);
+  const { username } = dataParams;
+  const { supabase, headers } = createSSRClient(request);
   const posts = await getPostsByUsername({ supabase, username });
-  return { posts };
+  return data({ posts }, { headers });
 };
 
 export default function ProfilePostsPage({ loaderData }: Route.ComponentProps) {

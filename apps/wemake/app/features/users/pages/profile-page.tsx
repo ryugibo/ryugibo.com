@@ -1,4 +1,4 @@
-import { useOutletContext } from "react-router";
+import { data, useOutletContext } from "react-router";
 import z from "zod";
 import { createSSRClient } from "~/supabase-client.ts";
 import type { Route } from "./+types/profile-page";
@@ -13,16 +13,16 @@ const paramsSchema = z.object({
 });
 
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
-  const { success, data } = paramsSchema.safeParse(params);
+  const { success, data: dataParams } = paramsSchema.safeParse(params);
+  const { supabase, headers } = createSSRClient(request);
   if (success) {
-    const { supabase } = createSSRClient(request);
     await supabase.rpc("track_event", {
       event_type: "profile_view",
-      event_data: { username: data.username },
+      event_data: { username: dataParams.username },
     });
   }
 
-  return null;
+  return data(null, { headers });
 };
 
 export default function ProfilePage() {

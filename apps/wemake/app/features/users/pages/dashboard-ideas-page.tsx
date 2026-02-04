@@ -1,4 +1,4 @@
-import { redirect } from "react-router";
+import { data, redirect } from "react-router";
 import { IdeaCard } from "~/features/ideas/components/idea-card.tsx";
 import { getClaimedIdeas } from "~/features/ideas/queries.ts";
 import { createSSRClient } from "~/supabase-client.ts";
@@ -10,14 +10,14 @@ export const meta = (_: Route.MetaArgs) => [
 ];
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
-  const { supabase, getAuthUser } = createSSRClient(request);
+  const { supabase, getAuthUser, headers } = createSSRClient(request);
   const user = await getAuthUser();
   if (!user) {
-    throw redirect("/");
+    return redirect("/", { headers });
   }
   const { id: claimed_by } = user;
   const ideas = await getClaimedIdeas({ supabase, claimed_by });
-  return { ideas };
+  return data({ ideas }, { headers });
 };
 
 export default function DashboardIdeasPage({ loaderData }: Route.ComponentProps) {

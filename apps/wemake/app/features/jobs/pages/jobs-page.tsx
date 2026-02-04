@@ -29,9 +29,9 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   if (!success) {
     throw data({ error_code: "invalid_params", message: "invalid params" }, { status: 400 });
   }
-  const { supabase } = createSSRClient(request);
+  const { supabase, headers } = createSSRClient(request);
   const jobs = await getJobs({ supabase, limit: 11, ...dataFilter });
-  return { jobs };
+  return data({ jobs }, { headers });
 };
 
 export default function JobsPage({ loaderData }: Route.ComponentProps) {

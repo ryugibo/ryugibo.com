@@ -1,6 +1,6 @@
 import { Button } from "@ryugibo/ui";
 import { DotIcon, EyeIcon, HeartIcon } from "@ryugibo/ui/icons";
-import { resolveParentPath } from "@ryugibo/utils";
+import { parseZodError, resolveParentPath } from "@ryugibo/utils";
 import { DateTime } from "luxon";
 import { data, Form, redirect } from "react-router";
 import { z } from "zod";
@@ -27,18 +27,21 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
   if (!successId) {
     throw data({ error_code: "idea_not_found", message: "Idea not found" }, { status: 404 });
   }
-  const { supabase } = createSSRClient(request);
+  const { supabase, headers } = createSSRClient(request);
   const idea = await getIdea({ supabase, id: dataId.ideaId });
   if (!idea) {
-    throw data({ error_code: "idea_not_found", message: "Idea not found" }, { status: 404 });
+    throw data(
+      { error_code: "idea_not_found", message: "Idea not found" },
+      { status: 404, headers },
+    );
   }
   if (idea.is_claimed) {
     const { pathname } = new URL(request.url);
     const redirectPath = resolveParentPath({ pathname, steps: 1 });
-    throw redirect(redirectPath);
+    return redirect(redirectPath, { headers });
   }
 
-  return { idea };
+  return data({ idea }, { headers });
 };
 
 const formSchema = z.object({
@@ -47,19 +50,31 @@ const formSchema = z.object({
 
 export const action = async ({ request }: Route.ActionArgs) => {
   const { pathname } = new URL(request.url);
-  const { supabase, getAuthUser } = createSSRClient(request);
+  const { supabase, headers, getAuthUser } = createSSRClient(request);
+
+  const defaultReturn = {
+    data: null,
+    formError: null,
+  };
+
   const user = await getAuthUser();
   if (!user) {
-    throw redirect(pathname);
+    return redirect(pathname, { headers });
   }
   const { id: claimed_by } = user;
-  const { success, data } = formSchema.safeParse(Object.fromEntries(await request.formData()));
-  if (!success) {
-    throw new Error("Invalid form");
+  const {
+    success: successForm,
+    data: dataForm,
+    error: errorZodForm,
+  } = formSchema.safeParse(Object.fromEntries(await request.formData()));
+
+  if (!successForm) {
+    const formError = parseZodError(errorZodForm);
+    return data({ ...defaultReturn, formError }, { headers });
   }
-  const { id } = data;
+  const { id } = dataForm;
   await claimIdea({ supabase, id, claimed_by });
-  return redirect(`/my/dashboard/ideas`);
+  return redirect(`/my/dashboard/ideas`, { headers });
 };
 
 export default function IdeaPage({ loaderData }: Route.ComponentProps) {

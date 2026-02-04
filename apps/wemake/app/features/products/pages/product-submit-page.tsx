@@ -21,10 +21,10 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   const { supabase, getAuthUser, headers } = createSSRClient(request);
   const user = await getAuthUser();
   if (!user) {
-    throw redirect(resolveParentPath({ pathname, steps: 1 }), { headers });
+    return redirect(resolveParentPath({ pathname, steps: 1 }), { headers });
   }
   const categories = await getCategories({ supabase });
-  return { categories };
+  return data({ categories }, { headers });
 };
 
 export const formSchema = z.object({
@@ -43,21 +43,27 @@ export const formSchema = z.object({
 export const action = async ({ request }: Route.ActionArgs) => {
   const { pathname } = new URL(request.url);
   const { supabase, getAuthUser, headers } = createSSRClient(request);
+
+  const defaultReturn = {
+    data: null,
+    formError: null,
+    uploadError: null,
+  };
+
   const user = await getAuthUser();
   if (!user) {
-    throw redirect(resolveParentPath({ pathname, steps: 1 }), { headers });
+    return redirect(resolveParentPath({ pathname, steps: 1 }), { headers });
   }
   const { id: profileId } = user;
   const formData = await request.formData();
   const {
-    success,
+    success: successForm,
     data: dataForm,
     error: formZodError,
   } = formSchema.safeParse(Object.fromEntries(formData));
 
-  if (!success) {
-    const formError = parseZodError(formZodError);
-    return data({ formError, uploadError: null }, { headers });
+  if (!successForm) {
+    return data({ ...defaultReturn, formError: parseZodError(formZodError) }, { headers });
   }
 
   const { icon, ...rest } = dataForm;
@@ -70,7 +76,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
     console.log(errorUpload.message);
     return data(
       {
-        formError: null,
+        ...defaultReturn,
         uploadError: { icon: [{ key: 0, message: "Failed to upload icon" }] },
       },
       { headers },

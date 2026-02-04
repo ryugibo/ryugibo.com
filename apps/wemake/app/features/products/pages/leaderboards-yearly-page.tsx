@@ -40,7 +40,7 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
     throw data({ error_code: "future_date", message: "future date" }, { status: 400 });
   }
   const url = new URL(request.url);
-  const { supabase } = createSSRClient(request);
+  const { supabase, headers } = createSSRClient(request);
   const products = await getProductsByDateRange({
     supabase,
     startDate: date.startOf("year"),
@@ -52,11 +52,14 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
     startDate: date.startOf("year"),
     endDate: date.endOf("year"),
   });
-  return {
-    dateObject: parsedData,
-    products,
-    totalPages,
-  };
+  return data(
+    {
+      dateObject: parsedData,
+      products,
+      totalPages,
+    },
+    { headers },
+  );
 };
 
 export default function LeaderboardsYearlyPage({ loaderData }: Route.ComponentProps) {

@@ -1,7 +1,7 @@
 import { Button, Dialog, DialogTrigger } from "@ryugibo/ui";
 import { parseZodError } from "@ryugibo/utils";
 import { useEffect, useState } from "react";
-import { redirect, useOutletContext } from "react-router";
+import { data, redirect, useOutletContext } from "react-router";
 import z from "zod";
 import CreateReviewDialog from "~/common/components/create-review-dialog.tsx";
 import { ReviewCard } from "~/features/products/components/review-card.tsx";
@@ -19,14 +19,14 @@ const paramsSchema = z.object({
 });
 
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
-  const { success, data } = paramsSchema.safeParse(params);
+  const { success, data: paramsData } = paramsSchema.safeParse(params);
   if (!success) {
     throw new Error("Invalid params");
   }
-  const { id } = data;
-  const { supabase } = createSSRClient(request);
+  const { id } = paramsData;
+  const { supabase, headers } = createSSRClient(request);
   const reviews = await getReviewsByProductId({ supabase, id: Number(id) });
-  return { id, reviews };
+  return data({ id, reviews }, { headers });
 };
 
 const reviewSchema = z.object({
@@ -37,24 +37,33 @@ const reviewSchema = z.object({
 
 export const action = async ({ request }: Route.ActionArgs) => {
   const { pathname } = new URL(request.url);
-  const { supabase, getAuthUser } = createSSRClient(request);
+  const { supabase, headers, getAuthUser } = createSSRClient(request);
+
+  const defaultReturn = {
+    data: null,
+    formError: null,
+    success: false,
+  };
+
   const user = await getAuthUser();
   if (!user) {
-    throw redirect(pathname);
+    return redirect(pathname, { headers });
   }
   const { id: profile_id } = user;
   const {
-    success,
-    data,
-    error: formZodError,
+    success: successForm,
+    data: dataForm,
+    error: errorForm,
   } = reviewSchema.safeParse(Object.fromEntries(await request.formData()));
-  if (!success) {
-    const formError = parseZodError(formZodError);
-    return { succes: false, formError };
+
+  if (!successForm) {
+    const formError = parseZodError(errorForm);
+    return data({ ...defaultReturn, formError }, { headers });
   }
-  const { rating, comment, product_id } = data;
+
+  const { rating, comment, product_id } = dataForm;
   await createReview({ supabase, rating, comment, profile_id, product_id });
-  return { success: true };
+  return data({ ...defaultReturn, success: true }, { headers });
 };
 
 export default function ProductReviewsPage({ loaderData, actionData }: Route.ComponentProps) {

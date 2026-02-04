@@ -25,13 +25,13 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   if (!success) {
     throw data({ error_code: "invalid_params", message: "invalid params" }, { status: 400 });
   }
+  const { supabase, headers } = createSSRClient(request);
   if (dataParams.keyword === "") {
-    return { products: [], totalPages: 1 };
+    return data({ products: [], totalPages: 1 }, { headers });
   }
-  const { supabase } = createSSRClient(request);
   const products = await getProductsByKeyword({ supabase, ...dataParams });
   const totalPages = await getPagesByKeyword({ supabase, ...dataParams });
-  return { products, totalPages };
+  return data({ products, totalPages }, { headers });
 };
 
 export default function SearchPage({ loaderData }: Route.ComponentProps) {

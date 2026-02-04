@@ -1,3 +1,4 @@
+import { data } from "react-router";
 import { Hero } from "~/common/components/hero.tsx";
 import { IdeaCard } from "~/features/ideas/components/idea-card.tsx";
 import { createSSRClient } from "~/supabase-client.ts";
@@ -12,10 +13,10 @@ export const meta = () => {
 };
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
-  const { supabase } = createSSRClient(request);
+  const { supabase, headers } = createSSRClient(request);
   const ideas = await getIdeas({ supabase, limit: 20 });
 
-  return { ideas };
+  return data({ ideas }, { headers });
 };
 
 export default function IdeasPage({ loaderData }: Route.ComponentProps) {

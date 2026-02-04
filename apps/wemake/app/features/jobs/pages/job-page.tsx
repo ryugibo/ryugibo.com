@@ -1,16 +1,17 @@
 import { Badge, Button } from "@ryugibo/ui";
 import { DotIcon } from "@ryugibo/ui/icons";
 import { DateTime } from "luxon";
-import z from "zod";
+import { data } from "react-router";
+import { z } from "zod";
 import { createSSRClient } from "~/supabase-client.ts";
 import { getJobById } from "../queries.ts";
 import type { Route } from "./+types/job-page";
 
 export const meta = ({ loaderData }: Route.MetaArgs) => {
-  return [
-    { title: `${loaderData.job.position} | wemake` },
-    { name: "description", content: loaderData.job.overview },
-  ];
+  const {
+    job: { position, overview },
+  } = loaderData;
+  return [{ title: `${position} | wemake` }, { name: "description", content: overview }];
 };
 
 const paramsSchema = z.object({
@@ -18,16 +19,16 @@ const paramsSchema = z.object({
 });
 
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
-  const { success, data } = paramsSchema.safeParse(params);
+  const { success, data: dataParams } = paramsSchema.safeParse(params);
 
   if (!success) {
     throw new Error("Invalid params");
   }
 
-  const { id } = data;
-  const { supabase } = createSSRClient(request);
+  const { id } = dataParams;
+  const { supabase, headers } = createSSRClient(request);
   const job = await getJobById({ supabase, id: Number(id) });
-  return { job };
+  return data({ job }, { headers });
 };
 
 export default function JobPage({ loaderData }: Route.ComponentProps) {

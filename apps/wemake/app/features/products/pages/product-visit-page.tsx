@@ -13,7 +13,7 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
     throw new Error("Invalid product ID");
   }
 
-  const { supabase } = createSSRClient(request);
+  const { supabase, headers } = createSSRClient(request);
   const { data, error } = await supabase
     .from("products")
     .select("url")
@@ -29,5 +29,5 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
     event_data: { product_id: dataParams.productId },
   });
 
-  return redirect(data.url);
+  return redirect(data.url, { headers });
 };

@@ -17,7 +17,7 @@ import { ChevronUpIcon, DotIcon } from "@ryugibo/ui/icons";
 import { parseZodError } from "@ryugibo/utils";
 import { DateTime } from "luxon";
 import { useEffect, useRef } from "react";
-import { Form, Link, useFetcher, useOutletContext } from "react-router";
+import { data, Form, Link, useFetcher, useOutletContext } from "react-router";
 import z from "zod";
 import type { OutletContext } from "~/common/layouts/home-layout.tsx";
 import { Reply } from "~/features/community/components/reply.tsx";
@@ -35,15 +35,15 @@ const paramsSchema = z.object({
 });
 
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
-  const { success, data } = paramsSchema.safeParse(params);
+  const { success, data: paramsData } = paramsSchema.safeParse(params);
   if (!success) {
     throw new Error("Invalid params");
   }
-  const { id } = data;
-  const { supabase } = createSSRClient(request);
+  const { id } = paramsData;
+  const { supabase, headers } = createSSRClient(request);
   const post = await getPostById({ supabase, id: Number(id) });
   const replies = await getReplies({ supabase, id: Number(id) });
-  return { post, replies };
+  return data({ post, replies }, { headers });
 };
 
 const formSchema = z
@@ -65,27 +65,41 @@ const formSchema = z
   );
 
 export const action = async ({ request }: Route.ActionArgs) => {
-  const { supabase, getAuthUser } = createSSRClient(request);
+  const { supabase, headers, getAuthUser } = createSSRClient(request);
+
+  const defaultReturn = {
+    data: null,
+    formError: null,
+  };
+
   const {
     success: successForm,
     data: dataForm,
     error: formZodError,
   } = formSchema.safeParse(Object.fromEntries(await request.formData()));
+
   if (!successForm) {
     const formError = parseZodError(formZodError);
-    return { success: false, formError };
+    return data({ ...defaultReturn, formError }, { headers });
   }
+
   const { content, post_id, parent_id } = dataForm;
   const user = await getAuthUser();
+
   if (!user) {
-    return {
-      success: false,
-      formError: { content: [{ key: "content", message: "You must be logged in to reply" }] },
-    };
+    return data(
+      {
+        ...defaultReturn,
+        formError: { content: [{ key: 0, message: "You must be logged in to reply" }] },
+      },
+      { headers },
+    );
   }
+
   const { id: profile_id } = user;
   await createReply({ supabase, profile_id, post_id, parent_id, content });
-  return { success: true, post_id, parent_id };
+
+  return data({ ...defaultReturn, data: { post_id, parent_id } }, { headers });
 };
 
 export default function PostPage({ loaderData, actionData }: Route.ComponentProps) {
@@ -95,7 +109,7 @@ export default function PostPage({ loaderData, actionData }: Route.ComponentProp
   const fetcher = useFetcher();
 
   useEffect(() => {
-    if (actionData?.success && actionData.post_id === post.id) {
+    if (actionData?.data?.post_id === post.id) {
       formRef.current?.reset();
     }
   }, [actionData]);
