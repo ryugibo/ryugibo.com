@@ -1,0 +1,1 @@
+ALTER POLICY "profile_books-select-policy" ON "den"."profile_books" TO authenticated,service_role USING ((select auth.uid()) = "den"."profile_books"."profile_id");

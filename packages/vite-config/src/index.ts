@@ -9,7 +9,7 @@ export function getBaseViteConfig(appName: string, overrides: UserConfig = {}): 
     },
     server: {
       host: "0.0.0.0",
-      allowedHosts: [`${appName}.lvh.me`],
+      allowedHosts: [`${appName}.lvh.me`, ".trycloudflare.com"],
     },
     plugins: [lvhMePlugin(appName), appNameTypeGenPlugin(appName)],
   };

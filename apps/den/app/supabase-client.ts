@@ -4,6 +4,7 @@ import {
   parseCookieHeader,
   serializeCookieHeader,
 } from "@supabase/ssr";
+import { createClient } from "@supabase/supabase-js";
 import type { Database as SupabaseDatabase } from "database.types";
 import type { MergeDeep, SetNonNullable } from "type-fest";
 
@@ -80,3 +81,13 @@ export const createSSRClient = (request: Request) => {
 
   return { supabase, headers };
 };
+
+export const supabaseAdmin = createClient<Database>(
+  import.meta.env.VITE_SUPABASE_URL,
+  process.env.SUPABASE_SECRET_DEFAULT_KEY || "",
+  {
+    db: {
+      schema: __APP_NAME__,
+    },
+  },
+);
