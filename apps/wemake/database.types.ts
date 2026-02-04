@@ -318,7 +318,7 @@ export type Database = {
           post_id: number | null
           product_id: number | null
           seen: boolean
-          source_id: string | null
+          source_id: string
           target_id: string
           type: Database["wemake"]["Enums"]["notification_type"]
         }
@@ -328,7 +328,7 @@ export type Database = {
           post_id?: number | null
           product_id?: number | null
           seen?: boolean
-          source_id?: string | null
+          source_id: string
           target_id: string
           type: Database["wemake"]["Enums"]["notification_type"]
         }
@@ -338,7 +338,7 @@ export type Database = {
           post_id?: number | null
           product_id?: number | null
           seen?: boolean
-          source_id?: string | null
+          source_id?: string
           target_id?: string
           type?: Database["wemake"]["Enums"]["notification_type"]
         }

@@ -1,0 +1,1 @@
+ALTER TABLE "wemake"."notifications" ALTER COLUMN "source_id" SET NOT NULL;
