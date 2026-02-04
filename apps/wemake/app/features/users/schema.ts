@@ -102,12 +102,18 @@ export const notifications = pg.table(
     seen: boolean().default(false).notNull(),
     created_at: timestamp().notNull().defaultNow(),
   },
-  () => [
+  (table) => [
     pgPolicy("notifications-insert-policy", {
       for: "insert",
       to: authenticatedRole,
       as: "permissive",
-      withCheck: sql`true`,
+      withCheck: sql`${authUid} = ${table.source_id}`,
+    }),
+    pgPolicy("notifications-update-policy", {
+      for: "update",
+      to: authenticatedRole,
+      as: "permissive",
+      using: sql`${authUid} = ${table.target_id}`,
     }),
     pgPolicy("notifications-select-policy", {
       for: "select",

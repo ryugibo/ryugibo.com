@@ -11,11 +11,12 @@ import {
 } from "@ryugibo/ui";
 import { EyeIcon } from "@ryugibo/ui/icons";
 import { DateTime } from "luxon";
-import { Link } from "react-router";
+import { Link, useFetcher } from "react-router";
 import type { NotificationType } from "../constants.ts";
 import { NOTIFICATION_LABELS } from "../constants.ts";
 
 interface NotificationCardProps {
+  id: number;
   avatar: string | null;
   name: string;
   type: NotificationType;
@@ -26,6 +27,7 @@ interface NotificationCardProps {
 }
 
 export function NotificationCard({
+  id,
   avatar,
   name,
   type,
@@ -34,8 +36,11 @@ export function NotificationCard({
   product,
   post,
 }: NotificationCardProps) {
+  const fetcher = useFetcher();
+  const optimisticSeen = fetcher.state === "idle" ? seen : true;
+
   return (
-    <Card className={cn("min-w-[450px]", !seen && "bg-yellow-500/60")}>
+    <Card className={cn("min-w-[450px]", !optimisticSeen && "bg-yellow-500/60")}>
       <CardHeader className="flex flex-row gap-5 items-start">
         <Avatar>
           {avatar && <AvatarImage src={avatar} />}
@@ -62,9 +67,13 @@ export function NotificationCard({
         </div>
       </CardHeader>
       <CardFooter className="flex justify-end">
-        <Button variant="outline" size="icon">
-          <EyeIcon className="size-4" />
-        </Button>
+        {!optimisticSeen && (
+          <fetcher.Form method="post" action={`/my/notifications/${id}`}>
+            <Button variant="outline" size="icon">
+              <EyeIcon className="size-4" />
+            </Button>
+          </fetcher.Form>
+        )}
       </CardFooter>
     </Card>
   );

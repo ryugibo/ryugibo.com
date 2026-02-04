@@ -106,7 +106,6 @@ export const createSSRClient = (request: Request) => {
         const { data, error } = await supabase.auth.getUser();
         if (error) {
           console.log(error);
-          throw error;
         }
         return data.user;
       })();
