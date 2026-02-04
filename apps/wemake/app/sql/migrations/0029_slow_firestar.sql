@@ -1,0 +1,2 @@
+CREATE POLICY "notifications-update-policy" ON "wemake"."notifications" AS PERMISSIVE FOR UPDATE TO "authenticated" USING ((select auth.uid()) = "wemake"."notifications"."target_id");--> statement-breakpoint
+ALTER POLICY "notifications-insert-policy" ON "wemake"."notifications" TO authenticated WITH CHECK ((select auth.uid()) = "wemake"."notifications"."source_id");
