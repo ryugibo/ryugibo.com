@@ -1,4 +1,4 @@
-import { anonRole, authenticatedRole, authUid, sql } from "@ryugibo/db";
+import { anonRole, authenticatedRole, authUid, serviceRole, sql } from "@ryugibo/db";
 import { bigint, integer, pgPolicy, primaryKey, text, timestamp, uuid } from "@ryugibo/db/core";
 import { pg } from "~/db.ts";
 import { profiles } from "~/features/users/schema.ts";
@@ -16,7 +16,7 @@ export const ideas = pg.table(
   (table) => [
     pgPolicy("ideas-insert-policy", {
       for: "insert",
-      to: authenticatedRole,
+      to: serviceRole,
       as: "permissive",
       withCheck: sql`true`,
     }),
