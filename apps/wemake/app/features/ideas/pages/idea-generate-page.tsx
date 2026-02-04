@@ -21,7 +21,14 @@ const ResponseSchema = z.object({
   ideas: z.array(IdeaSchema).min(10),
 });
 
-export const loader = async (_: Route.LoaderArgs) => {
+export const action = async ({ request }: Route.ActionArgs) => {
+  if (request.method !== "POST") {
+    return new Response(null, { status: 404 });
+  }
+  const header = request.headers.get("X-POTATO");
+  if (!header || header !== process.env.API_SECRET_KEY) {
+    return new Response(null, { status: 404 });
+  }
   const completion = await openai.chat.completions.parse({
     model: "openai/gpt-4.1-mini",
     messages: [
