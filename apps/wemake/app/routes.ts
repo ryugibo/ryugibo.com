@@ -63,6 +63,7 @@ export default [
           route("/ideas", "features/users/pages/dashboard-ideas-page.tsx"),
           route("/products/:productId", "features/users/pages/dashboard-product-page.tsx"),
         ]),
+        route("welcome", "features/users/pages/welcome-page.tsx"),
       ]),
       route("/profile", "features/users/pages/my-profile-page.tsx"),
       route("/settings", "features/users/pages/settings-page.tsx"),
