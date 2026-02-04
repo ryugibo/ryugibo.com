@@ -1,0 +1,1 @@
+ALTER POLICY "ideas-insert-policy" ON "wemake"."ideas" TO service_role WITH CHECK (true);
