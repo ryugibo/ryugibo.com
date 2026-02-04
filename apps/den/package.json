@@ -14,25 +14,27 @@
     "lint:routes": "rr-kit check-types"
   },
   "dependencies": {
+    "@react-router/node": "catalog:",
+    "@react-router/serve": "catalog:",
     "@ryugibo/db": "workspace:*",
     "@ryugibo/ui": "workspace:*",
     "@ryugibo/vite-config": "workspace:*",
-    "@react-router/node": "catalog:",
-    "@react-router/serve": "catalog:",
     "@supabase/ssr": "catalog:",
     "@supabase/supabase-js": "catalog:",
     "isbot": "catalog:",
+    "luxon": "catalog:",
+    "next-themes": "^0.4.6",
     "react": "catalog:",
     "react-dom": "catalog:",
     "react-router": "catalog:",
-    "zod": "catalog:",
-    "next-themes": "^0.4.6",
-    "sonner": "^2.0.7"
+    "sonner": "^2.0.7",
+    "zod": "catalog:"
   },
   "devDependencies": {
-    "@ryugibo/react-router-kit": "workspace:*",
     "@react-router/dev": "catalog:",
+    "@ryugibo/react-router-kit": "workspace:*",
     "@tailwindcss/vite": "catalog:",
+    "@types/luxon": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "dotenv-cli": "catalog:",
