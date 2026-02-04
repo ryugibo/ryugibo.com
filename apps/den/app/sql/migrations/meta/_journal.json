@@ -36,6 +36,13 @@
       "when": 1770231150635,
       "tag": "0004_wooden_storm",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1770231272004,
+      "tag": "0005_fair_thunderball",
+      "breakpoints": true
     }
   ]
 }
