@@ -26,6 +26,7 @@
     "isbot": "catalog:",
     "lodash-es": "^4.17.23",
     "luxon": "catalog:",
+    "openai": "^6.17.0",
     "react": "catalog:",
     "react-dom": "catalog:",
     "react-router": "catalog:",
