@@ -103,7 +103,11 @@ export const createSSRClient = (request: Request) => {
   function getAuthUser() {
     if (!cachedUserPromise) {
       cachedUserPromise = (async () => {
-        const { data } = await supabase.auth.getUser();
+        const { data, error } = await supabase.auth.getUser();
+        if (error) {
+          console.log(error);
+          throw error;
+        }
         return data.user;
       })();
     }

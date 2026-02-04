@@ -12,9 +12,9 @@ import {
 import { pg } from "~/db.ts";
 import { posts } from "~/features/community/schema.ts";
 import { products } from "~/features/products/schema.ts";
-import { ROLE_TYPES } from "./constants.ts";
+import { NOTIFICATION_VALUES, ROLE_VALUES } from "./constants.ts";
 
-export const roles = pg.enum("role", ROLE_TYPES.map((type) => type.value) as [string, ...string[]]);
+export const roles = pg.enum("role", ROLE_VALUES);
 
 export const profiles = pg.table(
   "profiles",
@@ -84,7 +84,7 @@ export const follows = pg.table(
   ],
 );
 
-export const notificationTypes = pg.enum("notification_type", ["follow", "review", "reply"]);
+export const notificationTypes = pg.enum("notification_type", NOTIFICATION_VALUES);
 
 export const notifications = pg.table(
   "notifications",
@@ -93,7 +93,9 @@ export const notifications = pg.table(
     target_id: uuid()
       .notNull()
       .references(() => profiles.id, { onDelete: "cascade" }),
-    source_id: uuid().references(() => profiles.id, { onDelete: "cascade" }),
+    source_id: uuid()
+      .notNull()
+      .references(() => profiles.id, { onDelete: "cascade" }),
     product_id: bigint({ mode: "number" }).references(() => products.id, { onDelete: "cascade" }),
     post_id: bigint({ mode: "number" }).references(() => posts.id, { onDelete: "cascade" }),
     type: notificationTypes().notNull(),

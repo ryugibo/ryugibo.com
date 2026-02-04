@@ -156,3 +156,62 @@ export const getProductStats = async ({
 
   return { stats: data };
 };
+
+export const hasNotifications = async ({
+  supabase,
+  profile_id,
+}: {
+  supabase: SupabaseClient<Database>;
+  profile_id: string;
+}) => {
+  const { error, data } = await supabase
+    .from("notifications")
+    .select("id")
+    .eq("target_id", profile_id)
+    .eq("seen", false)
+    .limit(1);
+
+  if (error) {
+    throw error;
+  }
+
+  return data.length > 0;
+};
+
+export const getNotifications = async ({
+  supabase,
+  profile_id,
+}: {
+  supabase: SupabaseClient<Database>;
+  profile_id: string;
+}) => {
+  const { error, data } = await supabase
+    .from("notifications")
+    .select(`
+      id,
+      type,
+      source:profiles!source_id(
+        id,
+        name,
+        avatar
+      ),
+      product:products!product_id(
+        id,
+        name
+      ),
+      post:posts!post_id(
+        id,
+        title
+      ),
+      seen,
+      created_at
+    `)
+    .eq("target_id", profile_id)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    throw error;
+  }
+
+  return { notifications: data };
+};

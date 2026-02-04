@@ -1,6 +1,6 @@
 import { cn } from "@ryugibo/ui";
 import { data, Outlet, redirect } from "react-router";
-import { getProfileById } from "~/features/users/queries.ts";
+import { getProfileById, hasNotifications } from "~/features/users/queries.ts";
 import { createSSRClient } from "~/supabase-client.ts";
 import Navigation from "../components/navigation.tsx";
 import type { Route } from "./+types/home-layout";
@@ -11,7 +11,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   const { supabase, getAuthUser, headers } = createSSRClient(request);
   const user = await getAuthUser();
   if (!user) {
-    return data({ isLoggedIn: false, profile: null, origin }, { headers });
+    return data({ isLoggedIn: false, profile: null, origin, hasNotifications: false }, { headers });
   }
   const { id } = user;
 
@@ -21,12 +21,28 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
     if (isMakeProfilePage) {
       return redirect("/", { headers });
     }
-    return data({ isLoggedIn: true, profile, origin }, { headers });
+    return data(
+      {
+        isLoggedIn: true,
+        profile,
+        origin,
+        hasNotifications: await hasNotifications({ supabase, profile_id: id }),
+      },
+      { headers },
+    );
   } catch (_error) {
     if (!isMakeProfilePage) {
       return redirect("/make-profile", { headers });
     }
-    return data({ isLoggedIn: false, profile: null, origin }, { headers });
+    return data(
+      {
+        isLoggedIn: false,
+        profile: null,
+        origin,
+        hasNotifications: await hasNotifications({ supabase, profile_id: id }),
+      },
+      { headers },
+    );
   }
 };
 
@@ -45,7 +61,7 @@ export type OutletContext =
     };
 
 export default function HomeLayout({ loaderData }: Route.ComponentProps) {
-  const { isLoggedIn } = loaderData;
+  const { isLoggedIn, hasNotifications } = loaderData;
   return (
     <div className={cn("py-28 px-5 lg:px-20")}>
       <Navigation
@@ -54,7 +70,7 @@ export default function HomeLayout({ loaderData }: Route.ComponentProps) {
         name={loaderData.profile?.name}
         username={loaderData.profile?.username}
         avatar={loaderData.profile?.avatar}
-        hasNotifications={true}
+        hasNotifications={hasNotifications}
         hasMessages={true}
       />
       <Outlet
