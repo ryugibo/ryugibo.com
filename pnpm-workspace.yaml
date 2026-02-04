@@ -9,7 +9,7 @@ catalogs:
     '@react-router/node': 7.13.0
     '@react-router/serve': 7.13.0
     '@supabase/ssr': ^0.8.0
-    '@supabase/supabase-js': ^2.93.2
+    '@supabase/supabase-js': ^2.94.0
     '@tailwindcss/vite': ^4.1.18
     '@types/luxon': ^3.7.1
     '@types/react': ^19.2.10
@@ -20,9 +20,9 @@ catalogs:
     react: ^19.2.4
     react-dom: ^19.2.4
     react-router: 7.13.0
-    supabase: ^2.72.9
+    supabase: ^2.75.1
     vite: ^7.3.1
-    vite-tsconfig-paths: ^5.1.4
+    vite-tsconfig-paths: ^6.0.5
     zod: ^4.3.6
 
 onlyBuiltDependencies:
