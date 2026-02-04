@@ -9,4 +9,5 @@ export default [
   route("collections", "features/collections/pages/collections-page.tsx"),
   route("collections/:collectionId", "features/collections/pages/collection-details-page.tsx"),
   route("settings", "features/settings/pages/settings-page.tsx"),
+  route("api/page-turner", "features/page-turner/pages/page-turner-page.tsx"),
 ] satisfies RouteConfig;
