@@ -22,3 +22,19 @@ export const claimIdea = async ({
 
   return data;
 };
+
+export const insertIdeas = async ({
+  supabase,
+  ideas,
+}: {
+  supabase: SupabaseClient<Database>;
+  ideas: string[];
+}) => {
+  const { data, error } = await supabase.from("ideas").insert(ideas.map((idea) => ({ idea })));
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+};
