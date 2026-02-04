@@ -62,18 +62,18 @@ export type Database = {
       follows: {
         Row: {
           created_at: string
-          follower_id: string | null
-          following_id: string | null
+          follower_id: string
+          following_id: string
         }
         Insert: {
           created_at?: string
-          follower_id?: string | null
-          following_id?: string | null
+          follower_id: string
+          following_id: string
         }
         Update: {
           created_at?: string
-          follower_id?: string | null
-          following_id?: string | null
+          follower_id?: string
+          following_id?: string
         }
         Relationships: [
           {
@@ -314,27 +314,30 @@ export type Database = {
       notifications: {
         Row: {
           created_at: string
-          id: string
+          id: number
           post_id: number | null
           product_id: number | null
+          seen: boolean
           source_id: string | null
           target_id: string
           type: Database["wemake"]["Enums"]["notification_type"]
         }
         Insert: {
           created_at?: string
-          id: string
+          id?: never
           post_id?: number | null
           product_id?: number | null
+          seen?: boolean
           source_id?: string | null
           target_id: string
           type: Database["wemake"]["Enums"]["notification_type"]
         }
         Update: {
           created_at?: string
-          id?: string
+          id?: never
           post_id?: number | null
           product_id?: number | null
+          seen?: boolean
           source_id?: string | null
           target_id?: string
           type?: Database["wemake"]["Enums"]["notification_type"]
@@ -912,7 +915,7 @@ export type Database = {
         | "internship"
         | "freelance"
       location: "remote" | "in-person" | "hybrid"
-      notification_type: "follow" | "review" | "reply" | "mention"
+      notification_type: "follow" | "review" | "reply"
       product_stage: "idea" | "prototype" | "mvp" | "production"
       role:
         | "developer"
@@ -1064,7 +1067,7 @@ export const Constants = {
         "freelance",
       ],
       location: ["remote", "in-person", "hybrid"],
-      notification_type: ["follow", "review", "reply", "mention"],
+      notification_type: ["follow", "review", "reply"],
       product_stage: ["idea", "prototype", "mvp", "production"],
       role: ["developer", "designer", "marketer", "founder", "product-manager"],
       salary_range: [
