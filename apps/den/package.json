@@ -17,6 +17,7 @@
     "@react-router/node": "catalog:",
     "@react-router/serve": "catalog:",
     "@ryugibo/db": "workspace:*",
+    "@ryugibo/emails": "workspace:*",
     "@ryugibo/ui": "workspace:*",
     "@ryugibo/vite-config": "workspace:*",
     "@supabase/ssr": "catalog:",
@@ -27,6 +28,7 @@
     "react": "catalog:",
     "react-dom": "catalog:",
     "react-router": "catalog:",
+    "resend": "^6.9.1",
     "sonner": "^2.0.7",
     "zod": "catalog:"
   },
