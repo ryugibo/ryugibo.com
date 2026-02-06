@@ -10,6 +10,7 @@ export const profiles = pg.table(
       .references(() => authUsers.id, { onDelete: "cascade" }),
     name: text().notNull(),
     username: text().notNull(),
+    email: text(),
     avatar: text(),
     bio: text(),
     created_at: timestamp().notNull().defaultNow(),
