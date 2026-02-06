@@ -43,6 +43,13 @@
       "when": 1770231272004,
       "tag": "0005_fair_thunderball",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1770392970244,
+      "tag": "0006_spicy_stingray",
+      "breakpoints": true
     }
   ]
 }
