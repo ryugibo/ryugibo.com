@@ -1,4 +1,4 @@
-CREATE FUNCTION wemake.handle_post_upvote()
+CREATE OR REPLACE FUNCTION wemake.handle_post_upvote()
 RETURNS trigger
 LANGUAGE plpgsql
 SECURITY DEFINER
@@ -10,11 +10,11 @@ BEGIN
 END;
 $$;
 
-CREATE TRIGGER post_upvote_trigger
+CREATE OR REPLACE TRIGGER post_upvote_trigger
 AFTER INSERT ON wemake.post_upvotes
 FOR EACH ROW EXECUTE FUNCTION wemake.handle_post_upvote();
 
-CREATE FUNCTION wemake.handle_post_unvote()
+CREATE OR REPLACE FUNCTION wemake.handle_post_unvote()
 RETURNS trigger
 LANGUAGE plpgsql
 SECURITY DEFINER
@@ -26,6 +26,6 @@ BEGIN
 END;
 $$;
 
-CREATE TRIGGER post_unvote_trigger
+CREATE OR REPLACE TRIGGER post_unvote_trigger
 AFTER DELETE ON wemake.post_upvotes
 FOR EACH ROW EXECUTE FUNCTION wemake.handle_post_unvote();
