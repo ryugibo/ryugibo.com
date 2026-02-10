@@ -23,6 +23,25 @@ jobs:
       - name: Setup asdf & Install Tools
         uses: asdf-vm/actions/install@v4
 
+      - name: Update Submodule to Latest
+        id: sync-submodule
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # 서브모듈을 원격 메인의 최신 커밋으로 업데이트
+          git submodule update --remote apps/den-api
+          
+          # 변경사항이 있는지 확인
+          if [ -n "$(git status --porcelain apps/den-api)" ]; then
+            git add apps/den-api
+            git commit -m "chore: update den-api submodule to latest [skip ci]"
+            git push origin main
+            echo "updated=true" >> $GITHUB_OUTPUT
+          else
+            echo "updated=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
