@@ -6,7 +6,7 @@
     "build": "turbo run build",
     "dev": "turbo run dev",
     "dev:accounts": "turbo run dev --filter=accounts",
-    "dev:den": "turbo run dev --filter=den --filter=accounts",
+    "dev:den": "turbo run dev --filter=den --filter=accounts --filter=den-api",
     "dev:wemake": "turbo run dev --filter=wemake --filter=accounts",
     "dev:@emails": "turbo run dev --filter=@ryugibo/emails",
     "lint": "turbo run lint",
@@ -32,7 +32,8 @@
   "pnpm": {
     "overrides": {
       "@types/node": "$@types/node"
-    }
+    },
+    "onlyBuiltDependencies": ["@parcel/watcher", "esbuild", "sharp", "supabase", "workerd"]
   },
   "engines": {
     "node": "24.13.0",

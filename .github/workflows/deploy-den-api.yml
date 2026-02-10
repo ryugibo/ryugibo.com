@@ -1,0 +1,33 @@
+name: Deploy den-api
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'apps/den-api/**'
+  repository_dispatch:
+    types: [deploy-event]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_PAT }}
+          submodules: true # 서브모듈 포함 체크아웃
+
+      - name: Setup asdf
+        uses: asdf-vm/actions/setup-asdf@v3
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Deploy to Cloudflare
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: pnpm --filter den-api run deploy
