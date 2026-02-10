@@ -20,8 +20,8 @@ jobs:
           token: ${{ secrets.GH_PAT }}
           submodules: true # 서브모듈 포함 체크아웃
 
-      - name: Setup asdf
-        uses: asdf-vm/actions/setup-asdf@v3
+      - name: Setup asdf & Install Tools
+        uses: asdf-vm/actions/install@v4
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
