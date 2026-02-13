@@ -11,44 +11,195 @@ declare
 begin
     -- Define the 30 books data
     v_book_data := '[
-        {"title": "Clean Code", "author": "Robert C. Martin", "description": "A Handbook of Agile Software Craftsmanship"},
-        {"title": "The Pragmatic Programmer", "author": "Andrew Hunt", "description": "Your Journey to Mastery"},
-        {"title": "Refactoring", "author": "Martin Fowler", "description": "Improving the Design of Existing Code"},
-        {"title": "Design Patterns", "author": "Erich Gamma", "description": "Elements of Reusable Object-Oriented Software"},
-        {"title": "The Mythical Man-Month", "author": "Frederick Brooks", "description": "Essays on Software Engineering"},
-        {"title": "Introduction to Algorithms", "author": "Thomas H. Cormen", "description": "Comprehensive guide to algorithms"},
-        {"title": "Code Complete", "author": "Steve McConnell", "description": "A Practical Handbook of Software Construction"},
-        {"title": "Head First Design Patterns", "author": "Eric Freeman", "description": "A Brain-Friendly Guide"},
-        {"title": "You Don''t Know JS", "author": "Kyle Simpson", "description": "Deep dive into JavaScript core mechanisms"},
-        {"title": "Effective Java", "author": "Joshua Bloch", "description": "Best practices for the Java platform"},
-        {"title": "The Great Gatsby", "author": "F. Scott Fitzgerald", "description": "The story of the mysteriously wealthy Jay Gatsby"},
-        {"title": "1984", "author": "George Orwell", "description": "Dystopian social science fiction novel and cautionary tale"},
-        {"title": "To Kill a Mockingbird", "author": "Harper Lee", "description": "A novel about the serious issues of rape and racial inequality"},
-        {"title": "Pride and Prejudice", "author": "Jane Austen", "description": "Romantic novel of manners"},
-        {"title": "The Catcher in the Rye", "author": "J.D. Salinger", "description": "A story about teenage angst and alienation"},
-        {"title": "The Hobbit", "author": "J.R.R. Tolkien", "description": "Fantasy novel and children''s book"},
-        {"title": "Fahrenheit 451", "author": "Ray Bradbury", "description": "Dystopian novel about a future American society"},
-        {"title": "Brave New World", "author": "Aldous Huxley", "description": "Dystopian novel set in a futuristic World State"},
-        {"title": "The Lord of the Rings", "author": "J.R.R. Tolkien", "description": "High fantasy novel widely considered one of the greatest"},
-        {"title": "Harry Potter and the Sorcerer''s Stone", "author": "J.K. Rowling", "description": "Fantasy novel about a young wizard"},
-        {"title": "Sapiens", "author": "Yuval Noah Harari", "description": "A Brief History of Humankind"},
-        {"title": "Atomic Habits", "author": "James Clear", "description": "An Easy & Proven Way to Build Good Habits & Break Bad Ones"},
-        {"title": "The Alchemist", "author": "Paulo Coelho", "description": "A novel about following your dreams"},
-        {"title": "Thinking, Fast and Slow", "author": "Daniel Kahneman", "description": "The two systems that drive the way we think"},
-        {"title": "The Power of Habit", "author": "Charles Duhigg", "description": "Why We Do What We Do in Life and Business"},
-        {"title": "Deep Work", "author": "Cal Newport", "description": "Rules for Focused Success in a Distracted World"},
-        {"title": "Digital Minimalism", "author": "Cal Newport", "description": "Choosing a Focused Life in a Noisy World"},
-        {"title": "Zero to One", "author": "Peter Thiel", "description": "Notes on Startups, or How to Build the Future"},
-        {"title": "Steve Jobs", "author": "Walter Isaacson", "description": "Biography of the Apple co-founder"},
-        {"title": "Elon Musk", "author": "Walter Isaacson", "description": "Biography of the tech entrepreneur"}
-    ]';
+  {
+    "isbn": "9788998139766",
+    "title": "객체지향의 사실과 오해",
+    "author": "조영호",
+    "description": "『객체지향의 사실과 오해』는 객체지향이란 무엇인가라는 원론적면서도 다소 위험한 질문에 답하기 위해 쓰여진 책이다. 안타깝게도 많은 사람들이 객체지향의 본질을 오해하고 있다. 가장 널리 퍼져있는 오해는 클래스가 객체지향 프로그래밍의 중심이라는 것이다. 객체지향으로 향하는 첫 걸음은 클래스가 아니라 객체를 바라보는 것에서부터 시작한다. 객체지향으로 향하는 두 ..."
+  },
+  {
+    "isbn": "9788966262335",
+    "title": "함께 자라기",
+    "author": "김창준",
+    "description": "‘함께’는 협력을 말하고, ‘자라기’는 학습을 말합니다. 무엇이건 실제 바깥세상(야생)에 임팩트를 남기려면 혼자 힘으로만 되는 게 없습니다. 함께 해야 합니다. 주변 사람들과 함께. 매일 부대끼는 동료들과 함께. 스스로 변하고 싶지만 계속 실패하는 사람, 조직을 개선하기 위한 시도를 하다가 오히려 데어본 사람, 불확실한 상황에서 합리적인 판단을 해야 하는 ..."
+  },
+  {
+    "isbn": "9788975274855",
+    "title": "아이와 함께 크는 엄마",
+    "author": "박승숙",
+    "description": ""
+  },
+  {
+    "isbn": "9791191905236",
+    "title": "개발자 원칙",
+    "author": "박성철, 강대명, 공용준, 김정, 박미정, 박종천",
+    "description": "“나도 테크 리더가 될 수 있을까? 어떻게 선배 개발자들처럼 성장할 수 있을까? 3년 10년 후에도 개발자로 살아갈 수 있을까? 팀워크는 도대체 어떻게 맞춰야 하는 걸까?” 개발자로 살아가면서 하루에도 천 번을 되묻는 물음에 컬리, 레몬트리, 카카오, 코드스쿼드, 무신사, 몰로코, 데이블, 인프런, 패스트캠퍼스 테크 리더 9명이 답합니다. 지금까지 만나 볼..."
+  },
+  {
+    "isbn": "9791191905946",
+    "title": "개발자 원칙(확장판)",
+    "author": "박성철, 강대명, 공용준, 김정, 박미정, 박종천",
+    "description": "2022년 연말을 강타한 베스트셀러 《개발자 원칙》이 확장판으로 더 강력해져 돌아왔습니다. “나도 테크 리더가 될 수 있을까? 어떻게 선배 개발자들처럼 성장할 수 있을까? 3년 10년 후에도 개발자로 살아갈 수 있을까? 팀워크는 도대체 어떻게 맞춰야 하는 걸까?” 개발자로 살아가면서 하루에도 천 번을 되묻는 물음에 컬리, 레몬트리, 카카오, 코드스쿼드, 당..."
+  },
+  {
+    "isbn": "9788965404323",
+    "title": "내 코드가 불안한 개발자를 위한 좋은 코드의 기준",
+    "author": "모리 아츠시",
+    "description": "코드는 돌아가지만 어딘가 불안한 순간이 있습니다. 조금만 수정해도 문제가 번지고 기능을 추가할수록 속도는 느려집니다. 코드는 AI로도 짤 수 있지만 그대로 쓰기에는 망설여집니다. 이렇게 만든 코드가 프로젝트의 자산이 될지, 갚아야 할 부채가 될지 판단하는 일은 여전히 개발자의 몫입니다. 이 책은 단순히 돌아가는 코드를 넘어 ‘읽기 쉽고 유지보수하기 편하며 ..."
+  },
+  {
+    "isbn": "9788931440799",
+    "title": "명확하게 디자인하라",
+    "author": "ROBERT HOEKMAN JR",
+    "description": "인터렉션 디자이너이자 사용성 전문가 ROBERT HOEKMAN. JR의 『명확하게 디자인하라』. 매크로미디어, 어도비, 유나이티드 에어라인, 시스코 시스템 등과 함께 프로젝트를 진행하며 최상의 사용자 경험을 다양한 사용자에게 제공해온 저자가, 개발자와 디자이너를 위해 웹 UX 디자인 원칙을 정리해서 담아냈다. 잘 만든 웹 어플리케이션의 비결은 사용자 중심의..."
+  },
+  {
+    "isbn": "9788966261031",
+    "title": "실용주의 프로그래머",
+    "author": "앤드류 헌트, 데이비드 토머스",
+    "description": "[실용주의 프로그래머]는 초보를 벗어나고자 하는 프로그래머를 위해 저자들의 오랜 성찰을 통해 정제한 지혜와 구체적인 실천법으로 안내한다. 코딩 가이드라인, 설계에 대한 격언, 프로젝트 관리에 대한 조언, 사람들과의 관계에 대한 지혜, 각 항목별 연습 문제를 제공한다."
+  },
+  {
+    "isbn": "9788966263363",
+    "title": "실용주의 프로그래머(20주년 기념판)",
+    "author": "데이비드 토머스, 앤드류 헌트",
+    "description": "《실용주의 프로그래머》는 당신이 읽고, 또 읽고, 수년간 또다시 읽게 될 몇 안 되는 기술 서적이다. 당신이 이 분야에 처음 발을 디딘 사람이건, 경험 많은 전문가이건 매번 새로운 통찰을 얻게 될 것이다.  데이비드 토머스와 앤드류 헌트는 소프트웨어 산업에 큰 영향을 미친 이 책의 1판을 1999년에 썼다. 고객들이 더 나은 소프트웨어를 만들고 코딩의 기쁨..."
+  },
+  {
+    "isbn": "9788991268074",
+    "title": "실용주의 프로그래머(프로그램 프로그래밍 프로그래머 2)(양장본 HardCover)",
+    "author": "앤드류 헌트, 데이비드 토머스",
+    "description": ""
+  },
+  {
+    "isbn": "9788995300992",
+    "title": "실용주의 프로그래머를 위한 버전관리 USING CVS",
+    "author": "데이비드 토머스",
+    "description": ""
+  },
+  {
+    "isbn": "9788991268036",
+    "title": "단위 테스트(실용주의 프로그래머를 위한)",
+    "author": "데이비드 토머스",
+    "description": "소프트웨어 개발의 생산성을 증대하기 위한 기본 도구들을 다룬 ''시작 도구 시리즈''의 두번째 책으로 JUnit를 이용한 단위테스트 방법을 소개한다. 이 책은 테스트를 통해 요구사항을 좀더 명확히 하고 질 높은 소프트 웨어를 개발하고자 하는 테스트 주도 개발에 중점을 두고, 자동화 테스트 기구인 JUnit을 이용하여 무엇을 어떻게 테스트할 것인지 구체적이고..."
+  },
+  {
+    "isbn": "9788966260959",
+    "title": "Clean Code(클린 코드)",
+    "author": "로버트 C. 마틴",
+    "description": "『Clean Code(클린 코드)』은 오브젝트 멘토(Object Mentor)의 동료들과 힘을 모아 ‘개발하며’ 클린 코드를 만드는 최상의 애자일 기법을 소개하고 있다. 소프트웨어 장인 정신의 가치를 심어 주며 프로그래밍 실력을 높여줄 것이다. 여러분이 노력만 한다면. 어떤 노력이 필요하냐고? 코드를 읽어야 한다. 아주 많은 코드를. 그리고 코드를 읽으면서..."
+  },
+  {
+    "isbn": "9791161340463",
+    "title": "파이썬 클린 코드",
+    "author": "마리아노 아나야",
+    "description": "견고하면서도 확장성이 뛰어난 파이썬 코드를 만드는 비법    파이썬은 누구나 쉽게 시작할 수 있는 프로그래밍 언어이다. 그러나 이 책에서 소개하는 다음 내용을 제대로 숙지하지 않고 개발을 하다보면 더 이상은 수정이 불가능한 코드를 마주하게 된다. 어디서부터 무엇이 잘못된 걸까? 이 책을 통해 파이썬의 철학을 따르는 파이썬스러운 클린 코드를 작성하는 방법에 ..."
+  },
+  {
+    "isbn": "9788968487187",
+    "title": "레거시 코드를 클린 코드로 누구나 쉽게, 리팩토링",
+    "author": "신정호, 이규일, 박승규, 김태환, 정승욱",
+    "description": "『레거시 코드를 클린 코드로 누구나 쉽게, 리팩토링』은 복잡하고 좋지 못한 레거시 코드를 안전하고 효율적으로 개선할 구체적인 방법을 소개한다. 코드가 복잡하다면 TDD 또는 단위 테스트를 작성하여 구현체를 안전하게 수정하고, 문제 해결 방법을 패턴화하여 구현체의 유형만 파악하면 쉽게 수정하는 방법을 제시한다."
+  },
+  {
+    "isbn": "9788964200377",
+    "title": "클린 코드",
+    "author": "로버트 C. 마틴",
+    "description": "완벽한 코드 작성을 위한 『클린 코드』. 클린코드를 작성하는 원칙, 패턴, 실기를 설명하고 사례 연구를 소개한다. 또한 사례 연구를 만들면서 수집한 ‘냄새’와 발견법을 열거하여 코드를 읽고 짜고 정리하는 과정에서 독자가 생각하는 방식을 묘사한 지식을 얻을 수 있도록 구성했다."
+  },
+  {
+    "isbn": "9791162242742",
+    "title": "리팩터링",
+    "author": "마틴 파울러",
+    "description": "지난 20년간 전 세계 프로그래머에게 리팩터링의 교본이었던 이 책의 1판은, 기존 코드의 디자인을 개선하고 소프트웨어 유지 관리 능력을 향상시켰으며 기존 코드를 이해하기 쉽게 만드는 데 도움을 주었습니다. 간절히 기다려온 이번 개정판에는 프로그래밍 환경의 중요한 변화가 대거 반영되었습니다.  새로운 리팩터링 카탈로그를 자바스크립트 코드로 제시합니다. 리팩터..."
+  },
+  {
+    "isbn": "9791194383734",
+    "title": "요즘 바이브 코딩 안티그래비티 완벽 가이드",
+    "author": "최지호(코드팩토리)",
+    "description": "이 책은 구글의 차세대 코딩 에이전트 안티그래비티의 완벽 가이드북입니다. 현업 개발자인 저자가 바이브 코딩을 연구하며 축적한 실전 노하우를 기초부터 고급 활용까지 체계적으로 정리했습니다. 단순히 AI에게 코드를 물어보는 수준에 머물러 있었다면, 당신은 구글 생태계가 가진 진정한 잠재력의 10%도 채 쓰지 못한 것입니다. 구글 스티치로 감각적인 UI를 디자인..."
+  },
+  {
+    "isbn": "9788991268159",
+    "title": "리팩터링 워크북",
+    "author": "윌리엄 웨이크",
+    "description": ""
+  },
+  {
+    "isbn": "9791169214483",
+    "title": "핸즈온 바이브 코딩: 요구사항 정의부터 리팩터링까지 직관이 아닌 원리로...",
+    "author": "정도현",
+    "description": "AI가 프로그래밍의 방식을 근본적으로 바꾸고 있다. 이제 개발자는 모든 코드를 직접 작성하는 사람이 아니라 AI와 협업해 문제를 해결하는 ‘바이브 코더’가 되어야 한다. 이 책은 직관과 즉흥에 머물렀던 바이브 코딩을 넘어, LLM 기반 AI와 함께 프로젝트를 체계적으로 수행하는 방법을 제시한다. 바이브 코딩의 성숙도 5단계 모델을 통해 자신의 수준을 점검하..."
+  },
+  {
+    "isbn": "9788998139681",
+    "title": "모던 C 언어 프로그래밍",
+    "author": "하나이 시세이",
+    "description": "[모던 C 언어 프로그래밍]은 C 언어의 현대적인 개발 스타일을 소개하는 책이다. C 개발에 IDE 활용, C에서 디자인 패턴 활용하기, C 프로그램의 개발을 테스트 주도 개발 형식으로 수행, C 프로그램 리팩터링하기, C 프로그램 개발에 지속적인 통합을 적용하는 방법 등을 다루고 있다."
+  },
+  {
+    "isbn": "9788966262472",
+    "title": "클린 아키텍처: 소프트웨어 구조와 설계의 원칙",
+    "author": "로버트 C. 마틴",
+    "description": "“살아있는 전설이 들려주는 실용적인 소프트웨어 아키텍처 원칙”    소프트웨어 아키텍처의 보편 원칙을 적용하면 소프트웨어 수명 전반에서 개발자 생산성을 획기적으로 끌어올릴 수 있다. 《클린 코드》와 《클린 코더》의 저자이자 전설적인 소프트웨어 장인인 로버트 C. 마틴은 이 책 《클린 아키텍처》에서 이러한 보편 원칙들을 설명하고 여러분이 실무에 적용할 수 있..."
+  },
+  {
+    "isbn": "9791158392758",
+    "title": "클린 아키텍처",
+    "author": "톰 홈버그",
+    "description": "우리 모두는 낮은 개발 비용으로 유연하고 적응이 쉬운 소프트웨어 아키텍처를 구축하고자 한다. 그러나 불합리한 기한과 쉬워보이는 지름길은 이러한 아키텍처를 구축하는 것을 매우 어렵게 만든다.  이 책에서는 전통적인 계층형 아키텍처(layered architecture) 스타일과 이 스타일의 단점을 논하는 것부터 시작해, 로버트 마틴(Robert C. Mart..."
+  },
+  {
+    "isbn": "9791158396565",
+    "title": "클린 아키텍처 핵심 가이드",
+    "author": "한승희",
+    "description": "소프트웨어를 장기간 운영하고 개선하며 유지보수해본 개발자라면 코드 구조화의 중요성을 뼈저리게 느낀다. 동료가 쉽게 이해하고, 테스트가 용이하며, 변경에 강건한 코드는 단순히 기능이 동작하는 수준을 훨씬 넘어선다. 요즘처럼 생성형 AI로 코드를 빠르게 찍어낼 수 있는 시대에도 초기 구현 단계에서는 구조가 다소 느슨해도 동작은 하지만 실제 서비스로 출시하고 수..."
+  },
+  {
+    "isbn": "9791162243282",
+    "title": "유닉스의 탄생",
+    "author": "브라이언 W. 커니핸",
+    "description": "이 책은 유닉스의 역사를 기록한 책이자 유닉스 개발 현장에 있던 이들의 회고록이다. 유닉스가 무엇인지, 어떤 이유로 개발되었는지, 어떤 과정을 거쳐 발전했는지 꼼꼼하게 기록했다. 동시에 무한한 창조성을 발휘하며 수많은 가능성에 도전한 천재들의 이야기와 자유로운 연구 환경을 제공한 벨 연구소 현장도 생생하게 담았다. 이 책을 읽으며 새로운 것을 창조하고 더 ..."
+  },
+  {
+    "isbn": "9791158391744",
+    "title": "개발자의 글쓰기",
+    "author": "김철수",
+    "description": "이 책은 개발자의 글쓰기 능력을 종합적으로 향상하기 위한 책이다. 코드 안에서는 함수와 변수 이름을 짓는 것부터 주석 쓰는 법, 에러 메시지 쓰는 법까지 알려준다. 코드 밖에서는 릴리스 노트, 장애 보고서, 개발 가이드를 어떻게 하면 잘 쓸 수 있는지를 알려준다. 외주 개발을 하는 개발자를 위해 SI 제안서의 기술 부문을 설득력 있게 쓰는 법도 놓치지 않았..."
+  },
+  {
+    "isbn": "9791124205037",
+    "title": "개발자는 글을 못 쓴다고요?",
+    "author": "전정은, 황수정",
+    "description": "개발자는 오늘도 글을 씁니다. 커밋 메시지부터 리드미, 릴리스 노트, 기술 블로그까지 일의 많은 순간에 글이 필요합니다. 이 책은 그런 글을 더 잘 쓰고 싶은 개발자를 위한 실전 가이드입니다. 주석, 예제 코드, 시작하기 문서처럼 자주 마주치는 글쓰기부터 정확하고 간결한 기술 문서 작성법, 이메일과 메시지, ChatGPT 활용 팁까지 실무에 꼭 맞는 내용으..."
+  },
+  {
+    "isbn": "9788997924806",
+    "title": "개발자를 위한 글쓰기 가이드",
+    "author": "유영경",
+    "description": "개발자가 코딩만 잘하면 된다? 고객의 요구사항 분석을 제대로 글로 옮기지 못한다면 무슨 일이 발생할까? 장애 발생 시 공지문을 작성해야 하는데, 빠짐없이 정확하게 작성할 수 있을까? 오류와 확인 메시지는 제대로 쓸 수 있을까? UI에 들어가는 텍스트는? 소프트웨어 제품 출시 후 사용자 가이드는 어떻게 만들어야 할까? 개발자는 코딩 영역 외에도 이렇게 수많은..."
+  },
+  {
+    "isbn": "9791162245620",
+    "title": "구글 엔지니어는 이렇게 일한다",
+    "author": "타이터스 윈터스, 톰 맨쉬렉, 하이럼 라이트",
+    "description": "지난 50년의 세월과 이 책이 입증한 사실이 한 가지 있습니다. 바로 ''소프트웨어 엔지니어링의 발전은 결코 정체되지 않는다''라는 것입니다. 빠른 기술 변화 속에서 소프트웨어 엔지니어링의 중요성이 더욱 강조되면서 소프트웨어 엔지니어의 역할은 점점 더 확장될 것입니다. 이제 더 이상 소프트웨어 엔지니어링은 단순히 조직을 효과적으로 운영하는 방법에 그치지 않..."
+  },
+  {
+    "isbn": "9788933871553",
+    "title": "모래알만 한 진실이라도",
+    "author": "박완서",
+    "description": "박완서 에세이 결정판 『모래알만 한 진실이라도』가 ‘윤슬 에디션’으로 새로이 독자들을 찾아왔다. 그가 남긴 에세이 660여 편을 모두 살피고 그중 베스트 35편을 선별한 『모래알만 한 진실이라도』는 작품 선정에만 몇 개월이 소요된 만큼 박완서 에세이의 정수라고 칭하기에 손색이 없다. 초판 한정으로 독자들을 만나는 ‘윤슬 에디션’은 빛과 물의 반짝이는 순간을..."
+  }
+]';
 
     -- Loop through the JSON array
-    for v_book in select * from jsonb_to_recordset(v_book_data) as x(title text, author text, description text)
+    for v_book in select * from jsonb_to_recordset(v_book_data) as x(isbn text, title text, author text, description text)
     loop
         -- 1. Insert Book
-        insert into den.books (title, author, description, created_at, updated_at)
+        insert into den.books (isbn, title, author, description, created_at, updated_at)
         values (
+            v_book.isbn,
             v_book.title,
             v_book.author,
             v_book.description,
