@@ -6,7 +6,7 @@ import {
 } from "@supabase/ssr";
 
 export const supabase = createBrowserClient(
-  import.meta.env.VITE_SUPABASE_URL,
+  `https://${import.meta.env.VITE_SUPABASE_ID}.supabase.co`,
   import.meta.env.VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY,
   {
     cookieOptions: {
@@ -22,7 +22,7 @@ export const createSSRClient = (request: Request) => {
   const headers = new Headers();
 
   const supabase = createServerClient(
-    import.meta.env.VITE_SUPABASE_URL,
+    `https://${import.meta.env.VITE_SUPABASE_ID}.supabase.co`,
     import.meta.env.VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY,
     {
       cookieOptions: {

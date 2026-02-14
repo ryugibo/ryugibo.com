@@ -41,7 +41,7 @@ export type Database = MergeDeep<
 >;
 
 export const supabase = createBrowserClient<Database>(
-  import.meta.env.VITE_SUPABASE_URL,
+  `https://${import.meta.env.VITE_SUPABASE_ID}.supabase.co`,
   import.meta.env.VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY,
   {
     db: {
@@ -62,7 +62,7 @@ export const createSSRClient = (request: Request) => {
   const headers = new Headers();
 
   const supabase = createServerClient<Database>(
-    import.meta.env.VITE_SUPABASE_URL,
+    `https://${import.meta.env.VITE_SUPABASE_ID}.supabase.co`,
     import.meta.env.VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY,
     {
       db: {
@@ -117,7 +117,7 @@ export const createSSRClient = (request: Request) => {
 };
 
 export const supabaseAdmin = createClient<Database>(
-  import.meta.env.VITE_SUPABASE_URL,
+  `https://${import.meta.env.VITE_SUPABASE_ID}.supabase.co`,
   process.env.SUPABASE_SECRET_DEFAULT_KEY || "",
   {
     db: {
