@@ -1,3 +1,4 @@
+import { cloudflare } from "@cloudflare/vite-plugin";
 import { reactRouter } from "@react-router/dev/vite";
 import { getBaseViteConfig } from "@ryugibo/vite-config";
 import tailwindcss from "@tailwindcss/vite";
@@ -9,6 +10,11 @@ export default defineConfig(() => {
     server: {
       port: 5173,
     },
-    plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
+    plugins: [
+      cloudflare({ viteEnvironment: { name: "ssr" } }),
+      tailwindcss(),
+      reactRouter(),
+      tsconfigPaths(),
+    ],
   });
 });

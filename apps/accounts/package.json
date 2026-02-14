@@ -5,17 +5,19 @@
   "scripts": {
     "build": "react-router build",
     "dev": "react-router dev",
-    "start": "react-router-serve ./build/server/index.js",
-    "check-types": "react-router typegen && pnpm lint:routes && tsc --noEmit",
-    "lint:routes": "rr-kit check-types"
+    "cf-typegen": "wrangler types",
+    "typegen": "wrangler types && react-router typegen",
+    "check-types": "pnpm run typegen && pnpm lint:routes && tsc --noEmit",
+    "lint:routes": "rr-kit check-types",
+    "deploy": "pnpm run build && wrangler deploy",
+    "preview": "pnpm run build && vite preview"
   },
   "dependencies": {
-    "@ryugibo/ui": "workspace:*",
-    "@ryugibo/vite-config": "workspace:*",
-    "@ryugibo/utils": "workspace:*",
     "@icons-pack/react-simple-icons": "catalog:",
-    "@react-router/node": "catalog:",
-    "@react-router/serve": "catalog:",
+    "@react-router/cloudflare": "7.13.0",
+    "@ryugibo/ui": "workspace:*",
+    "@ryugibo/utils": "workspace:*",
+    "@ryugibo/vite-config": "workspace:*",
     "@supabase/ssr": "catalog:",
     "@supabase/supabase-js": "catalog:",
     "isbot": "catalog:",
@@ -26,15 +28,18 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@ryugibo/react-router-kit": "workspace:*",
+    "@cloudflare/vite-plugin": "^1.25.0",
+    "@cloudflare/workers-types": "^4.20260214.0",
     "@react-router/dev": "catalog:",
+    "@ryugibo/react-router-kit": "workspace:*",
     "@tailwindcss/vite": "catalog:",
     "@types/luxon": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "supabase": "catalog:",
     "vite": "catalog:",
-    "vite-tsconfig-paths": "catalog:"
+    "vite-tsconfig-paths": "catalog:",
+    "wrangler": "^4.65.0"
   },
   "engines": {
     "node": ">=24"

@@ -10,10 +10,10 @@ export const supabase = createBrowserClient(
   import.meta.env.VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY,
   {
     cookieOptions: {
-      domain: ".lvh.me",
+      domain: import.meta.env.VITE_COOKIE_DOMAIN ?? ".lvh.me",
       path: "/",
       sameSite: "lax",
-      secure: false,
+      secure: import.meta.env.PROD,
     },
   },
 );
@@ -26,10 +26,10 @@ export const createSSRClient = (request: Request) => {
     import.meta.env.VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY,
     {
       cookieOptions: {
-        domain: ".lvh.me",
+        domain: import.meta.env.VITE_COOKIE_DOMAIN ?? ".lvh.me",
         path: "/",
         sameSite: "lax",
-        secure: false,
+        secure: import.meta.env.PROD,
       },
       cookies: {
         getAll() {
@@ -44,10 +44,10 @@ export const createSSRClient = (request: Request) => {
               "Set-Cookie",
               serializeCookieHeader(name, value, {
                 ...options,
-                domain: ".lvh.me",
+                domain: import.meta.env.VITE_COOKIE_DOMAIN ?? ".lvh.me",
                 path: "/",
                 sameSite: "lax",
-                secure: false,
+                secure: import.meta.env.PROD,
               }),
             );
           });
