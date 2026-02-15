@@ -1,6 +1,6 @@
 import { cloudflare } from "@cloudflare/vite-plugin";
 import { reactRouter } from "@react-router/dev/vite";
-import { PORTS } from "@ryugibo/utils";
+import { INSPECTOR_PORTS, PORTS } from "@ryugibo/utils";
 import { getBaseViteConfig } from "@ryugibo/vite-config";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
@@ -11,7 +11,7 @@ export default defineConfig(() => {
   return getBaseViteConfig(pkg.name, {
     server: { port: PORTS.den },
     plugins: [
-      cloudflare({ viteEnvironment: { name: "ssr" } }),
+      cloudflare({ inspectorPort: INSPECTOR_PORTS.den, viteEnvironment: { name: "ssr" } }),
       tailwindcss(),
       reactRouter(),
       tsconfigPaths(),
