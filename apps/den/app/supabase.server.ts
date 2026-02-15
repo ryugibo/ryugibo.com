@@ -1,5 +1,5 @@
 import { createServerClient, parseCookieHeader, serializeCookieHeader } from "@supabase/ssr";
-import { createClient } from "@supabase/supabase-js";
+
 import type { Database } from "./supabase.ts";
 
 export const createSSRClient = (request: Request) => {
@@ -45,13 +45,3 @@ export const createSSRClient = (request: Request) => {
 
   return { supabase, headers };
 };
-
-export const supabaseAdmin = createClient<Database>(
-  `https://${import.meta.env.VITE_SUPABASE_ID}.supabase.co`,
-  process.env.SUPABASE_SECRET_DEFAULT_KEY || "",
-  {
-    db: {
-      schema: __APP_NAME__,
-    },
-  },
-);

@@ -5,17 +5,19 @@
   "scripts": {
     "build": "react-router build",
     "dev": "react-router dev",
-    "start": "react-router-serve ./build/server/index.js",
-    "check-types": "react-router typegen && pnpm lint:routes && tsc --noEmit",
+    "cf-typegen": "wrangler types",
+    "typegen": "wrangler types && react-router typegen",
+    "check-types": "pnpm run typegen && pnpm lint:routes && tsc --noEmit",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "db:typegen": "dotenv -e .env -- sh -c 'pnpm supabase gen types typescript --project-id \"$VITE_SUPABASE_ID\" --schema $npm_package_name > database.types.ts'",
-    "lint:routes": "rr-kit check-types"
+    "lint:routes": "rr-kit check-types",
+    "deploy": "pnpm run build && wrangler deploy",
+    "preview": "pnpm run build && vite preview"
   },
   "dependencies": {
-    "@react-router/node": "catalog:",
-    "@react-router/serve": "catalog:",
+    "@react-router/cloudflare": "7.13.0",
     "@ryugibo/db": "workspace:*",
     "@ryugibo/emails": "workspace:*",
     "@ryugibo/ui": "workspace:*",
@@ -34,6 +36,8 @@
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.25.0",
+    "@cloudflare/workers-types": "^4.20260214.0",
     "@react-router/dev": "catalog:",
     "@ryugibo/react-router-kit": "workspace:*",
     "@tailwindcss/vite": "catalog:",
@@ -43,7 +47,8 @@
     "dotenv-cli": "catalog:",
     "supabase": "catalog:",
     "vite": "catalog:",
-    "vite-tsconfig-paths": "catalog:"
+    "vite-tsconfig-paths": "catalog:",
+    "wrangler": "^4.65.0"
   },
   "engines": {
     "node": ">=24"
