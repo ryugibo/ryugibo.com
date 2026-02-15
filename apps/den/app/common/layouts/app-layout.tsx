@@ -12,14 +12,11 @@ import {
   Toaster,
 } from "@ryugibo/ui";
 import { BookOpen } from "@ryugibo/ui/icons";
-import { Link, useLocation } from "react-router";
+import { Link, Outlet, useLocation } from "react-router";
 import { AppSidebar } from "../components/app-sidebar.tsx";
 import { BottomNav } from "../components/bottom-nav.tsx";
 import { useTranslation } from "../hooks/use-translation.ts";
-
-interface AppLayoutProps {
-  children: React.ReactNode;
-}
+import type { Route } from "./+types/app-layout.ts";
 
 const segmentTranslationMap: Record<string, string> = {
   library: "nav.library",
@@ -30,7 +27,7 @@ const segmentTranslationMap: Record<string, string> = {
   add: "nav.add",
 };
 
-export default function AppLayout({ children }: AppLayoutProps) {
+export default function AppLayout(_: Route.ComponentProps) {
   const { t } = useTranslation();
   const location = useLocation();
   const pathSegments = location.pathname.split("/").filter(Boolean);
@@ -95,7 +92,9 @@ export default function AppLayout({ children }: AppLayoutProps) {
             </Breadcrumb>
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0 pb-20 md:pb-4">{children}</div>
+        <div className="flex flex-1 flex-col gap-4 p-4 pt-0 pb-20 md:pb-4">
+          <Outlet />
+        </div>
       </SidebarInset>
       <BottomNav />
       <Toaster />

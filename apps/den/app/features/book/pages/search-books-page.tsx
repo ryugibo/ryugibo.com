@@ -4,7 +4,6 @@ import { useState } from "react";
 import { Link } from "react-router";
 import { toast } from "sonner";
 import { useTranslation } from "../../../common/hooks/use-translation.ts";
-import AppLayout from "../../../common/layouts/app-layout.tsx";
 import { BookCover } from "../components/book-cover.tsx";
 import type { Route } from "./+types/search-books-page";
 
@@ -65,80 +64,76 @@ export default function SearchBooksPage(_: Route.ComponentProps) {
   };
 
   return (
-    <AppLayout>
-      <div className="flex flex-1 flex-col gap-6 p-4 max-w-4xl mx-auto w-full">
-        <header>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground mb-2">
-            {t("search.title")}
-          </h1>
-          <p className="text-muted-foreground">{t("search.subtitle")}</p>
-        </header>
+    <div className="flex flex-1 flex-col gap-6 p-4 max-w-4xl mx-auto w-full">
+      <header>
+        <h1 className="text-3xl font-bold tracking-tight text-foreground mb-2">
+          {t("search.title")}
+        </h1>
+        <p className="text-muted-foreground">{t("search.subtitle")}</p>
+      </header>
 
-        <div className="flex gap-4">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder={t("search.placeholder")}
-              className="pl-9 h-10"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              autoFocus
-            />
-          </div>
-        </div>
-
-        <div className="flex items-center justify-between py-2">
-          <h2 className="text-sm font-medium text-muted-foreground">
-            {query ? `${t("search.results")} (${results.length})` : t("search.startTyping")}
-          </h2>
-          <Link to="/books/add">
-            <Button variant="outline" size="sm">
-              {t("search.cantFind")} <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </Link>
-        </div>
-
-        <div className="grid gap-4">
-          {results.map((book) => (
-            <div
-              key={book.id}
-              className="group flex items-start gap-4 p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
-            >
-              <div className="w-[80px] shrink-0">
-                <BookCover src={book.cover} alt={book.title} aspectRatio={2 / 3} />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h3 className="font-semibold text-lg leading-tight text-foreground">
-                      {book.title}
-                    </h3>
-                    <p className="text-muted-foreground">
-                      {book.author} • {book.year}
-                    </p>
-                  </div>
-                  <Button size="sm" onClick={() => handleAdd(book.title)}>
-                    <Plus className="mr-2 h-4 w-4" /> {t("search.add")}
-                  </Button>
-                </div>
-                <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
-                  {book.description}
-                </p>
-              </div>
-            </div>
-          ))}
-          {query && results.length === 0 && (
-            <div className="text-center py-12 text-muted-foreground border-2 border-dashed rounded-lg">
-              <p>
-                {t("search.noResults")} "{query}"
-              </p>
-              <Button variant="link" asChild className="mt-2">
-                <Link to="/books/add">{t("search.addManually")}</Link>
-              </Button>
-            </div>
-          )}
+      <div className="flex gap-4">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder={t("search.placeholder")}
+            className="pl-9 h-10"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            autoFocus
+          />
         </div>
       </div>
-    </AppLayout>
+
+      <div className="flex items-center justify-between py-2">
+        <h2 className="text-sm font-medium text-muted-foreground">
+          {query ? `${t("search.results")} (${results.length})` : t("search.startTyping")}
+        </h2>
+        <Link to="/books/add">
+          <Button variant="outline" size="sm">
+            {t("search.cantFind")} <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
+        </Link>
+      </div>
+
+      <div className="grid gap-4">
+        {results.map((book) => (
+          <div
+            key={book.id}
+            className="group flex items-start gap-4 p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
+          >
+            <div className="w-[80px] shrink-0">
+              <BookCover src={book.cover} alt={book.title} aspectRatio={2 / 3} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h3 className="font-semibold text-lg leading-tight text-foreground">
+                    {book.title}
+                  </h3>
+                  <p className="text-muted-foreground">
+                    {book.author} • {book.year}
+                  </p>
+                </div>
+                <Button size="sm" onClick={() => handleAdd(book.title)}>
+                  <Plus className="mr-2 h-4 w-4" /> {t("search.add")}
+                </Button>
+              </div>
+              <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{book.description}</p>
+            </div>
+          </div>
+        ))}
+        {query && results.length === 0 && (
+          <div className="text-center py-12 text-muted-foreground border-2 border-dashed rounded-lg">
+            <p>
+              {t("search.noResults")} "{query}"
+            </p>
+            <Button variant="link" asChild className="mt-2">
+              <Link to="/books/add">{t("search.addManually")}</Link>
+            </Button>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }

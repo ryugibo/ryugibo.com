@@ -2,7 +2,6 @@ import { Button } from "@ryugibo/ui";
 import { ArrowLeft, Edit, Plus, Trash2 } from "@ryugibo/ui/icons";
 import { Link, useParams } from "react-router";
 import { useTranslation } from "../../../common/hooks/use-translation.ts";
-import AppLayout from "../../../common/layouts/app-layout.tsx";
 import { BookCover } from "../../book/components/book-cover.tsx";
 import type { Route } from "./+types/collection-details-page";
 
@@ -43,58 +42,52 @@ export default function CollectionDetailsPage(_: Route.ComponentProps) {
   const newLocal =
     "group flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/25 hover:border-muted-foreground/50 hover:bg-muted/50 transition-all cursor-pointer aspect-[2/3] text-muted-foreground hover:text-foreground";
   return (
-    <AppLayout>
-      <div className="flex flex-1 flex-col gap-6 p-4">
-        <header className="mb-6">
-          <Link
-            to="/collections"
-            className="inline-flex items-center text-muted-foreground hover:text-foreground mb-6 transition-colors font-medium text-sm"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" /> {t("collections.details.back")}
-          </Link>
+    <div className="flex flex-1 flex-col gap-6 p-4">
+      <header className="mb-6">
+        <Link
+          to="/collections"
+          className="inline-flex items-center text-muted-foreground hover:text-foreground mb-6 transition-colors font-medium text-sm"
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" /> {t("collections.details.back")}
+        </Link>
 
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b pb-8">
-            <div>
-              <h1 className="text-4xl font-bold text-foreground mb-2">{collection.name}</h1>
-              <p className="text-muted-foreground max-w-2xl">{collection.description}</p>
-            </div>
-            <div className="flex gap-3">
-              <Button variant="outline" size="sm">
-                <Edit className="mr-2 h-4 w-4" /> {t("collections.details.edit")}
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="text-destructive hover:text-destructive"
-              >
-                <Trash2 className="mr-2 h-4 w-4" /> {t("collections.details.delete")}
-              </Button>
-            </div>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b pb-8">
+          <div>
+            <h1 className="text-4xl font-bold text-foreground mb-2">{collection.name}</h1>
+            <p className="text-muted-foreground max-w-2xl">{collection.description}</p>
           </div>
-        </header>
-
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-6">
-          {collection.books.map((book) => (
-            <Link
-              key={book.id}
-              to={`/library/${book.id}`}
-              className="group relative block transition-all hover:-translate-y-1"
-            >
-              <BookCover src={book.cover} alt={book.title} />
-              <div className="mt-3 space-y-1">
-                <h3 className="text-sm font-semibold text-foreground truncate group-hover:text-primary transition-colors">
-                  {book.title}
-                </h3>
-                <p className="text-xs text-muted-foreground truncate">{book.author}</p>
-              </div>
-            </Link>
-          ))}
-          <Link to="/books/search" className={newLocal}>
-            <Plus className="h-8 w-8 mb-2" />
-            <span className="text-sm font-medium">{t("collections.details.addBook")}</span>
-          </Link>
+          <div className="flex gap-3">
+            <Button variant="outline" size="sm">
+              <Edit className="mr-2 h-4 w-4" /> {t("collections.details.edit")}
+            </Button>
+            <Button variant="outline" size="sm" className="text-destructive hover:text-destructive">
+              <Trash2 className="mr-2 h-4 w-4" /> {t("collections.details.delete")}
+            </Button>
+          </div>
         </div>
+      </header>
+
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+        {collection.books.map((book) => (
+          <Link
+            key={book.id}
+            to={`/library/${book.id}`}
+            className="group relative block transition-all hover:-translate-y-1"
+          >
+            <BookCover src={book.cover} alt={book.title} />
+            <div className="mt-3 space-y-1">
+              <h3 className="text-sm font-semibold text-foreground truncate group-hover:text-primary transition-colors">
+                {book.title}
+              </h3>
+              <p className="text-xs text-muted-foreground truncate">{book.author}</p>
+            </div>
+          </Link>
+        ))}
+        <Link to="/books/search" className={newLocal}>
+          <Plus className="h-8 w-8 mb-2" />
+          <span className="text-sm font-medium">{t("collections.details.addBook")}</span>
+        </Link>
       </div>
-    </AppLayout>
+    </div>
   );
 }
