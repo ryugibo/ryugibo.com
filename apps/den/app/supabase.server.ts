@@ -1,41 +1,6 @@
-import {
-  createBrowserClient,
-  createServerClient,
-  parseCookieHeader,
-  serializeCookieHeader,
-} from "@supabase/ssr";
+import { createServerClient, parseCookieHeader, serializeCookieHeader } from "@supabase/ssr";
 import { createClient } from "@supabase/supabase-js";
-import type { Database as SupabaseDatabase } from "database.types";
-import type { MergeDeep, SetNonNullable } from "type-fest";
-
-export type Database = MergeDeep<
-  SupabaseDatabase,
-  {
-    den: {
-      Views: {
-        profile_books_list_view: {
-          Row: SetNonNullable<SupabaseDatabase["den"]["Views"]["profile_books_list_view"]["Row"]>;
-        };
-      };
-    };
-  }
->;
-
-export const supabase = createBrowserClient<Database>(
-  `https://${import.meta.env.VITE_SUPABASE_ID}.supabase.co`,
-  import.meta.env.VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY,
-  {
-    db: {
-      schema: __APP_NAME__,
-    },
-    cookieOptions: {
-      domain: ".lvh.me",
-      path: "/",
-      sameSite: "lax",
-      secure: false,
-    },
-  },
-);
+import type { Database } from "./supabase.ts";
 
 export const createSSRClient = (request: Request) => {
   const headers = new Headers();

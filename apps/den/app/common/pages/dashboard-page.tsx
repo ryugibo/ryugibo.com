@@ -1,7 +1,7 @@
 import { Button, Card, CardContent, CardHeader, CardTitle } from "@ryugibo/ui";
 import { Plus } from "@ryugibo/ui/icons";
 import { Link } from "react-router";
-import { BookCover } from "../../features/book/components/book-cover.tsx";
+import { createSSRClient } from "~/supabase.server.ts";
 import { useTranslation } from "../hooks/use-translation.ts";
 import type { Route } from "./+types/dashboard-page";
 
