@@ -23,6 +23,7 @@ catalogs:
     supabase: ^2.75.3
     vite: ^7.3.1
     vite-tsconfig-paths: ^6.0.5
+    wrangler: ^4.64.0
     zod: ^4.3.6
 
 onlyBuiltDependencies:

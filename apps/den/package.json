@@ -48,7 +48,7 @@
     "supabase": "catalog:",
     "vite": "catalog:",
     "vite-tsconfig-paths": "catalog:",
-    "wrangler": "^4.65.0"
+    "wrangler": "catalog:"
   },
   "engines": {
     "node": ">=24"
