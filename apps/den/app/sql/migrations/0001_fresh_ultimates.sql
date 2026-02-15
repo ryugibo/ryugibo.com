@@ -1,2 +1,0 @@
-CREATE TYPE "den"."read_state" AS ENUM('reading', 'toread', 'completed');--> statement-breakpoint
-ALTER TABLE "den"."profile_books" ADD COLUMN "read_state" "den"."read_state" DEFAULT 'toread' NOT NULL;

@@ -5,4 +5,4 @@ const envSchema = z.object({
   DATABASE_PASSWORD: z.string().min(1, "DATABASE_PASSWORD is required"),
 });
 
-export const env = envSchema.parse(import.meta.env);
+export const env = envSchema.parse(process.env);

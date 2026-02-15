@@ -1,25 +1,25 @@
 import { Button, Card, CardContent, CardHeader, CardTitle } from "@ryugibo/ui";
 import { Plus, Search } from "@ryugibo/ui/icons";
-import { Link } from "react-router";
+import { data, Link } from "react-router";
+import { getBookCount } from "~/features/library/queries.ts";
 import { createSSRClient } from "~/supabase.server.ts";
 import { useTranslation } from "../hooks/use-translation.ts";
 import type { Route } from "./+types/dashboard-page";
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
-  const { supabase } = createSSRClient(request);
-
-  const { count } = await supabase
-    .from("profile_books_list_view")
-    .select("*", { count: "exact", head: true });
-
-  return {
-    totalBooks: count ?? 0,
-  };
+  const { supabase, headers, getAuthUser } = createSSRClient(request);
+  const user = await getAuthUser();
+  if (!user) {
+    return data({ count: 0 }, { headers });
+  }
+  const { id: profile_id } = user;
+  const { count } = await getBookCount({ supabase, profile_id });
+  return data({ count }, { headers });
 };
 
 export default function DashboardPage({ loaderData }: Route.ComponentProps) {
   const { t } = useTranslation();
-  const { totalBooks } = loaderData;
+  const { count } = loaderData;
 
   return (
     <div className="flex flex-1 flex-col gap-8 p-4 pt-4">
@@ -47,7 +47,7 @@ export default function DashboardPage({ loaderData }: Route.ComponentProps) {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-4xl font-bold text-foreground">{totalBooks}</div>
+            <div className="text-4xl font-bold text-foreground">{count}</div>
           </CardContent>
         </Card>
         <Card className="flex flex-col items-center justify-center border-2 border-dashed cursor-pointer hover:bg-accent/50 transition-colors">

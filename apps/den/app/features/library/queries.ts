@@ -2,6 +2,25 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "~/supabase.ts";
 import type { BookSource } from "./constant.ts";
 
+export const getBookCount = async ({
+  supabase,
+  profile_id,
+}: {
+  supabase: SupabaseClient<Database>;
+  profile_id: string;
+}) => {
+  console.log("getBookCount profile_id:", profile_id);
+  const { count, error } = await supabase
+    .from("profile_books")
+    .select("*", { count: "exact", head: true })
+    .eq("profile_id", profile_id);
+
+  if (error) {
+    console.error("getBookCount error details:", JSON.stringify(error, null, 2));
+    throw error;
+  }
+  return { count };
+};
 export const getLibrary = async (
   supabase: SupabaseClient<Database>,
   {
@@ -12,10 +31,17 @@ export const getLibrary = async (
     source?: BookSource;
   },
 ) => {
-  const query = supabase.from("profile_books_list_view").select("*");
+  const query = supabase.from("profile_books").select(`
+    source,
+    created_at,
+    books!inner (
+      isbn,
+      title
+    )
+  `);
 
   if (keyword) {
-    query.ilike("title", `%${keyword}%`);
+    query.ilike("books.title", `%${keyword}%`);
   }
 
   if (source) {

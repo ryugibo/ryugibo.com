@@ -1,1 +1,0 @@
-ALTER TABLE "den"."profiles" ADD COLUMN "email" text;

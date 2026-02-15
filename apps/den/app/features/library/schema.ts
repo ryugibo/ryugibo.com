@@ -1,5 +1,5 @@
 import { authenticatedRole, authUid, serviceRole, sql } from "@ryugibo/db";
-import { bigint, pgPolicy, text, timestamp, uuid } from "@ryugibo/db/core";
+import { bigint, pgPolicy, primaryKey, timestamp, uuid } from "@ryugibo/db/core";
 import { pg } from "db";
 import { books } from "~/features/book/schema.ts";
 import { BOOK_SOURCES, READ_STATE } from "~/features/library/constant.ts";
@@ -18,18 +18,16 @@ export const profileBooks = pg.table(
     profile_id: uuid().references(() => profiles.id, { onDelete: "cascade" }),
     book_id: bigint({ mode: "number" }).references(() => books.id, { onDelete: "cascade" }),
     source: bookSources().notNull(),
-    source_etc: text(),
-    read_state: readState().notNull().default("toread"),
-    comment: text().notNull(),
     created_at: timestamp().notNull().defaultNow(),
     updated_at: timestamp().notNull().defaultNow(),
   },
   (table) => [
+    primaryKey({ columns: [table.profile_id, table.book_id] }),
     pgPolicy("profile_books-select-policy", {
       for: "select",
       as: "permissive",
       to: [authenticatedRole, serviceRole],
-      using: sql`${authUid} = ${table.profile_id}`,
+      using: sql`${authUid} = ${table.profile_id} OR (SELECT public FROM ${profiles} WHERE id = ${table.profile_id})`,
     }),
     pgPolicy("profile_books-insert-policy", {
       for: "insert",

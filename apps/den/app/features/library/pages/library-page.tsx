@@ -49,6 +49,7 @@ export default function LibraryPage({ loaderData }: Route.ComponentProps) {
     }
     setSearchParams(searchParams);
   };
+  const keyword = searchParams.get("keyword") || "";
 
   const getSourceLabel = (val: string) => {
     return BOOK_SOURCES.find((s) => s.value === val)?.label || val;
@@ -72,6 +73,7 @@ export default function LibraryPage({ loaderData }: Route.ComponentProps) {
               name="keyword"
               placeholder={t("library.searchPlaceholder")}
               className="pl-8"
+              defaultValue={keyword}
             />
           </Form>
         </div>
@@ -90,18 +92,18 @@ export default function LibraryPage({ loaderData }: Route.ComponentProps) {
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
         {books.map((book) => (
-          <div key={book.book_id} className="group relative block">
-            <BookCover src={book.cover} alt={book.title} className="mb-3" />
+          <div key={book.books.isbn} className="group relative block">
+            <BookCover src="" alt={book.books.title} className="mb-3" />
             <div className="space-y-1">
               <div className="flex justify-between items-start">
                 <h3 className="text-sm font-semibold text-foreground truncate flex-1 pr-2">
-                  {book.title}
+                  {book.books.title}
                 </h3>
                 <Badge variant="secondary" className="text-[10px] px-1.5 h-5">
                   {getSourceLabel(book.source || "")}
                 </Badge>
               </div>
-              <p className="text-xs text-muted-foreground truncate">{book.author}</p>
+              <p className="text-xs text-muted-foreground truncate">{book.books.isbn}</p>
             </div>
           </div>
         ))}

@@ -1,5 +1,5 @@
 import { authenticatedRole, authUid, authUsers, sql } from "@ryugibo/db";
-import { pgPolicy, text, timestamp, uuid } from "@ryugibo/db/core";
+import { boolean, pgPolicy, text, timestamp, uuid } from "@ryugibo/db/core";
 import { pg } from "db";
 
 export const profiles = pg.table(
@@ -8,11 +8,9 @@ export const profiles = pg.table(
     id: uuid()
       .primaryKey()
       .references(() => authUsers.id, { onDelete: "cascade" }),
-    name: text().notNull(),
-    username: text().notNull(),
-    email: text(),
-    avatar: text(),
-    bio: text(),
+    email: text().default(sql`(auth.jwt() ->> 'email')`),
+    username: text().notNull().unique(),
+    public: boolean().notNull().default(false),
     created_at: timestamp().notNull().defaultNow(),
     updated_at: timestamp().notNull().defaultNow(),
   },
@@ -21,7 +19,7 @@ export const profiles = pg.table(
       for: "select",
       as: "permissive",
       to: authenticatedRole,
-      using: sql`${authUid} = ${table.id}`,
+      using: sql`${table.public} OR ${authUid} = ${table.id}`,
     }),
     pgPolicy("profiles-insert-policy", {
       for: "insert",

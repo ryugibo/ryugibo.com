@@ -5,50 +5,15 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1768925613029,
-      "tag": "0000_glamorous_blackheart",
+      "when": 1771171802092,
+      "tag": "0000_initialize_app_schema",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "7",
-      "when": 1769360754182,
-      "tag": "0001_fresh_ultimates",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1769524610529,
-      "tag": "0002_nosy_romulus",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1770061121907,
-      "tag": "0003_nappy_sersi",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1770231150635,
-      "tag": "0004_wooden_storm",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1770231272004,
-      "tag": "0005_fair_thunderball",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "7",
-      "when": 1770392970244,
-      "tag": "0006_spicy_stingray",
+      "when": 1771177902232,
+      "tag": "0001_fat_stryfe",
       "breakpoints": true
     }
   ]

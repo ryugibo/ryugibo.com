@@ -16,32 +16,23 @@ export type Database = {
     Tables: {
       books: {
         Row: {
-          author: string
-          cover: string | null
           created_at: string
-          description: string | null
           id: number
-          isbn: string | null
+          isbn: string
           title: string
           updated_at: string
         }
         Insert: {
-          author: string
-          cover?: string | null
           created_at?: string
-          description?: string | null
           id?: never
-          isbn?: string | null
+          isbn: string
           title: string
           updated_at?: string
         }
         Update: {
-          author?: string
-          cover?: string | null
           created_at?: string
-          description?: string | null
           id?: never
-          isbn?: string | null
+          isbn?: string
           title?: string
           updated_at?: string
         }
@@ -49,33 +40,24 @@ export type Database = {
       }
       profile_books: {
         Row: {
-          book_id: number | null
-          comment: string
+          book_id: number
           created_at: string
-          profile_id: string | null
-          read_state: Database["den"]["Enums"]["read_state"]
+          profile_id: string
           source: Database["den"]["Enums"]["book_sources"]
-          source_etc: string | null
           updated_at: string
         }
         Insert: {
-          book_id?: number | null
-          comment: string
+          book_id: number
           created_at?: string
-          profile_id?: string | null
-          read_state?: Database["den"]["Enums"]["read_state"]
+          profile_id: string
           source: Database["den"]["Enums"]["book_sources"]
-          source_etc?: string | null
           updated_at?: string
         }
         Update: {
-          book_id?: number | null
-          comment?: string
+          book_id?: number
           created_at?: string
-          profile_id?: string | null
-          read_state?: Database["den"]["Enums"]["read_state"]
+          profile_id?: string
           source?: Database["den"]["Enums"]["book_sources"]
-          source_etc?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -97,32 +79,26 @@ export type Database = {
       }
       profiles: {
         Row: {
-          avatar: string | null
-          bio: string | null
           created_at: string
           email: string | null
           id: string
-          name: string
+          public: boolean
           updated_at: string
           username: string
         }
         Insert: {
-          avatar?: string | null
-          bio?: string | null
           created_at?: string
           email?: string | null
           id: string
-          name: string
+          public?: boolean
           updated_at?: string
           username: string
         }
         Update: {
-          avatar?: string | null
-          bio?: string | null
           created_at?: string
           email?: string | null
           id?: string
-          name?: string
+          public?: boolean
           updated_at?: string
           username?: string
         }
@@ -130,39 +106,7 @@ export type Database = {
       }
     }
     Views: {
-      profile_books_list_view: {
-        Row: {
-          author: string | null
-          book_id: number | null
-          comment: string | null
-          cover: string | null
-          created_at: string | null
-          description: string | null
-          isbn: string | null
-          profile_id: string | null
-          read_state: Database["den"]["Enums"]["read_state"] | null
-          source: Database["den"]["Enums"]["book_sources"] | null
-          source_etc: string | null
-          title: string | null
-          updated_at: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "profile_books_book_id_books_id_fk"
-            columns: ["book_id"]
-            isOneToOne: false
-            referencedRelation: "books"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "profile_books_profile_id_profiles_id_fk"
-            columns: ["profile_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
+      [_ in never]: never
     }
     Functions: {
       [_ in never]: never

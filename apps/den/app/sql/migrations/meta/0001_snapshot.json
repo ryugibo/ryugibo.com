@@ -1,6 +1,6 @@
 {
-  "id": "ed27d106-7f87-4d52-82ce-3849126412e6",
-  "prevId": "4164c9b9-df76-405f-b5e7-bc6da9bac9da",
+  "id": "7008b533-c59a-402f-8f34-7df407e54a95",
+  "prevId": "4d9cfb65-239b-46a7-92b9-b2fd96872100",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -29,31 +29,13 @@
           "name": "isbn",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "title": {
           "name": "title",
           "type": "text",
           "primaryKey": false,
           "notNull": true
-        },
-        "author": {
-          "name": "author",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "cover": {
-          "name": "cover",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "description": {
-          "name": "description",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
         },
         "created_at": {
           "name": "created_at",
@@ -73,8 +55,57 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
+      "uniqueConstraints": {
+        "books_isbn_unique": {
+          "name": "books_isbn_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "isbn"
+          ]
+        }
+      },
+      "policies": {
+        "books-select-policy": {
+          "name": "books-select-policy",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "anon",
+            "authenticated",
+            "service_role"
+          ],
+          "using": "true"
+        },
+        "profile_books-insert-policy": {
+          "name": "profile_books-insert-policy",
+          "as": "PERMISSIVE",
+          "for": "INSERT",
+          "to": [
+            "authenticated",
+            "service_role"
+          ],
+          "withCheck": "true"
+        },
+        "profile_books-update-policy": {
+          "name": "profile_books-update-policy",
+          "as": "PERMISSIVE",
+          "for": "UPDATE",
+          "to": [
+            "authenticated",
+            "service_role"
+          ],
+          "using": "true"
+        },
+        "profile_books-delete-policy": {
+          "name": "profile_books-delete-policy",
+          "as": "PERMISSIVE",
+          "for": "DELETE",
+          "to": [
+            "service_role"
+          ],
+          "using": "true"
+        }
+      },
       "checkConstraints": {},
       "isRLSEnabled": false
     },
@@ -101,26 +132,6 @@
           "primaryKey": false,
           "notNull": true
         },
-        "source_etc": {
-          "name": "source_etc",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "read_state": {
-          "name": "read_state",
-          "type": "read_state",
-          "typeSchema": "den",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'toread'"
-        },
-        "comment": {
-          "name": "comment",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -138,10 +149,10 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "profile_books_profile_id_profile_id_fk": {
-          "name": "profile_books_profile_id_profile_id_fk",
+        "profile_books_profile_id_profiles_id_fk": {
+          "name": "profile_books_profile_id_profiles_id_fk",
           "tableFrom": "profile_books",
-          "tableTo": "profile",
+          "tableTo": "profiles",
           "schemaTo": "den",
           "columnsFrom": [
             "profile_id"
@@ -167,14 +178,60 @@
           "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {},
+      "compositePrimaryKeys": {
+        "profile_books_profile_id_book_id_pk": {
+          "name": "profile_books_profile_id_book_id_pk",
+          "columns": [
+            "profile_id",
+            "book_id"
+          ]
+        }
+      },
       "uniqueConstraints": {},
-      "policies": {},
+      "policies": {
+        "profile_books-select-policy": {
+          "name": "profile_books-select-policy",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "authenticated",
+            "service_role"
+          ],
+          "using": "(select auth.uid()) = \"den\".\"profile_books\".\"profile_id\" OR (SELECT public FROM \"den\".\"profiles\" WHERE id = \"den\".\"profile_books\".\"profile_id\")"
+        },
+        "profile_books-insert-policy": {
+          "name": "profile_books-insert-policy",
+          "as": "PERMISSIVE",
+          "for": "INSERT",
+          "to": [
+            "authenticated"
+          ],
+          "withCheck": "(select auth.uid()) = \"den\".\"profile_books\".\"profile_id\""
+        },
+        "profile_books-update-policy": {
+          "name": "profile_books-update-policy",
+          "as": "PERMISSIVE",
+          "for": "UPDATE",
+          "to": [
+            "authenticated"
+          ],
+          "using": "(select auth.uid()) = \"den\".\"profile_books\".\"profile_id\""
+        },
+        "profile_books-delete-policy": {
+          "name": "profile_books-delete-policy",
+          "as": "PERMISSIVE",
+          "for": "DELETE",
+          "to": [
+            "authenticated"
+          ],
+          "using": "(select auth.uid()) = \"den\".\"profile_books\".\"profile_id\""
+        }
+      },
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "den.profile": {
-      "name": "profile",
+    "den.profiles": {
+      "name": "profiles",
       "schema": "den",
       "columns": {
         "id": {
@@ -183,11 +240,12 @@
           "primaryKey": true,
           "notNull": true
         },
-        "name": {
-          "name": "name",
+        "email": {
+          "name": "email",
           "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false,
+          "default": "(auth.jwt() ->> 'email')"
         },
         "username": {
           "name": "username",
@@ -195,17 +253,12 @@
           "primaryKey": false,
           "notNull": true
         },
-        "avatar": {
-          "name": "avatar",
-          "type": "text",
+        "public": {
+          "name": "public",
+          "type": "boolean",
           "primaryKey": false,
-          "notNull": false
-        },
-        "bio": {
-          "name": "bio",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
+          "notNull": true,
+          "default": false
         },
         "created_at": {
           "name": "created_at",
@@ -224,9 +277,9 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "profile_id_users_id_fk": {
-          "name": "profile_id_users_id_fk",
-          "tableFrom": "profile",
+        "profiles_id_users_id_fk": {
+          "name": "profiles_id_users_id_fk",
+          "tableFrom": "profiles",
           "tableTo": "users",
           "schemaTo": "auth",
           "columnsFrom": [
@@ -240,8 +293,53 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
+      "uniqueConstraints": {
+        "profiles_username_unique": {
+          "name": "profiles_username_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "username"
+          ]
+        }
+      },
+      "policies": {
+        "profiles-select-policy": {
+          "name": "profiles-select-policy",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "authenticated"
+          ],
+          "using": "\"den\".\"profiles\".\"public\" OR (select auth.uid()) = \"den\".\"profiles\".\"id\""
+        },
+        "profiles-insert-policy": {
+          "name": "profiles-insert-policy",
+          "as": "PERMISSIVE",
+          "for": "INSERT",
+          "to": [
+            "authenticated"
+          ],
+          "withCheck": "(select auth.uid()) = \"den\".\"profiles\".\"id\""
+        },
+        "profiles-update-policy": {
+          "name": "profiles-update-policy",
+          "as": "PERMISSIVE",
+          "for": "UPDATE",
+          "to": [
+            "authenticated"
+          ],
+          "using": "(select auth.uid()) = \"den\".\"profiles\".\"id\""
+        },
+        "profiles-delete-policy": {
+          "name": "profiles-delete-policy",
+          "as": "PERMISSIVE",
+          "for": "DELETE",
+          "to": [
+            "authenticated"
+          ],
+          "using": "(select auth.uid()) = \"den\".\"profiles\".\"id\""
+        }
+      },
       "checkConstraints": {},
       "isRLSEnabled": false
     }

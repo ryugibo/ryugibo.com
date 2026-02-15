@@ -1,6 +1,8 @@
 import { createServerClient, parseCookieHeader, serializeCookieHeader } from "@supabase/ssr";
-
+import type { User } from "@supabase/supabase-js";
 import type { Database } from "./supabase.ts";
+
+let cachedUserPromise: Promise<User | null> | null = null;
 
 export const createSSRClient = (request: Request) => {
   const headers = new Headers();
@@ -43,5 +45,18 @@ export const createSSRClient = (request: Request) => {
     },
   );
 
-  return { supabase, headers };
+  function getAuthUser() {
+    if (!cachedUserPromise) {
+      cachedUserPromise = (async () => {
+        const { data, error } = await supabase.auth.getUser();
+        if (error) {
+          console.log(error);
+        }
+        return data.user;
+      })();
+    }
+    return cachedUserPromise;
+  }
+
+  return { supabase, headers, getAuthUser };
 };

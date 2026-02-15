@@ -15,11 +15,32 @@ import {
 import { Plus, Search } from "@ryugibo/ui/icons";
 import { resolveAppUrl } from "@ryugibo/utils";
 import { useState } from "react";
+import { data, Form } from "react-router";
 import { toast } from "sonner";
+import { createSSRClient } from "~/supabase.server.ts";
 import { useTranslation } from "../../../common/hooks/use-translation.ts";
-import { supabase } from "../../../supabase.client.ts";
 import { BOOK_SOURCES, type BookSource } from "../../library/constant.ts";
+import { addBook } from "../mutation.ts";
 import type { Route } from "./+types/search-books-page.ts";
+
+export const action = async ({ request }: Route.ActionArgs) => {
+  const { supabase, headers, getAuthUser } = createSSRClient(request);
+  const user = await getAuthUser();
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  const formData = await request.formData();
+  console.log(formData);
+  await addBook({
+    supabase,
+    profile_id: user.id,
+    isbn: formData.get("isbn") as string,
+    title: formData.get("title") as string,
+    source: formData.get("source") as BookSource,
+  });
+  return data({}, { headers });
+};
 
 interface NlBookDocument {
   TITLE: string;
@@ -75,52 +96,6 @@ export default function SearchBooksPage(_: Route.ComponentProps) {
     setSelectedBook(book);
     setSelectedSource("kyobo");
     setDialogOpen(true);
-  };
-
-  const handleAdd = async () => {
-    if (!selectedBook) return;
-
-    try {
-      // 1. books 테이블에 upsert (ISBN 기준)
-      const { data: bookData, error: bookError } = await supabase
-        .from("books")
-        .upsert(
-          {
-            isbn: selectedBook.EA_ISBN,
-            title: selectedBook.TITLE,
-            author: selectedBook.AUTHOR,
-          },
-          { onConflict: "isbn" },
-        )
-        .select("id")
-        .single();
-
-      if (bookError) throw bookError;
-
-      // 2. profile_books에 추가
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) {
-        toast.error("로그인이 필요합니다.");
-        return;
-      }
-
-      const { error: profileBookError } = await supabase.from("profile_books").insert({
-        profile_id: user.id,
-        book_id: bookData.id,
-        source: selectedSource,
-        comment: "",
-      });
-
-      if (profileBookError) throw profileBookError;
-
-      toast.success(`"${selectedBook.TITLE}" 추가 완료!`);
-      setDialogOpen(false);
-    } catch (error) {
-      console.error("Add error:", error);
-      toast.error("책 추가 중 오류가 발생했습니다.");
-    }
   };
 
   return (
@@ -194,33 +169,38 @@ export default function SearchBooksPage(_: Route.ComponentProps) {
             <DialogTitle>구매처 선택</DialogTitle>
           </DialogHeader>
           {selectedBook && (
-            <div className="space-y-4">
-              <div>
-                <p className="font-medium">{selectedBook.TITLE}</p>
-                <p className="text-sm text-muted-foreground">{selectedBook.AUTHOR}</p>
+            <Form method="post">
+              <input type="hidden" name="isbn" value={selectedBook.EA_ISBN} />
+              <input type="hidden" name="title" value={selectedBook.TITLE} />
+              <div className="space-y-4">
+                <div>
+                  <p className="font-medium">{selectedBook.TITLE}</p>
+                  <p className="text-sm text-muted-foreground">{selectedBook.AUTHOR}</p>
+                </div>
+                <div className="space-y-2">
+                  <Label>구매처</Label>
+                  <Select
+                    name="source"
+                    value={selectedSource}
+                    onValueChange={(v) => setSelectedSource(v as typeof selectedSource)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {BOOK_SOURCES.map((source) => (
+                        <SelectItem key={source.value} value={source.value}>
+                          {source.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <Button className="w-full" type="submit">
+                  추가
+                </Button>
               </div>
-              <div className="space-y-2">
-                <Label>구매처</Label>
-                <Select
-                  value={selectedSource}
-                  onValueChange={(v) => setSelectedSource(v as typeof selectedSource)}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {BOOK_SOURCES.map((source) => (
-                      <SelectItem key={source.value} value={source.value}>
-                        {source.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <Button className="w-full" onClick={handleAdd}>
-                추가
-              </Button>
-            </div>
+            </Form>
           )}
         </DialogContent>
       </Dialog>
