@@ -40,11 +40,15 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 };
 
 export const action = async ({ request }: Route.ActionArgs) => {
+  const url = new URL(request.url);
+  const { origin } = url;
   const formData = await request.formData();
   const intent = formData.get("intent");
 
   if (intent === "logout") {
-    return redirect(`${resolveAppUrl("accounts")}/logout`);
+    return redirect(
+      `${resolveAppUrl("accounts")}/logout?redirect_url=${encodeURIComponent(origin)}`,
+    );
   }
 };
 
