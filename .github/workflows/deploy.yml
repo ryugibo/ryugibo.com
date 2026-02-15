@@ -23,6 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       accounts: ${{ steps.changes.outputs.accounts }}
+      den: ${{ steps.changes.outputs.den }}
       den-api: ${{ steps.changes.outputs.den-api }}
     steps:
       - name: Checkout
@@ -37,6 +38,9 @@ jobs:
           filters: |
             accounts:
               - 'apps/accounts/**'
+              - 'packages/**'
+            den:
+              - 'apps/den/**'
               - 'packages/**'
             den-api:
               - 'apps/den-api/**'
