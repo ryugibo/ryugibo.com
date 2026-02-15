@@ -1,5 +1,5 @@
 import { cn } from "@ryugibo/ui";
-import { Home, Layers, Library, Search, Settings } from "@ryugibo/ui/icons";
+import { Home, Library, Search, Settings } from "@ryugibo/ui/icons";
 import { Link, useLocation } from "react-router";
 
 import { useTranslation } from "../hooks/use-translation.ts";
@@ -23,11 +23,6 @@ export function BottomNav() {
       title: t("nav.library"),
       url: "/library",
       icon: Library,
-    },
-    {
-      title: t("nav.collections"),
-      url: "/collections",
-      icon: Layers,
     },
     {
       title: t("nav.settings"),

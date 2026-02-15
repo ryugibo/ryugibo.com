@@ -1,66 +1,126 @@
-import { Button, Input } from "@ryugibo/ui";
-import { ArrowRight, Plus, Search } from "@ryugibo/ui/icons";
+import {
+  Button,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  Input,
+  Label,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@ryugibo/ui";
+import { Plus, Search } from "@ryugibo/ui/icons";
+import { resolveAppUrl } from "@ryugibo/utils";
 import { useState } from "react";
-import { Link } from "react-router";
 import { toast } from "sonner";
 import { useTranslation } from "../../../common/hooks/use-translation.ts";
-import { BookCover } from "../components/book-cover.tsx";
-import type { Route } from "./+types/search-books-page";
+import { supabase } from "../../../supabase.client.ts";
+import { BOOK_SOURCES, type BookSource } from "../../library/constant.ts";
+import type { Route } from "./+types/search-books-page.ts";
+
+interface NlBookDocument {
+  TITLE: string;
+  AUTHOR: string;
+  PUBLISHER: string;
+  EA_ISBN: string;
+  PUBLISH_PREDATE: string;
+}
+
+interface NlSearchResponse {
+  TOTAL_COUNT: string;
+  docs: NlBookDocument[];
+}
 
 export default function SearchBooksPage(_: Route.ComponentProps) {
   const [query, setQuery] = useState("");
+  const [results, setResults] = useState<NlBookDocument[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [searched, setSearched] = useState(false);
+  const [selectedBook, setSelectedBook] = useState<NlBookDocument | null>(null);
+  const [selectedSource, setSelectedSource] = useState<BookSource>("kyobo");
+  const [dialogOpen, setDialogOpen] = useState(false);
   const { t } = useTranslation();
 
-  // Mock global database
-  const allBooks = [
-    {
-      id: "isbn-1",
-      title: "The Pragmatic Programmer",
-      author: "David Thomas, Andrew Hunt",
-      cover:
-        "https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&q=80&w=300&h=450",
-      description: "Your journey to mastery.",
-      year: "2019",
-    },
-    {
-      id: "isbn-2",
-      title: "Clean Architecture",
-      author: "Robert C. Martin",
-      cover:
-        "https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&q=80&w=300&h=450",
-      description: "A Craftsman's Guide to Software Structure and Design.",
-      year: "2017",
-    },
-    {
-      id: "isbn-3",
-      title: "Site Reliability Engineering",
-      author: "Niall Richard Murphy et al.",
-      cover:
-        "https://images.unsplash.com/photo-1555239167-a22ff5d3be9e?auto=format&fit=crop&q=80&w=300&h=450",
-      description: "How Google Runs Production Systems.",
-      year: "2016",
-    },
-    {
-      id: "isbn-4",
-      title: "Introduction to Algorithms",
-      author: "Thomas H. Cormen",
-      cover:
-        "https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=300&h=450",
-      description: "The bible of algorithms.",
-      year: "2009",
-    },
-  ];
+  const handleSearch = async () => {
+    if (!query.trim()) return;
 
-  const results = query
-    ? allBooks.filter(
-        (book) =>
-          book.title.toLowerCase().includes(query.toLowerCase()) ||
-          book.author.toLowerCase().includes(query.toLowerCase()),
-      )
-    : [];
+    setLoading(true);
+    setSearched(true);
+    try {
+      const fetchUrl = `${resolveAppUrl("den-api")}/search?title=${encodeURIComponent(query)}`;
+      const res = await fetch(fetchUrl);
+      if (!res.ok) throw new Error(`Search failed: ${res.status} ${res.statusText}`);
 
-  const handleAdd = (bookTitle: string) => {
-    toast.success(`${bookTitle} ${t("search.toast.added")}`);
+      const data: NlSearchResponse = await res.json();
+      setResults(data.docs || []);
+    } catch (error) {
+      console.error("Search error:", error);
+      toast.error("검색 중 오류가 발생했습니다.");
+      setResults([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
+
+  const openAddDialog = (book: NlBookDocument) => {
+    setSelectedBook(book);
+    setSelectedSource("kyobo");
+    setDialogOpen(true);
+  };
+
+  const handleAdd = async () => {
+    if (!selectedBook) return;
+
+    try {
+      // 1. books 테이블에 upsert (ISBN 기준)
+      const { data: bookData, error: bookError } = await supabase
+        .from("books")
+        .upsert(
+          {
+            isbn: selectedBook.EA_ISBN,
+            title: selectedBook.TITLE,
+            author: selectedBook.AUTHOR,
+          },
+          { onConflict: "isbn" },
+        )
+        .select("id")
+        .single();
+
+      if (bookError) throw bookError;
+
+      // 2. profile_books에 추가
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error("로그인이 필요합니다.");
+        return;
+      }
+
+      const { error: profileBookError } = await supabase.from("profile_books").insert({
+        profile_id: user.id,
+        book_id: bookData.id,
+        source: selectedSource,
+        comment: "",
+      });
+
+      if (profileBookError) throw profileBookError;
+
+      toast.success(`"${selectedBook.TITLE}" 추가 완료!`);
+      setDialogOpen(false);
+    } catch (error) {
+      console.error("Add error:", error);
+      toast.error("책 추가 중 오류가 발생했습니다.");
+    }
   };
 
   return (
@@ -72,68 +132,98 @@ export default function SearchBooksPage(_: Route.ComponentProps) {
         <p className="text-muted-foreground">{t("search.subtitle")}</p>
       </header>
 
-      <div className="flex gap-4">
+      <div className="flex gap-2">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder={t("search.placeholder")}
+            placeholder="책 제목을 입력하세요"
             className="pl-9 h-10"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={handleKeyDown}
             autoFocus
           />
         </div>
+        <Button onClick={handleSearch} disabled={loading}>
+          {loading ? "검색 중..." : "검색"}
+        </Button>
       </div>
 
-      <div className="flex items-center justify-between py-2">
+      <div className="flex items-center py-2">
         <h2 className="text-sm font-medium text-muted-foreground">
-          {query ? `${t("search.results")} (${results.length})` : t("search.startTyping")}
+          {searched ? `검색 결과 (${results.length}건)` : "책 제목으로 검색하세요"}
         </h2>
-        <Link to="/books/add">
-          <Button variant="outline" size="sm">
-            {t("search.cantFind")} <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
-        </Link>
       </div>
 
-      <div className="grid gap-4">
+      <div className="grid gap-3">
         {results.map((book) => (
           <div
-            key={book.id}
-            className="group flex items-start gap-4 p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
+            key={book.EA_ISBN}
+            className="group flex items-center gap-4 p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
           >
-            <div className="w-[80px] shrink-0">
-              <BookCover src={book.cover} alt={book.title} aspectRatio={2 / 3} />
-            </div>
             <div className="flex-1 min-w-0">
               <div className="flex justify-between items-start">
                 <div>
-                  <h3 className="font-semibold text-lg leading-tight text-foreground">
-                    {book.title}
+                  <h3 className="font-semibold text-base leading-tight text-foreground">
+                    {book.TITLE}
                   </h3>
-                  <p className="text-muted-foreground">
-                    {book.author} • {book.year}
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {book.AUTHOR} · {book.PUBLISHER}
                   </p>
+                  {book.EA_ISBN && (
+                    <p className="text-xs text-muted-foreground mt-0.5">ISBN: {book.EA_ISBN}</p>
+                  )}
                 </div>
-                <Button size="sm" onClick={() => handleAdd(book.title)}>
-                  <Plus className="mr-2 h-4 w-4" /> {t("search.add")}
+                <Button size="sm" onClick={() => openAddDialog(book)}>
+                  <Plus className="mr-1 h-4 w-4" /> 추가
                 </Button>
               </div>
-              <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{book.description}</p>
             </div>
           </div>
         ))}
-        {query && results.length === 0 && (
+        {searched && results.length === 0 && !loading && (
           <div className="text-center py-12 text-muted-foreground border-2 border-dashed rounded-lg">
-            <p>
-              {t("search.noResults")} "{query}"
-            </p>
-            <Button variant="link" asChild className="mt-2">
-              <Link to="/books/add">{t("search.addManually")}</Link>
-            </Button>
+            <p>"{query}"에 대한 검색 결과가 없습니다.</p>
           </div>
         )}
       </div>
+
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>구매처 선택</DialogTitle>
+          </DialogHeader>
+          {selectedBook && (
+            <div className="space-y-4">
+              <div>
+                <p className="font-medium">{selectedBook.TITLE}</p>
+                <p className="text-sm text-muted-foreground">{selectedBook.AUTHOR}</p>
+              </div>
+              <div className="space-y-2">
+                <Label>구매처</Label>
+                <Select
+                  value={selectedSource}
+                  onValueChange={(v) => setSelectedSource(v as typeof selectedSource)}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {BOOK_SOURCES.map((source) => (
+                      <SelectItem key={source.value} value={source.value}>
+                        {source.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <Button className="w-full" onClick={handleAdd}>
+                추가
+              </Button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

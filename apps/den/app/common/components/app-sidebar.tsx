@@ -13,7 +13,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@ryugibo/ui";
-import { BookOpen, Home, Layers, Library, Settings } from "@ryugibo/ui/icons";
+import { BookOpen, Home, Library, Search, Settings } from "@ryugibo/ui/icons";
 import { resolveAppUrl } from "@ryugibo/utils";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useRouteLoaderData } from "react-router";
@@ -37,14 +37,14 @@ export function AppSidebar() {
       icon: Home,
     },
     {
+      title: t("nav.search"),
+      url: "/books/search",
+      icon: Search,
+    },
+    {
       title: t("nav.library"),
       url: "/library",
       icon: Library,
-    },
-    {
-      title: t("nav.collections"),
-      url: "/collections",
-      icon: Layers,
     },
     {
       title: t("nav.settings"),

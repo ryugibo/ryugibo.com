@@ -1,15 +1,15 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "~/supabase.ts";
-import type { ReadState } from "./constant.ts";
+import type { BookSource } from "./constant.ts";
 
 export const getLibrary = async (
   supabase: SupabaseClient<Database>,
   {
     keyword,
-    read_state,
+    source,
   }: {
     keyword?: string;
-    read_state?: ReadState;
+    source?: BookSource;
   },
 ) => {
   const query = supabase.from("profile_books_list_view").select("*");
@@ -18,8 +18,8 @@ export const getLibrary = async (
     query.ilike("title", `%${keyword}%`);
   }
 
-  if (read_state) {
-    query.eq("read_state", read_state);
+  if (source) {
+    query.eq("source", source);
   }
 
   const { data, error } = await query;
