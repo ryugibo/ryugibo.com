@@ -11,7 +11,7 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
-    "db:typegen": "dotenv -e .env -- sh -c 'pnpm supabase gen types typescript --project-id \"$VITE_SUPABASE_ID\" --schema $npm_package_name > database.types.ts'",
+    "db:typegen": "dotenv -e .env -- sh -c 'supabase gen types typescript --project-id \"$VITE_SUPABASE_ID\" --schema $npm_package_name > database.types.ts'",
     "lint:routes": "rr-kit check-types",
     "deploy": "pnpm run build && wrangler deploy",
     "preview": "pnpm run build && vite preview"
