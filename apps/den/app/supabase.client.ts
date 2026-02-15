@@ -9,10 +9,10 @@ export const supabase = createBrowserClient<Database>(
       schema: "den",
     },
     cookieOptions: {
-      domain: ".lvh.me",
+      domain: import.meta.env.VITE_COOKIE_DOMAIN ?? ".lvh.me",
       path: "/",
       sameSite: "lax",
-      secure: false,
+      secure: import.meta.env.PROD,
     },
   },
 );

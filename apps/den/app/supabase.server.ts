@@ -12,10 +12,10 @@ export const createSSRClient = (request: Request) => {
         schema: __APP_NAME__,
       },
       cookieOptions: {
-        domain: ".lvh.me",
+        domain: import.meta.env.VITE_COOKIE_DOMAIN ?? ".lvh.me",
         path: "/",
         sameSite: "lax",
-        secure: false,
+        secure: import.meta.env.PROD,
       },
       cookies: {
         getAll() {
@@ -30,10 +30,10 @@ export const createSSRClient = (request: Request) => {
               "Set-Cookie",
               serializeCookieHeader(name, value, {
                 ...options,
-                domain: ".lvh.me",
+                domain: import.meta.env.VITE_COOKIE_DOMAIN ?? ".lvh.me",
                 path: "/",
                 sameSite: "lax",
-                secure: false,
+                secure: import.meta.env.PROD,
               }),
             );
           });
