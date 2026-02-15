@@ -1,5 +1,6 @@
-import { Input, Label, LoadingButton } from "@ryugibo/ui";
-import { parseZodError } from "@ryugibo/utils";
+import { Button, Input, Label, LoadingButton } from "@ryugibo/ui";
+import { LogOut } from "@ryugibo/ui/icons";
+import { parseZodError, resolveAppUrl } from "@ryugibo/utils";
 import { data, Form, redirect, useNavigation } from "react-router";
 import { z } from "zod";
 import { createSSRClient } from "~/supabase.server.ts";
@@ -12,12 +13,14 @@ export const meta: Route.MetaFunction = () => {
 };
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
-  const { supabase, getAuthUser, headers } = createSSRClient(request);
-  const user = await getAuthUser();
-  if (!user) {
+  const { supabase, headers } = createSSRClient(request);
+  const { data: dataUser, error: errorUser } = await supabase.auth.getUser();
+  if (errorUser) {
     return redirect("/", { headers });
   }
-  const { id } = user;
+  const {
+    user: { id },
+  } = dataUser;
   const profile = await getProfileById({ supabase, id });
   if (profile) {
     return redirect("/", { headers });
@@ -30,7 +33,13 @@ const formSchema = z.object({
 });
 
 export const action = async ({ request }: Route.ActionArgs) => {
-  const { supabase, headers, getAuthUser } = createSSRClient(request);
+  const { supabase, headers } = createSSRClient(request);
+  const formData = await request.formData();
+  const intent = formData.get("intent");
+
+  if (intent === "logout") {
+    return redirect(`${resolveAppUrl("accounts")}/logout`);
+  }
 
   const defaultReturn = {
     data: null,
@@ -38,7 +47,6 @@ export const action = async ({ request }: Route.ActionArgs) => {
     insertError: null,
   };
 
-  const formData = await request.formData();
   const {
     success: successForm,
     error: errorForm,
@@ -50,11 +58,13 @@ export const action = async ({ request }: Route.ActionArgs) => {
   }
 
   const { username } = dataForm;
-  const user = await getAuthUser();
-  if (!user) {
+  const { data: dataUser, error: errorUser } = await supabase.auth.getUser();
+  if (errorUser) {
     return redirect("/", { headers });
   }
-  const { id: user_id } = user;
+  const {
+    user: { id: user_id },
+  } = dataUser;
 
   const { error: insertError } = await createProfile({
     supabase,
@@ -91,6 +101,14 @@ export default function MakeProfilePage({ actionData }: Route.ComponentProps) {
         <h1 className="text-2xl font-bold">Create your profile</h1>
         <p className="text-muted-foreground">Pick a username to get started.</p>
       </div>
+
+      <Form method="post" className="absolute top-4 right-4">
+        <input type="hidden" name="intent" value="logout" />
+        <Button type="submit" variant="outline" size="sm">
+          <LogOut className="mr-2 h-4 w-4" />
+          로그아웃
+        </Button>
+      </Form>
 
       <Form method="post" className="w-full max-w-md space-y-6">
         <div className="space-y-2">

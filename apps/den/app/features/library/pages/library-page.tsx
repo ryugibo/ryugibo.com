@@ -2,6 +2,7 @@ import { Badge, Button, cn, Input } from "@ryugibo/ui";
 import { Search } from "@ryugibo/ui/icons";
 import { data, Form, useSearchParams } from "react-router";
 import z from "zod";
+import { getProfileByUsername } from "~/features/profile/queries.ts";
 import { createSSRClient } from "~/supabase.server.ts";
 import { useTranslation } from "../../../common/hooks/use-translation.ts";
 import { BookCover } from "../../book/components/book-cover.tsx";
@@ -25,15 +26,29 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
       message: "Invalid search parameters",
     });
   }
-  const { supabase } = createSSRClient(request);
-  const books = await getLibrary(supabase, {
+  const { supabase, headers } = createSSRClient(request);
+  let profile_id: string;
+  const { data: userData, error: userError } = await supabase.auth.getUser();
+
+  if (userError) {
+    const profile = await getProfileByUsername({ supabase, username: "ryugibo" });
+    if (!profile) {
+      return { books: [], source: dataQuery.source };
+    }
+    profile_id = profile.id;
+  } else {
+    const { id } = userData.user;
+    profile_id = id;
+  }
+
+  console.log(profile_id);
+  const books = await getLibrary({
+    supabase,
+    profile_id,
     keyword: dataQuery.keyword,
     source: dataQuery.source,
   });
-  return {
-    books,
-    source: dataQuery.source,
-  };
+  return data({ books, source: dataQuery.source }, { headers });
 };
 
 export default function LibraryPage({ loaderData }: Route.ComponentProps) {

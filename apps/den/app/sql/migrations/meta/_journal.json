@@ -15,6 +15,20 @@
       "when": 1771177902232,
       "tag": "0001_fat_stryfe",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1771181886572,
+      "tag": "0002_panoramic_mystique",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1771182013369,
+      "tag": "0003_cynical_pete_wisdom",
+      "breakpoints": true
     }
   ]
 }

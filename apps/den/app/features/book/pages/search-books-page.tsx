@@ -15,7 +15,7 @@ import {
 import { Plus, Search } from "@ryugibo/ui/icons";
 import { resolveAppUrl } from "@ryugibo/utils";
 import { useState } from "react";
-import { data, Form } from "react-router";
+import { data, Form, redirect } from "react-router";
 import { toast } from "sonner";
 import { createSSRClient } from "~/supabase.server.ts";
 import { useTranslation } from "../../../common/hooks/use-translation.ts";
@@ -23,22 +23,36 @@ import { BOOK_SOURCES, type BookSource } from "../../library/constant.ts";
 import { addBook } from "../mutation.ts";
 import type { Route } from "./+types/search-books-page.ts";
 
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { supabase, headers } = createSSRClient(request);
+  const { error: errorUser } = await supabase.auth.getUser();
+  if (errorUser) {
+    console.log(errorUser);
+    return redirect("/?error=login_required", { headers });
+  }
+  return data({}, { headers });
+};
+
 export const action = async ({ request }: Route.ActionArgs) => {
-  const { supabase, headers, getAuthUser } = createSSRClient(request);
-  const user = await getAuthUser();
-  if (!user) {
+  const { supabase, headers } = createSSRClient(request);
+  const { data: dataUser, error: errorUser } = await supabase.auth.getUser();
+  if (errorUser) {
     throw new Error("User not found");
   }
 
   const formData = await request.formData();
-  console.log(formData);
+  const {
+    user: { id: profile_id },
+  } = dataUser;
+
   await addBook({
     supabase,
-    profile_id: user.id,
+    profile_id,
     isbn: formData.get("isbn") as string,
     title: formData.get("title") as string,
     source: formData.get("source") as BookSource,
   });
+
   return data({}, { headers });
 };
 

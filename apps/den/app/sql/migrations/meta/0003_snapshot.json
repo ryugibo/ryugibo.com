@@ -1,0 +1,381 @@
+{
+  "id": "26425d77-df03-4cbd-8a7c-385f03ce3cb7",
+  "prevId": "446d76e4-150b-432e-866e-78408d5808ed",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "den.books": {
+      "name": "books",
+      "schema": "den",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigint",
+          "primaryKey": true,
+          "notNull": true,
+          "identity": {
+            "type": "always",
+            "name": "books_id_seq",
+            "schema": "den",
+            "increment": "1",
+            "startWith": "1",
+            "minValue": "1",
+            "maxValue": "9223372036854775807",
+            "cache": "1",
+            "cycle": false
+          }
+        },
+        "isbn": {
+          "name": "isbn",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "books_isbn_unique": {
+          "name": "books_isbn_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "isbn"
+          ]
+        }
+      },
+      "policies": {
+        "books-select-policy": {
+          "name": "books-select-policy",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "anon",
+            "authenticated",
+            "service_role"
+          ],
+          "using": "true"
+        },
+        "profile_books-insert-policy": {
+          "name": "profile_books-insert-policy",
+          "as": "PERMISSIVE",
+          "for": "INSERT",
+          "to": [
+            "authenticated",
+            "service_role"
+          ],
+          "withCheck": "true"
+        },
+        "profile_books-update-policy": {
+          "name": "profile_books-update-policy",
+          "as": "PERMISSIVE",
+          "for": "UPDATE",
+          "to": [
+            "authenticated",
+            "service_role"
+          ],
+          "using": "true"
+        },
+        "profile_books-delete-policy": {
+          "name": "profile_books-delete-policy",
+          "as": "PERMISSIVE",
+          "for": "DELETE",
+          "to": [
+            "service_role"
+          ],
+          "using": "true"
+        }
+      },
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "den.profile_books": {
+      "name": "profile_books",
+      "schema": "den",
+      "columns": {
+        "profile_id": {
+          "name": "profile_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "book_id": {
+          "name": "book_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "source": {
+          "name": "source",
+          "type": "book_sources",
+          "typeSchema": "den",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "profile_books_profile_id_profiles_id_fk": {
+          "name": "profile_books_profile_id_profiles_id_fk",
+          "tableFrom": "profile_books",
+          "tableTo": "profiles",
+          "schemaTo": "den",
+          "columnsFrom": [
+            "profile_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "profile_books_book_id_books_id_fk": {
+          "name": "profile_books_book_id_books_id_fk",
+          "tableFrom": "profile_books",
+          "tableTo": "books",
+          "schemaTo": "den",
+          "columnsFrom": [
+            "book_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "profile_books_profile_id_book_id_pk": {
+          "name": "profile_books_profile_id_book_id_pk",
+          "columns": [
+            "profile_id",
+            "book_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {
+        "profile_books-select-policy": {
+          "name": "profile_books-select-policy",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "anon",
+            "authenticated",
+            "service_role"
+          ],
+          "using": "(select auth.uid()) = \"den\".\"profile_books\".\"profile_id\" OR (SELECT public FROM \"den\".\"profiles\" WHERE id = \"den\".\"profile_books\".\"profile_id\")"
+        },
+        "profile_books-insert-policy": {
+          "name": "profile_books-insert-policy",
+          "as": "PERMISSIVE",
+          "for": "INSERT",
+          "to": [
+            "authenticated"
+          ],
+          "withCheck": "(select auth.uid()) = \"den\".\"profile_books\".\"profile_id\""
+        },
+        "profile_books-update-policy": {
+          "name": "profile_books-update-policy",
+          "as": "PERMISSIVE",
+          "for": "UPDATE",
+          "to": [
+            "authenticated"
+          ],
+          "using": "(select auth.uid()) = \"den\".\"profile_books\".\"profile_id\""
+        },
+        "profile_books-delete-policy": {
+          "name": "profile_books-delete-policy",
+          "as": "PERMISSIVE",
+          "for": "DELETE",
+          "to": [
+            "authenticated"
+          ],
+          "using": "(select auth.uid()) = \"den\".\"profile_books\".\"profile_id\""
+        }
+      },
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "den.profiles": {
+      "name": "profiles",
+      "schema": "den",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "(auth.jwt() ->> 'email')"
+        },
+        "username": {
+          "name": "username",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "public": {
+          "name": "public",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "profiles_id_users_id_fk": {
+          "name": "profiles_id_users_id_fk",
+          "tableFrom": "profiles",
+          "tableTo": "users",
+          "schemaTo": "auth",
+          "columnsFrom": [
+            "id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "profiles_username_unique": {
+          "name": "profiles_username_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "username"
+          ]
+        }
+      },
+      "policies": {
+        "profiles-select-policy": {
+          "name": "profiles-select-policy",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "anon",
+            "authenticated"
+          ],
+          "using": "\"den\".\"profiles\".\"public\" OR (select auth.uid()) = \"den\".\"profiles\".\"id\""
+        },
+        "profiles-insert-policy": {
+          "name": "profiles-insert-policy",
+          "as": "PERMISSIVE",
+          "for": "INSERT",
+          "to": [
+            "authenticated"
+          ],
+          "withCheck": "(select auth.uid()) = \"den\".\"profiles\".\"id\""
+        },
+        "profiles-update-policy": {
+          "name": "profiles-update-policy",
+          "as": "PERMISSIVE",
+          "for": "UPDATE",
+          "to": [
+            "authenticated"
+          ],
+          "using": "(select auth.uid()) = \"den\".\"profiles\".\"id\""
+        },
+        "profiles-delete-policy": {
+          "name": "profiles-delete-policy",
+          "as": "PERMISSIVE",
+          "for": "DELETE",
+          "to": [
+            "authenticated"
+          ],
+          "using": "(select auth.uid()) = \"den\".\"profiles\".\"id\""
+        }
+      },
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {
+    "den.book_sources": {
+      "name": "book_sources",
+      "schema": "den",
+      "values": [
+        "kyobo",
+        "aladin",
+        "yes24",
+        "ridibooks",
+        "etc"
+      ]
+    },
+    "den.read_state": {
+      "name": "read_state",
+      "schema": "den",
+      "values": [
+        "reading",
+        "toread",
+        "completed"
+      ]
+    }
+  },
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

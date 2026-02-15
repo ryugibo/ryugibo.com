@@ -1,0 +1,1 @@
+ALTER POLICY "profiles-select-policy" ON "den"."profiles" TO anon,authenticated USING ("den"."profiles"."public" OR (select auth.uid()) = "den"."profiles"."id");

@@ -1,4 +1,4 @@
-import { authenticatedRole, authUid, authUsers, sql } from "@ryugibo/db";
+import { anonRole, authenticatedRole, authUid, authUsers, sql } from "@ryugibo/db";
 import { boolean, pgPolicy, text, timestamp, uuid } from "@ryugibo/db/core";
 import { pg } from "db";
 
@@ -18,7 +18,7 @@ export const profiles = pg.table(
     pgPolicy("profiles-select-policy", {
       for: "select",
       as: "permissive",
-      to: authenticatedRole,
+      to: [anonRole, authenticatedRole],
       using: sql`${table.public} OR ${authUid} = ${table.id}`,
     }),
     pgPolicy("profiles-insert-policy", {

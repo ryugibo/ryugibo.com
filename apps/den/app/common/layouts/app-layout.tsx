@@ -12,7 +12,9 @@ import {
   Toaster,
 } from "@ryugibo/ui";
 import { BookOpen } from "@ryugibo/ui/icons";
-import { Link, Outlet, redirect, useLocation } from "react-router";
+import { useEffect } from "react";
+import { data, Link, Outlet, redirect, useLocation, useSearchParams } from "react-router";
+import { toast } from "sonner";
 import { getProfileById } from "~/features/profile/queries.ts";
 import { createSSRClient } from "~/supabase.server.ts";
 import { AppSidebar } from "../components/app-sidebar.tsx";
@@ -31,14 +33,16 @@ const segmentTranslationMap: Record<string, string> = {
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
   const url = new URL(request.url);
-  const { supabase, getAuthUser, headers } = createSSRClient(request);
-  const user = await getAuthUser();
+  const { supabase, headers } = createSSRClient(request);
+  const { data: userData, error: userError } = await supabase.auth.getUser();
 
-  if (!user) {
-    return null;
+  if (userError) {
+    return data({}, { headers });
   }
 
-  const { id } = user;
+  const {
+    user: { id },
+  } = userData;
   const isMakeProfilePage = url.pathname === "/make-profile";
 
   try {
@@ -67,7 +71,18 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 export default function AppLayout(_: Route.ComponentProps) {
   const { t } = useTranslation();
   const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
   const pathSegments = location.pathname.split("/").filter(Boolean);
+
+  useEffect(() => {
+    const error = searchParams.get("error");
+    if (error === "login_required") {
+      toast.error(t("auth.loginRequired") || "로그인이 필요한 기능입니다.");
+      // Clear the error param
+      searchParams.delete("error");
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams, setSearchParams, t]);
 
   return (
     <SidebarProvider>
@@ -134,7 +149,7 @@ export default function AppLayout(_: Route.ComponentProps) {
         </div>
       </SidebarInset>
       <BottomNav />
-      <Toaster />
+      <Toaster position="top-center" />
     </SidebarProvider>
   );
 }

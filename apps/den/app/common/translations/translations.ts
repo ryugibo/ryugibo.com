@@ -157,6 +157,7 @@ const defaultTranslations = {
   "auth.signup.submit": "Sign Up",
   "auth.signup.hasAccount": "Already have an account?",
   "auth.signup.signin": "Sign in",
+  "auth.loginRequired": "Login required to access this feature",
 } as const;
 
 export type TranslationKey = keyof typeof defaultTranslations;
@@ -304,5 +305,6 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     "auth.signup.submit": "가입하기",
     "auth.signup.hasAccount": "이미 계정이 있으신가요?",
     "auth.signup.signin": "로그인",
+    "auth.loginRequired": "로그인이 필요한 기능입니다",
   },
 } as const;

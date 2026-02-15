@@ -21,24 +21,29 @@ export const getBookCount = async ({
   }
   return { count };
 };
-export const getLibrary = async (
-  supabase: SupabaseClient<Database>,
-  {
-    keyword,
-    source,
-  }: {
-    keyword?: string;
-    source?: BookSource;
-  },
-) => {
-  const query = supabase.from("profile_books").select(`
-    source,
-    created_at,
-    books!inner (
-      isbn,
-      title
-    )
-  `);
+
+export const getLibrary = async ({
+  supabase,
+  profile_id,
+  keyword,
+  source,
+}: {
+  supabase: SupabaseClient<Database>;
+  profile_id: string;
+  keyword?: string;
+  source?: BookSource;
+}) => {
+  const query = supabase
+    .from("profile_books")
+    .select(`
+      source,
+      created_at,
+      books!inner (
+        isbn,
+        title
+      )
+    `)
+    .eq("profile_id", profile_id);
 
   if (keyword) {
     query.ilike("books.title", `%${keyword}%`);

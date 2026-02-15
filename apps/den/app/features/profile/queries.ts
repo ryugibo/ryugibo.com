@@ -13,3 +13,22 @@ export const getProfileById = async ({
   if (error) return null;
   return data;
 };
+
+export const getProfileByUsername = async ({
+  supabase,
+  username,
+}: {
+  supabase: SupabaseClient<Database>;
+  username: string;
+}) => {
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("username", username)
+    .single();
+
+  if (error) {
+    return null;
+  }
+  return data;
+};

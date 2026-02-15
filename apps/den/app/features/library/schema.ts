@@ -1,4 +1,4 @@
-import { authenticatedRole, authUid, serviceRole, sql } from "@ryugibo/db";
+import { anonRole, authenticatedRole, authUid, serviceRole, sql } from "@ryugibo/db";
 import { bigint, pgPolicy, primaryKey, timestamp, uuid } from "@ryugibo/db/core";
 import { pg } from "db";
 import { books } from "~/features/book/schema.ts";
@@ -26,7 +26,7 @@ export const profileBooks = pg.table(
     pgPolicy("profile_books-select-policy", {
       for: "select",
       as: "permissive",
-      to: [authenticatedRole, serviceRole],
+      to: [anonRole, authenticatedRole, serviceRole],
       using: sql`${authUid} = ${table.profile_id} OR (SELECT public FROM ${profiles} WHERE id = ${table.profile_id})`,
     }),
     pgPolicy("profile_books-insert-policy", {
