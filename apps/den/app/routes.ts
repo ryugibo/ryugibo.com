@@ -7,4 +7,5 @@ export default [
     route("books/search", "features/book/pages/search-books-page.tsx"),
     route("settings", "features/settings/pages/settings-page.tsx"),
   ]),
+  route("make-profile", "features/profile/pages/make-profile-page.tsx"),
 ] satisfies RouteConfig;

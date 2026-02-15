@@ -12,7 +12,9 @@ import {
   Toaster,
 } from "@ryugibo/ui";
 import { BookOpen } from "@ryugibo/ui/icons";
-import { Link, Outlet, useLocation } from "react-router";
+import { Link, Outlet, redirect, useLocation } from "react-router";
+import { getProfileById } from "~/features/profile/queries.ts";
+import { createSSRClient } from "~/supabase.server.ts";
 import { AppSidebar } from "../components/app-sidebar.tsx";
 import { BottomNav } from "../components/bottom-nav.tsx";
 import { useTranslation } from "../hooks/use-translation.ts";
@@ -25,6 +27,41 @@ const segmentTranslationMap: Record<string, string> = {
   books: "nav.books",
   search: "nav.search",
   add: "nav.add",
+};
+
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const url = new URL(request.url);
+  const { supabase, getAuthUser, headers } = createSSRClient(request);
+  const user = await getAuthUser();
+
+  if (!user) {
+    return null;
+  }
+
+  const { id } = user;
+  const isMakeProfilePage = url.pathname === "/make-profile";
+
+  try {
+    const profile = await getProfileById({ supabase, id });
+
+    // If on make-profile but already has profile -> redirect to home
+    if (profile && isMakeProfilePage) {
+      return redirect("/", { headers });
+    }
+
+    // If NOT on make-profile but NO profile -> redirect to make-profile
+    if (!profile && !isMakeProfilePage) {
+      return redirect("/make-profile", { headers });
+    }
+
+    return null;
+  } catch (_error) {
+    // On error (e.g. getProfileById fails/returns null logic), if not on make-profile, go there
+    if (!isMakeProfilePage) {
+      return redirect("/make-profile", { headers });
+    }
+    return null;
+  }
 };
 
 export default function AppLayout(_: Route.ComponentProps) {
