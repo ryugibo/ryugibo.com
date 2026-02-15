@@ -51,7 +51,6 @@ export const createSSRClient = (request: Request) => {
         domain: ".lvh.me",
         path: "/",
         sameSite: "lax",
-        httpOnly: false,
         secure: false,
       },
       cookies: {
