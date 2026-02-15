@@ -1,5 +1,6 @@
 import { Badge, Button, cn, Input } from "@ryugibo/ui";
 import { Search } from "@ryugibo/ui/icons";
+import { resolveAppUrl } from "@ryugibo/utils";
 import { data, Form, useSearchParams } from "react-router";
 import z from "zod";
 import { getProfileByUsername } from "~/features/profile/queries.ts";
@@ -108,7 +109,11 @@ export default function LibraryPage({ loaderData }: Route.ComponentProps) {
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
         {books.map((book) => (
           <div key={book.books.isbn} className="group relative block">
-            <BookCover src="" alt={book.books.title} className="mb-3" />
+            <BookCover
+              src={`${resolveAppUrl("den-api")}/cover/${book.books.isbn}.jpg`}
+              alt={book.books.title}
+              className="mb-3"
+            />
             <div className="space-y-1">
               <div className="flex justify-between items-start">
                 <h3 className="text-sm font-semibold text-foreground truncate flex-1 pr-2">
