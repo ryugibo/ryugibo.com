@@ -19,6 +19,7 @@
     "@ryugibo/db": "workspace:*",
     "@ryugibo/emails": "workspace:*",
     "@ryugibo/ui": "workspace:*",
+    "@ryugibo/utils": "workspace:*",
     "@ryugibo/vite-config": "workspace:*",
     "@supabase/ssr": "catalog:",
     "@supabase/supabase-js": "catalog:",

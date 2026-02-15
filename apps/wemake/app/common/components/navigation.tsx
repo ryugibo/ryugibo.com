@@ -29,6 +29,7 @@ import {
   SettingsIcon,
   UserIcon,
 } from "@ryugibo/ui/icons";
+import { resolveAppUrl } from "@ryugibo/utils";
 import { Link, useLocation } from "react-router";
 
 const menus = [
@@ -269,7 +270,7 @@ export default function Navigation({
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild className="cursor-pointer">
                   <a
-                    href={`${import.meta.env.VITE_ACCOUNTS_URL}/logout?redirect_url=${encodeURIComponent(redirectUrl)}`}
+                    href={`${resolveAppUrl("accounts")}/logout?redirect_url=${encodeURIComponent(redirectUrl)}`}
                   >
                     <LogOutIcon className="size-4 mr-2" />
                     Logout
@@ -283,14 +284,14 @@ export default function Navigation({
         <div className="flex items-center gap-4">
           <Button asChild variant="outline">
             <a
-              href={`${import.meta.env.VITE_ACCOUNTS_URL}/login?redirect_url=${encodeURIComponent(redirectUrl)}`}
+              href={`${resolveAppUrl("accounts")}/login?redirect_url=${encodeURIComponent(redirectUrl)}`}
             >
               Login
             </a>
           </Button>
           <Button asChild>
             <a
-              href={`${import.meta.env.VITE_ACCOUNTS_URL}/join?redirect_url=${encodeURIComponent(redirectUrl)}`}
+              href={`${resolveAppUrl("accounts")}/join?redirect_url=${encodeURIComponent(redirectUrl)}`}
             >
               Join
             </a>

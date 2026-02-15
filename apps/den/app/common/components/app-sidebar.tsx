@@ -14,6 +14,7 @@ import {
   SidebarMenuItem,
 } from "@ryugibo/ui";
 import { BookOpen, Home, Layers, Library, Settings } from "@ryugibo/ui/icons";
+import { resolveAppUrl } from "@ryugibo/utils";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useRouteLoaderData } from "react-router";
 
@@ -113,9 +114,9 @@ export function AppSidebar() {
                 </Link>
               ) : (
                 <a
-                  href={`${import.meta.env.VITE_ACCOUNTS_URL}/login?redirect_url=${encodeURIComponent(
-                    `${origin}${location.pathname}`,
-                  )}`}
+                  href={`${resolveAppUrl(
+                    "accounts",
+                  )}/login?redirect_url=${encodeURIComponent(`${origin}${location.pathname}`)}`}
                 >
                   <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-indigo-600 text-sidebar-primary-foreground">
                     <BookOpen className="size-4 text-white" />

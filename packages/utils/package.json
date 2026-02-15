@@ -16,7 +16,8 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vite": "catalog:"
   },
   "engines": {
     "node": ">=24"

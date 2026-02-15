@@ -1,4 +1,5 @@
 import { reactRouter } from "@react-router/dev/vite";
+import { PORTS } from "@ryugibo/utils";
 import { getBaseViteConfig } from "@ryugibo/vite-config";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
@@ -7,7 +8,7 @@ import pkg from "./package.json";
 
 export default defineConfig(() => {
   return getBaseViteConfig(pkg.name, {
-    server: { port: 5174 },
+    server: { port: PORTS.wemake },
     plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
   });
 });
