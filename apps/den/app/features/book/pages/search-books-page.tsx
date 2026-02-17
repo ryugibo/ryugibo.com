@@ -6,6 +6,7 @@ import {
   DialogTitle,
   Input,
   Label,
+  LoadingButton,
   Select,
   SelectContent,
   SelectItem,
@@ -14,8 +15,8 @@ import {
 } from "@ryugibo/ui";
 import { Plus, Search, Trash2 } from "@ryugibo/ui/icons";
 import { resolveAppUrl } from "@ryugibo/utils";
-import { useState } from "react";
-import { data, Form, redirect } from "react-router";
+import { useEffect, useState } from "react";
+import { data, Form, redirect, useActionData, useNavigation } from "react-router";
 import { toast } from "sonner";
 import { createSSRClient } from "~/supabase.server.ts";
 import { useTranslation } from "../../../common/hooks/use-translation.ts";
@@ -67,6 +68,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
       profile_id,
       isbn,
     });
+    return data({ success: true, action: "remove", isbn }, { headers });
   } else {
     await addBook({
       supabase,
@@ -75,9 +77,8 @@ export const action = async ({ request }: Route.ActionArgs) => {
       title: formData.get("title") as string,
       source: formData.get("source") as BookSource,
     });
+    return data({ success: true, action: "add", isbn }, { headers });
   }
-
-  return data({}, { headers });
 };
 
 interface NlBookDocument {
@@ -101,10 +102,27 @@ export default function SearchBooksPage({ loaderData }: Route.ComponentProps) {
   const [selectedBook, setSelectedBook] = useState<NlBookDocument | null>(null);
   const [selectedSource, setSelectedSource] = useState<BookSource>("kyobo");
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [userBooks, setUserBooks] = useState<string[]>(loaderData.userBookIsbns);
   const { t } = useTranslation();
-  const { userBookIsbns } = loaderData;
+  const navigation = useNavigation();
+  const actionData = useActionData<typeof action>();
 
-  const isBookInLibrary = (isbn: string) => userBookIsbns.includes(isbn);
+  const isBookInLibrary = (isbn: string) => userBooks.includes(isbn);
+  const isSubmitting = navigation.state === "submitting";
+  const formData = navigation.formData;
+  const submittingAction = formData?.get("_action") as string | undefined;
+  const submittingIsbn = formData?.get("isbn") as string | undefined;
+
+  // Handle successful book addition/removal
+  useEffect(() => {
+    if (actionData?.success && actionData.action === "add") {
+      setDialogOpen(false);
+      setUserBooks((prev) => [...prev, actionData.isbn]);
+      toast.success(t("search.toast.added") || "책을 서재에 추가했습니다.");
+    } else if (actionData?.success && actionData.action === "remove") {
+      setUserBooks((prev) => prev.filter((isbn) => isbn !== actionData.isbn));
+    }
+  }, [actionData, t]);
 
   const handleSearch = async () => {
     if (!query.trim()) return;
@@ -160,9 +178,9 @@ export default function SearchBooksPage({ loaderData }: Route.ComponentProps) {
             autoFocus
           />
         </div>
-        <Button onClick={handleSearch} disabled={loading}>
-          {loading ? "검색 중..." : "검색"}
-        </Button>
+        <LoadingButton onClick={handleSearch} isLoading={loading} className="w-auto">
+          검색
+        </LoadingButton>
       </div>
 
       <div className="flex items-center py-2">
@@ -196,9 +214,19 @@ export default function SearchBooksPage({ loaderData }: Route.ComponentProps) {
                     <Form method="post">
                       <input type="hidden" name="_action" value="remove" />
                       <input type="hidden" name="isbn" value={book.EA_ISBN} />
-                      <Button size="sm" variant="destructive" type="submit">
+                      <LoadingButton
+                        size="sm"
+                        variant="destructive"
+                        type="submit"
+                        isLoading={
+                          isSubmitting &&
+                          submittingAction === "remove" &&
+                          submittingIsbn === book.EA_ISBN
+                        }
+                        className="w-auto"
+                      >
                         <Trash2 className="mr-1 h-4 w-4" /> 삭제
-                      </Button>
+                      </LoadingButton>
                     </Form>
                   ) : (
                     <Button size="sm" onClick={() => openAddDialog(book)}>
@@ -251,9 +279,9 @@ export default function SearchBooksPage({ loaderData }: Route.ComponentProps) {
                     </SelectContent>
                   </Select>
                 </div>
-                <Button className="w-full" type="submit">
+                <LoadingButton isLoading={isSubmitting && submittingAction === "add"}>
                   추가
-                </Button>
+                </LoadingButton>
               </div>
             </Form>
           )}
