@@ -2,6 +2,7 @@ import { Badge, Button, cn, Input } from "@ryugibo/ui";
 import { Search, Trash2 } from "@ryugibo/ui/icons";
 import { resolveAppUrl } from "@ryugibo/utils";
 import { data, Form, useSearchParams } from "react-router";
+import { toast } from "sonner";
 import z from "zod";
 import { removeBook } from "~/features/book/mutation.ts";
 import { getProfileByUsername } from "~/features/profile/queries.ts";
@@ -30,17 +31,20 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   }
   const { supabase, headers } = createSSRClient(request);
   let profile_id: string;
+  let isOwnLibrary = false;
   const { data: userData, error: userError } = await supabase.auth.getUser();
 
   if (userError) {
     const profile = await getProfileByUsername({ supabase, username: "ryugibo" });
     if (!profile) {
-      return { books: [], source: dataQuery.source };
+      return { books: [], source: dataQuery.source, isOwnLibrary: false };
     }
     profile_id = profile.id;
+    isOwnLibrary = false;
   } else {
     const { id } = userData.user;
     profile_id = id;
+    isOwnLibrary = true;
   }
 
   console.log(profile_id);
@@ -50,7 +54,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
     keyword: dataQuery.keyword,
     source: dataQuery.source,
   });
-  return data({ books, source: dataQuery.source }, { headers });
+  return data({ books, source: dataQuery.source, isOwnLibrary }, { headers });
 };
 
 export const action = async ({ request }: Route.ActionArgs) => {
@@ -76,7 +80,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
 export default function LibraryPage({ loaderData }: Route.ComponentProps) {
   const [searchParams, setSearchParams] = useSearchParams();
   const { t } = useTranslation();
-  const { books, source } = loaderData;
+  const { books, source, isOwnLibrary } = loaderData;
 
   const onClickFilter = (key: string, value: string) => {
     if (searchParams.get(key) === value) {
@@ -149,6 +153,12 @@ export default function LibraryPage({ loaderData }: Route.ComponentProps) {
             <Form
               method="post"
               className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+              onSubmit={(e) => {
+                if (!isOwnLibrary) {
+                  e.preventDefault();
+                  toast.error(t("auth.loginRequired") || "로그인이 필요한 기능입니다.");
+                }
+              }}
             >
               <input type="hidden" name="isbn" value={book.books.isbn} />
               <Button size="sm" variant="destructive" type="submit" className="h-8 w-8 p-0">
