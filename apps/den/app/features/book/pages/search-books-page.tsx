@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@ryugibo/ui";
-import { Plus, Search } from "@ryugibo/ui/icons";
+import { Plus, Search, Trash2 } from "@ryugibo/ui/icons";
 import { resolveAppUrl } from "@ryugibo/utils";
 import { useState } from "react";
 import { data, Form, redirect } from "react-router";
@@ -20,17 +20,30 @@ import { toast } from "sonner";
 import { createSSRClient } from "~/supabase.server.ts";
 import { useTranslation } from "../../../common/hooks/use-translation.ts";
 import { BOOK_SOURCES, type BookSource } from "../../library/constant.ts";
-import { addBook } from "../mutation.ts";
+import { addBook, removeBook } from "../mutation.ts";
 import type { Route } from "./+types/search-books-page.ts";
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
   const { supabase, headers } = createSSRClient(request);
-  const { error: errorUser } = await supabase.auth.getUser();
+  const { data: userData, error: errorUser } = await supabase.auth.getUser();
   if (errorUser) {
     console.log(errorUser);
     return redirect("/?error=login_required", { headers });
   }
-  return data({}, { headers });
+
+  // Fetch user's existing books (ISBNs)
+  const { data: profileBooks } = await supabase
+    .from("profile_books")
+    .select(`
+      books!inner (
+        isbn
+      )
+    `)
+    .eq("profile_id", userData.user.id);
+
+  const userBookIsbns = new Set(profileBooks?.map((pb) => pb.books.isbn) || []);
+
+  return data({ userBookIsbns: Array.from(userBookIsbns) }, { headers });
 };
 
 export const action = async ({ request }: Route.ActionArgs) => {
@@ -45,13 +58,24 @@ export const action = async ({ request }: Route.ActionArgs) => {
     user: { id: profile_id },
   } = dataUser;
 
-  await addBook({
-    supabase,
-    profile_id,
-    isbn: formData.get("isbn") as string,
-    title: formData.get("title") as string,
-    source: formData.get("source") as BookSource,
-  });
+  const action = formData.get("_action") as string;
+  const isbn = formData.get("isbn") as string;
+
+  if (action === "remove") {
+    await removeBook({
+      supabase,
+      profile_id,
+      isbn,
+    });
+  } else {
+    await addBook({
+      supabase,
+      profile_id,
+      isbn,
+      title: formData.get("title") as string,
+      source: formData.get("source") as BookSource,
+    });
+  }
 
   return data({}, { headers });
 };
@@ -69,7 +93,7 @@ interface NlSearchResponse {
   docs: NlBookDocument[];
 }
 
-export default function SearchBooksPage(_: Route.ComponentProps) {
+export default function SearchBooksPage({ loaderData }: Route.ComponentProps) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<NlBookDocument[]>([]);
   const [loading, setLoading] = useState(false);
@@ -78,6 +102,9 @@ export default function SearchBooksPage(_: Route.ComponentProps) {
   const [selectedSource, setSelectedSource] = useState<BookSource>("kyobo");
   const [dialogOpen, setDialogOpen] = useState(false);
   const { t } = useTranslation();
+  const { userBookIsbns } = loaderData;
+
+  const isBookInLibrary = (isbn: string) => userBookIsbns.includes(isbn);
 
   const handleSearch = async () => {
     if (!query.trim()) return;
@@ -145,31 +172,44 @@ export default function SearchBooksPage(_: Route.ComponentProps) {
       </div>
 
       <div className="grid gap-3">
-        {results.map((book) => (
-          <div
-            key={book.EA_ISBN}
-            className="group flex items-center gap-4 p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
-          >
-            <div className="flex-1 min-w-0">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="font-semibold text-base leading-tight text-foreground">
-                    {book.TITLE}
-                  </h3>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {book.AUTHOR} · {book.PUBLISHER}
-                  </p>
-                  {book.EA_ISBN && (
-                    <p className="text-xs text-muted-foreground mt-0.5">ISBN: {book.EA_ISBN}</p>
+        {results.map((book) => {
+          const inLibrary = isBookInLibrary(book.EA_ISBN);
+          return (
+            <div
+              key={book.EA_ISBN}
+              className="group flex items-center gap-4 p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
+            >
+              <div className="flex-1 min-w-0">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h3 className="font-semibold text-base leading-tight text-foreground">
+                      {book.TITLE}
+                    </h3>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {book.AUTHOR} · {book.PUBLISHER}
+                    </p>
+                    {book.EA_ISBN && (
+                      <p className="text-xs text-muted-foreground mt-0.5">ISBN: {book.EA_ISBN}</p>
+                    )}
+                  </div>
+                  {inLibrary ? (
+                    <Form method="post">
+                      <input type="hidden" name="_action" value="remove" />
+                      <input type="hidden" name="isbn" value={book.EA_ISBN} />
+                      <Button size="sm" variant="destructive" type="submit">
+                        <Trash2 className="mr-1 h-4 w-4" /> 삭제
+                      </Button>
+                    </Form>
+                  ) : (
+                    <Button size="sm" onClick={() => openAddDialog(book)}>
+                      <Plus className="mr-1 h-4 w-4" /> 추가
+                    </Button>
                   )}
                 </div>
-                <Button size="sm" onClick={() => openAddDialog(book)}>
-                  <Plus className="mr-1 h-4 w-4" /> 추가
-                </Button>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
         {searched && results.length === 0 && !loading && (
           <div className="text-center py-12 text-muted-foreground border-2 border-dashed rounded-lg">
             <p>"{query}"에 대한 검색 결과가 없습니다.</p>
@@ -184,6 +224,7 @@ export default function SearchBooksPage(_: Route.ComponentProps) {
           </DialogHeader>
           {selectedBook && (
             <Form method="post">
+              <input type="hidden" name="_action" value="add" />
               <input type="hidden" name="isbn" value={selectedBook.EA_ISBN} />
               <input type="hidden" name="title" value={selectedBook.TITLE} />
               <div className="space-y-4">

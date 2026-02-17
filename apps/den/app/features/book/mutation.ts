@@ -31,3 +31,37 @@ export const addBook = async ({
     throw error;
   }
 };
+
+export const removeBook = async ({
+  supabase,
+  profile_id,
+  isbn,
+}: {
+  supabase: SupabaseClient<Database>;
+  profile_id: string;
+  isbn: string;
+}) => {
+  // First, get the book_id from the ISBN
+  const { data: bookData, error: bookError } = await supabase
+    .from("books")
+    .select("id")
+    .eq("isbn", isbn)
+    .single();
+
+  if (bookError) {
+    throw bookError;
+  }
+
+  const { id: book_id } = bookData;
+
+  // Delete from profile_books using the composite key
+  const { error } = await supabase
+    .from("profile_books")
+    .delete()
+    .eq("profile_id", profile_id)
+    .eq("book_id", book_id);
+
+  if (error) {
+    throw error;
+  }
+};

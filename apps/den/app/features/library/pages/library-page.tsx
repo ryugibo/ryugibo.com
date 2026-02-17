@@ -1,8 +1,9 @@
 import { Badge, Button, cn, Input } from "@ryugibo/ui";
-import { Search } from "@ryugibo/ui/icons";
+import { Search, Trash2 } from "@ryugibo/ui/icons";
 import { resolveAppUrl } from "@ryugibo/utils";
 import { data, Form, useSearchParams } from "react-router";
 import z from "zod";
+import { removeBook } from "~/features/book/mutation.ts";
 import { getProfileByUsername } from "~/features/profile/queries.ts";
 import { createSSRClient } from "~/supabase.server.ts";
 import { useTranslation } from "../../../common/hooks/use-translation.ts";
@@ -50,6 +51,26 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
     source: dataQuery.source,
   });
   return data({ books, source: dataQuery.source }, { headers });
+};
+
+export const action = async ({ request }: Route.ActionArgs) => {
+  const { supabase, headers } = createSSRClient(request);
+  const { data: userData, error: userError } = await supabase.auth.getUser();
+
+  if (userError) {
+    throw new Error("User not found");
+  }
+
+  const formData = await request.formData();
+  const isbn = formData.get("isbn") as string;
+
+  await removeBook({
+    supabase,
+    profile_id: userData.user.id,
+    isbn,
+  });
+
+  return data({}, { headers });
 };
 
 export default function LibraryPage({ loaderData }: Route.ComponentProps) {
@@ -125,6 +146,15 @@ export default function LibraryPage({ loaderData }: Route.ComponentProps) {
               </div>
               <p className="text-xs text-muted-foreground truncate">{book.books.isbn}</p>
             </div>
+            <Form
+              method="post"
+              className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+            >
+              <input type="hidden" name="isbn" value={book.books.isbn} />
+              <Button size="sm" variant="destructive" type="submit" className="h-8 w-8 p-0">
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </Form>
           </div>
         ))}
       </div>
