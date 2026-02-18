@@ -1,6 +1,16 @@
-import { Badge, Button, cn, Input } from "@ryugibo/ui";
+import {
+  Badge,
+  Button,
+  cn,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  Input,
+} from "@ryugibo/ui";
 import { Search, Trash2 } from "@ryugibo/ui/icons";
 import { resolveAppUrl } from "@ryugibo/utils";
+import { useState } from "react";
 import { data, Form, useSearchParams } from "react-router";
 import { toast } from "sonner";
 import z from "zod";
@@ -81,6 +91,12 @@ export default function LibraryPage({ loaderData }: Route.ComponentProps) {
   const [searchParams, setSearchParams] = useSearchParams();
   const { t } = useTranslation();
   const { books, source, isOwnLibrary } = loaderData;
+  const [selectedGroup, setSelectedGroup] = useState<{
+    type: "series" | "work";
+    id: string;
+    title: string;
+    items: (typeof books)[number][];
+  } | null>(null);
 
   const onClickFilter = (key: string, value: string) => {
     if (searchParams.get(key) === value) {
@@ -95,6 +111,64 @@ export default function LibraryPage({ loaderData }: Route.ComponentProps) {
   const getSourceLabel = (val: string) => {
     return BOOK_SOURCES.find((s) => s.value === val)?.label || val;
   };
+
+  // Group books by series > work > book
+  type BookItem = (typeof books)[number];
+
+  type SeriesGroup = {
+    type: "series";
+    series: { id: string; title: string };
+    items: BookItem[];
+  };
+
+  type WorkGroup = {
+    type: "work";
+    work: NonNullable<BookItem["books"]["works"]>;
+    items: BookItem[];
+  };
+
+  type SingleBook = { type: "book"; item: BookItem };
+
+  type DisplayItem = SeriesGroup | WorkGroup | SingleBook;
+
+  const displayItems = books.reduce<DisplayItem[]>((acc, item) => {
+    const work = item.books.works;
+    const series = work?.series;
+
+    if (series) {
+      const existingGroup = acc.find(
+        (group): group is SeriesGroup => group.type === "series" && group.series.id === series.id,
+      );
+      if (existingGroup) {
+        existingGroup.items.push(item);
+      } else {
+        acc.push({ type: "series", series, items: [item] });
+      }
+    } else if (work) {
+      const existingGroup = acc.find(
+        (group): group is WorkGroup => group.type === "work" && group.work.id === work.id,
+      );
+      if (existingGroup) {
+        existingGroup.items.push(item);
+      } else {
+        acc.push({ type: "work", work, items: [item] });
+      }
+    } else {
+      acc.push({ type: "book", item });
+    }
+    return acc;
+  }, []);
+
+  // Sort items within groups
+  displayItems.forEach((group) => {
+    if (group.type === "series") {
+      group.items.sort((a, b) => {
+        const orderA = a.books.works?.series_order ?? Infinity;
+        const orderB = b.books.works?.series_order ?? Infinity;
+        return orderA - orderB;
+      });
+    }
+  });
 
   return (
     <div className="flex flex-1 flex-col gap-6 p-4">
@@ -132,42 +206,198 @@ export default function LibraryPage({ loaderData }: Route.ComponentProps) {
         ))}
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
-        {books.map((book) => (
-          <div key={book.books.isbn} className="group relative block">
-            <BookCover
-              src={`${resolveAppUrl("den-api")}/cover/${book.books.isbn}.jpg`}
-              alt={book.books.title}
-              className="mb-3"
-            />
-            <div className="space-y-1">
-              <div className="flex justify-between items-start">
-                <h3 className="text-sm font-semibold text-foreground truncate flex-1 pr-2">
-                  {book.books.title}
-                </h3>
-                <Badge variant="secondary" className="text-[10px] px-1.5 h-5">
-                  {getSourceLabel(book.source || "")}
-                </Badge>
-              </div>
-              <p className="text-xs text-muted-foreground truncate">{book.books.isbn}</p>
-            </div>
-            <Form
-              method="post"
-              className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
-              onSubmit={(e) => {
-                if (!isOwnLibrary) {
-                  e.preventDefault();
-                  toast.error(t("auth.loginRequired") || "로그인이 필요한 기능입니다.");
+        {displayItems.map((entry) => {
+          if (entry.type === "series") {
+            const { series, items } = entry;
+            // Use the first book's cover as representative
+            const representBook = items[0];
+            return (
+              <button
+                type="button"
+                key={`series-${series.id}`}
+                className="group relative block w-full text-left cursor-pointer"
+                onClick={() =>
+                  setSelectedGroup({ type: "series", id: series.id, title: series.title, items })
                 }
-              }}
-            >
-              <input type="hidden" name="isbn" value={book.books.isbn} />
-              <Button size="sm" variant="destructive" type="submit" className="h-8 w-8 p-0">
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            </Form>
-          </div>
-        ))}
+              >
+                <BookCover
+                  src={`${resolveAppUrl("den-api")}/cover/${representBook.books.isbn}.jpg`}
+                  alt={series.title}
+                  className="mb-3"
+                />
+                <div className="space-y-1">
+                  <div className="flex justify-between items-start">
+                    <h3 className="text-sm font-semibold text-foreground truncate flex-1 pr-2">
+                      {series.title}
+                    </h3>
+                    <Badge variant="secondary" className="text-[10px] px-1.5 h-5">
+                      Series
+                    </Badge>
+                  </div>
+                  <p className="text-xs text-muted-foreground truncate">{items.length} books</p>
+                </div>
+                {items.length > 0 && (
+                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Badge variant="outline" className="bg-background">
+                      {items.length}
+                    </Badge>
+                  </div>
+                )}
+              </button>
+            );
+          } else if (entry.type === "work") {
+            const { work, items } = entry;
+            const representBook = items[0];
+            return (
+              <button
+                type="button"
+                key={`work-${work.id}`}
+                className="group relative block w-full text-left cursor-pointer"
+                onClick={() =>
+                  setSelectedGroup({ type: "work", id: work.id, title: work.title, items })
+                }
+              >
+                <BookCover
+                  src={`${resolveAppUrl("den-api")}/cover/${representBook.books.isbn}.jpg`}
+                  alt={work.title}
+                  className="mb-3"
+                />
+                <div className="space-y-1">
+                  <div className="flex justify-between items-start">
+                    <h3 className="text-sm font-semibold text-foreground truncate flex-1 pr-2">
+                      {work.title}
+                    </h3>
+                    <Badge variant="secondary" className="text-[10px] px-1.5 h-5">
+                      {items.length > 1
+                        ? `${items.length} editions`
+                        : getSourceLabel(representBook.source || "")}
+                    </Badge>
+                  </div>
+                  <p className="text-xs text-muted-foreground truncate">
+                    {work.author || representBook.books.isbn}
+                  </p>
+                </div>
+                {/* For now, just delete the first book if single, or show nothing if multiple (safe default) */}
+                {items.length === 1 && (
+                  <Form
+                    method="post"
+                    className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                    onSubmit={(e) => {
+                      if (!isOwnLibrary) {
+                        e.preventDefault();
+                        toast.error(t("auth.loginRequired") || "로그인이 필요한 기능입니다.");
+                      }
+                    }}
+                  >
+                    <input type="hidden" name="isbn" value={representBook.books.isbn} />
+                    <Button size="sm" variant="destructive" type="submit" className="h-8 w-8 p-0">
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </Form>
+                )}
+                {items.length > 1 && (
+                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    {/* Placeholder for handling multiple editions deletion/viewing */}
+                    <Badge variant="outline" className="bg-background">
+                      Grouped
+                    </Badge>
+                  </div>
+                )}
+              </button>
+            );
+          } else {
+            const { item: book } = entry;
+            return (
+              <div key={`book-${book.books.isbn}`} className="group relative block">
+                <BookCover
+                  src={`${resolveAppUrl("den-api")}/cover/${book.books.isbn}.jpg`}
+                  alt={book.books.title}
+                  className="mb-3"
+                />
+                <div className="space-y-1">
+                  <div className="flex justify-between items-start">
+                    <h3 className="text-sm font-semibold text-foreground truncate flex-1 pr-2">
+                      {book.books.title}
+                    </h3>
+                    <Badge variant="secondary" className="text-[10px] px-1.5 h-5">
+                      {getSourceLabel(book.source || "")}
+                    </Badge>
+                  </div>
+                  <p className="text-xs text-muted-foreground truncate">{book.books.isbn}</p>
+                </div>
+                <Form
+                  method="post"
+                  className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                  onSubmit={(e) => {
+                    if (!isOwnLibrary) {
+                      e.preventDefault();
+                      toast.error(t("auth.loginRequired") || "로그인이 필요한 기능입니다.");
+                    }
+                  }}
+                >
+                  <input type="hidden" name="isbn" value={book.books.isbn} />
+                  <Button size="sm" variant="destructive" type="submit" className="h-8 w-8 p-0">
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </Form>
+              </div>
+            );
+          }
+        })}
       </div>
+      <Dialog open={!!selectedGroup} onOpenChange={(open) => !open && setSelectedGroup(null)}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {selectedGroup?.title}
+              {selectedGroup?.type === "work" && (
+                <span className="ml-2 text-sm font-normal text-muted-foreground">
+                  ({selectedGroup.items.length} Versions)
+                </span>
+              )}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            {selectedGroup?.items.map((item) => (
+              <div key={item.books.isbn} className="flex items-start gap-4">
+                <BookCover
+                  src={`${resolveAppUrl("den-api")}/cover/${item.books.isbn}.jpg`}
+                  alt={item.books.title}
+                  className="w-16 h-auto shrink-0"
+                />
+                <div className="flex-1 min-w-0">
+                  <h4 className="font-semibold text-sm truncate">{item.books.title}</h4>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {selectedGroup.type === "series" && item.books.works?.series_order
+                      ? `Vol. ${item.books.works.series_order}`
+                      : item.books.isbn}
+                  </p>
+                  <div className="flex gap-2 mt-1">
+                    <Badge variant="secondary" className="text-[10px]">
+                      {getSourceLabel(item.source || "")}
+                    </Badge>
+                  </div>
+                </div>
+                <Form
+                  method="post"
+                  onSubmit={(e) => {
+                    if (!isOwnLibrary) {
+                      e.preventDefault();
+                      toast.error(t("auth.loginRequired") || "로그인이 필요한 기능입니다.");
+                    }
+                  }}
+                >
+                  <input type="hidden" name="isbn" value={item.books.isbn} />
+                  <Button size="sm" variant="destructive" type="submit">
+                    <Trash2 className="h-4 w-4 mr-1" />
+                    Delete
+                  </Button>
+                </Form>
+              </div>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

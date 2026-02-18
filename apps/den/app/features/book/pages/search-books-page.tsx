@@ -1,4 +1,5 @@
 import {
+  Badge,
   Button,
   Dialog,
   DialogContent,
@@ -13,15 +14,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@ryugibo/ui";
-import { Plus, Search, Trash2 } from "@ryugibo/ui/icons";
+import { ChevronDown, ChevronUp, Plus, Search, Trash2 } from "@ryugibo/ui/icons";
 import { resolveAppUrl } from "@ryugibo/utils";
 import { useEffect, useState } from "react";
 import { data, Form, redirect, useActionData, useNavigation } from "react-router";
 import { toast } from "sonner";
+import { supabase } from "~/supabase.client.ts";
 import { createSSRClient } from "~/supabase.server.ts";
 import { useTranslation } from "../../../common/hooks/use-translation.ts";
 import { BOOK_SOURCES, type BookSource } from "../../library/constant.ts";
 import { addBook, removeBook } from "../mutation.ts";
+import { getWorksByIsbns } from "../queries.ts";
 import type { Route } from "./+types/search-books-page.ts";
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
@@ -103,6 +106,14 @@ export default function SearchBooksPage({ loaderData }: Route.ComponentProps) {
   const [selectedSource, setSelectedSource] = useState<BookSource>("kyobo");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [userBooks, setUserBooks] = useState<string[]>(loaderData.userBookIsbns);
+
+  // Grouping state
+  const [isbnToWorkId, setIsbnToWorkId] = useState<Record<string, string>>({});
+  const [workInfo, setWorkInfo] = useState<
+    Record<string, { title: string; author: string | null }>
+  >({});
+  const [expandedWorks, setExpandedWorks] = useState<Record<string, boolean>>({});
+
   const { t } = useTranslation();
   const navigation = useNavigation();
   const actionData = useActionData<typeof action>();
@@ -129,13 +140,36 @@ export default function SearchBooksPage({ loaderData }: Route.ComponentProps) {
 
     setLoading(true);
     setSearched(true);
+    setIsbnToWorkId({});
+    setWorkInfo({});
+
     try {
       const fetchUrl = `${resolveAppUrl("den-api")}/search?title=${encodeURIComponent(query)}`;
       const res = await fetch(fetchUrl);
       if (!res.ok) throw new Error(`Search failed: ${res.status} ${res.statusText}`);
 
       const data: NlSearchResponse = await res.json();
-      setResults(data.docs || []);
+      const docs = data.docs || [];
+      setResults(docs);
+
+      // Check works for these ISBNs
+      const isbns = docs.map((d) => d.EA_ISBN).filter(Boolean);
+      if (isbns.length > 0) {
+        const works = await getWorksByIsbns({ supabase, isbns });
+        if (works) {
+          const newIsbnToWorkId: Record<string, string> = {};
+          const newWorkInfo: Record<string, { title: string; author: string | null }> = {};
+
+          works.forEach((w) => {
+            if (w.work_id && w.works) {
+              newIsbnToWorkId[w.isbn] = w.work_id;
+              newWorkInfo[w.work_id] = { title: w.works.title, author: w.works.author };
+            }
+          });
+          setIsbnToWorkId(newIsbnToWorkId);
+          setWorkInfo(newWorkInfo);
+        }
+      }
     } catch (error) {
       console.error("Search error:", error);
       toast.error("검색 중 오류가 발생했습니다.");
@@ -157,6 +191,31 @@ export default function SearchBooksPage({ loaderData }: Route.ComponentProps) {
     setDialogOpen(true);
   };
 
+  const toggleWorkExpand = (workId: string) => {
+    setExpandedWorks((prev) => ({ ...prev, [workId]: !prev[workId] }));
+  };
+
+  // Grouping logic for rendering
+  const displayedItems: Array<
+    | { type: "book"; book: NlBookDocument }
+    | { type: "work"; workId: string; books: NlBookDocument[] }
+  > = [];
+  const processedWorkIds = new Set<string>();
+
+  results.forEach((book) => {
+    const workId = isbnToWorkId[book.EA_ISBN];
+    if (workId) {
+      if (!processedWorkIds.has(workId)) {
+        // Find all books in this work from results
+        const booksInWork = results.filter((b) => isbnToWorkId[b.EA_ISBN] === workId);
+        displayedItems.push({ type: "work", workId, books: booksInWork });
+        processedWorkIds.add(workId);
+      }
+    } else {
+      displayedItems.push({ type: "book", book });
+    }
+  });
+
   return (
     <div className="flex flex-1 flex-col gap-6 p-4 max-w-4xl mx-auto w-full">
       <header>
@@ -165,7 +224,7 @@ export default function SearchBooksPage({ loaderData }: Route.ComponentProps) {
         </h1>
         <p className="text-muted-foreground">{t("search.subtitle")}</p>
       </header>
-
+      {/* ... Search Input (unchanged) ... */}
       <div className="flex gap-2">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -190,53 +249,76 @@ export default function SearchBooksPage({ loaderData }: Route.ComponentProps) {
       </div>
 
       <div className="grid gap-3">
-        {results.map((book) => {
-          const inLibrary = isBookInLibrary(book.EA_ISBN);
-          return (
-            <div
-              key={book.EA_ISBN}
-              className="group flex items-center gap-4 p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
-            >
-              <div className="flex-1 min-w-0">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h3 className="font-semibold text-base leading-tight text-foreground">
-                      {book.TITLE}
-                    </h3>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      {book.AUTHOR} · {book.PUBLISHER}
-                    </p>
-                    {book.EA_ISBN && (
-                      <p className="text-xs text-muted-foreground mt-0.5">ISBN: {book.EA_ISBN}</p>
-                    )}
+        {displayedItems.map((item) => {
+          if (item.type === "work") {
+            const { workId, books: groupBooks } = item;
+            const info = workInfo[workId];
+            const isExpanded = expandedWorks[workId];
+
+            return (
+              <div key={`work-${workId}`} className="rounded-lg border bg-card overflow-hidden">
+                <button
+                  type="button"
+                  className="flex w-full text-left items-center gap-4 p-4 hover:bg-accent/50 transition-colors cursor-pointer outline-none focus:bg-accent/50"
+                  onClick={() => toggleWorkExpand(workId)}
+                >
+                  <div className="flex-1">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline">Work</Badge>
+                          <h3 className="font-semibold text-base leading-tight text-foreground">
+                            {info?.title || groupBooks[0].TITLE}
+                          </h3>
+                        </div>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          {info?.author || groupBooks[0].AUTHOR}
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {groupBooks.length} editions found
+                        </p>
+                      </div>
+                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                        {isExpanded ? (
+                          <ChevronUp className="h-4 w-4" />
+                        ) : (
+                          <ChevronDown className="h-4 w-4" />
+                        )}
+                      </Button>
+                    </div>
                   </div>
-                  {inLibrary ? (
-                    <Form method="post">
-                      <input type="hidden" name="_action" value="remove" />
-                      <input type="hidden" name="isbn" value={book.EA_ISBN} />
-                      <LoadingButton
-                        size="sm"
-                        variant="destructive"
-                        type="submit"
-                        isLoading={
-                          isSubmitting &&
-                          submittingAction === "remove" &&
-                          submittingIsbn === book.EA_ISBN
-                        }
-                        className="w-auto"
-                      >
-                        <Trash2 className="mr-1 h-4 w-4" /> 삭제
-                      </LoadingButton>
-                    </Form>
-                  ) : (
-                    <Button size="sm" onClick={() => openAddDialog(book)}>
-                      <Plus className="mr-1 h-4 w-4" /> 추가
-                    </Button>
-                  )}
-                </div>
+                </button>
+                {isExpanded && (
+                  <div className="border-t bg-muted/30 p-2 space-y-2">
+                    {groupBooks.map((book) => (
+                      <BookItem
+                        key={book.EA_ISBN}
+                        book={book}
+                        isBookInLibrary={isBookInLibrary}
+                        openAddDialog={openAddDialog}
+                        isSubmitting={isSubmitting}
+                        submittingAction={submittingAction}
+                        submittingIsbn={submittingIsbn}
+                        nested
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
-            </div>
-          );
+            );
+          } else {
+            return (
+              <BookItem
+                key={item.book.EA_ISBN}
+                book={item.book}
+                isBookInLibrary={isBookInLibrary}
+                openAddDialog={openAddDialog}
+                isSubmitting={isSubmitting}
+                submittingAction={submittingAction}
+                submittingIsbn={submittingIsbn}
+              />
+            );
+          }
         })}
         {searched && results.length === 0 && !loading && (
           <div className="text-center py-12 text-muted-foreground border-2 border-dashed rounded-lg">
@@ -246,6 +328,7 @@ export default function SearchBooksPage({ loaderData }: Route.ComponentProps) {
       </div>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        {/* ... Dialog Content (unchanged) ... */}
         <DialogContent>
           <DialogHeader>
             <DialogTitle>구매처 선택</DialogTitle>
@@ -287,6 +370,68 @@ export default function SearchBooksPage({ loaderData }: Route.ComponentProps) {
           )}
         </DialogContent>
       </Dialog>
+    </div>
+  );
+}
+
+// Extracted BookItem component for reuse
+function BookItem({
+  book,
+  isBookInLibrary,
+  openAddDialog,
+  isSubmitting,
+  submittingAction,
+  submittingIsbn,
+  nested = false,
+}: {
+  book: NlBookDocument;
+  isBookInLibrary: (isbn: string) => boolean;
+  openAddDialog: (book: NlBookDocument) => void;
+  isSubmitting: boolean;
+  submittingAction?: string;
+  submittingIsbn?: string;
+  nested?: boolean;
+}) {
+  const inLibrary = isBookInLibrary(book.EA_ISBN);
+
+  return (
+    <div
+      className={`group flex items-center gap-4 p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors ${nested ? "bg-background border-none shadow-none" : ""}`}
+    >
+      <div className="flex-1 min-w-0">
+        <div className="flex justify-between items-start">
+          <div>
+            <h3 className="font-semibold text-base leading-tight text-foreground">{book.TITLE}</h3>
+            <p className="text-sm text-muted-foreground mt-1">
+              {book.AUTHOR} · {book.PUBLISHER}
+            </p>
+            {book.EA_ISBN && (
+              <p className="text-xs text-muted-foreground mt-0.5">ISBN: {book.EA_ISBN}</p>
+            )}
+          </div>
+          {inLibrary ? (
+            <Form method="post">
+              <input type="hidden" name="_action" value="remove" />
+              <input type="hidden" name="isbn" value={book.EA_ISBN} />
+              <LoadingButton
+                size="sm"
+                variant="destructive"
+                type="submit"
+                isLoading={
+                  isSubmitting && submittingAction === "remove" && submittingIsbn === book.EA_ISBN
+                }
+                className="w-auto"
+              >
+                <Trash2 className="mr-1 h-4 w-4" /> 삭제
+              </LoadingButton>
+            </Form>
+          ) : (
+            <Button size="sm" onClick={() => openAddDialog(book)}>
+              <Plus className="mr-1 h-4 w-4" /> 추가
+            </Button>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

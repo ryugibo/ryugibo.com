@@ -21,6 +21,7 @@ export type Database = {
           isbn: string
           title: string
           updated_at: string
+          work_id: string | null
         }
         Insert: {
           created_at?: string
@@ -28,6 +29,7 @@ export type Database = {
           isbn: string
           title: string
           updated_at?: string
+          work_id?: string | null
         }
         Update: {
           created_at?: string
@@ -35,8 +37,17 @@ export type Database = {
           isbn?: string
           title?: string
           updated_at?: string
+          work_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "books_work_id_works_id_fk"
+            columns: ["work_id"]
+            isOneToOne: false
+            referencedRelation: "works"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profile_books: {
         Row: {
@@ -103,6 +114,65 @@ export type Database = {
           username?: string
         }
         Relationships: []
+      }
+      series: {
+        Row: {
+          created_at: string
+          id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      works: {
+        Row: {
+          author: string | null
+          created_at: string
+          id: string
+          series_id: string | null
+          series_order: number | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author?: string | null
+          created_at?: string
+          id?: string
+          series_id?: string | null
+          series_order?: number | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author?: string | null
+          created_at?: string
+          id?: string
+          series_id?: string | null
+          series_order?: number | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "works_series_id_series_id_fk"
+            columns: ["series_id"]
+            isOneToOne: false
+            referencedRelation: "series"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

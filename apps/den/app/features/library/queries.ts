@@ -40,7 +40,17 @@ export const getLibrary = async ({
       created_at,
       books!inner (
         isbn,
-        title
+        title,
+        works (
+          id,
+          title,
+          author,
+          series_order,
+          series (
+            id,
+            title
+          )
+        )
       )
     `)
     .eq("profile_id", profile_id);
