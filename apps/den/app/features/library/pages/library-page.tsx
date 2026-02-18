@@ -274,7 +274,7 @@ export default function LibraryPage({ loaderData }: Route.ComponentProps) {
                     </Badge>
                   </div>
                   <p className="text-xs text-muted-foreground truncate">
-                    {work.author || representBook.books.isbn}
+                    {representBook.books.isbn}
                   </p>
                 </div>
                 {/* For now, just delete the first book if single, or show nothing if multiple (safe default) */}

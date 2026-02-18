@@ -43,7 +43,6 @@ export const works = pg.table(
   {
     id: uuid().primaryKey().defaultRandom(),
     title: text().notNull(),
-    author: text(),
     series_id: uuid().references(() => series.id, { onDelete: "set null" }),
     series_order: integer(),
     created_at: timestamp().notNull().defaultNow(),

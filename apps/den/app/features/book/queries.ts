@@ -17,7 +17,6 @@ export const getWorksByIsbns = async ({
       works (
         id,
         title,
-        author,
         series (
           id,
           title

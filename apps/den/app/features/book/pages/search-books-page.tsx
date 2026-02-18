@@ -109,9 +109,7 @@ export default function SearchBooksPage({ loaderData }: Route.ComponentProps) {
 
   // Grouping state
   const [isbnToWorkId, setIsbnToWorkId] = useState<Record<string, string>>({});
-  const [workInfo, setWorkInfo] = useState<
-    Record<string, { title: string; author: string | null }>
-  >({});
+  const [workInfo, setWorkInfo] = useState<Record<string, { title: string }>>({});
   const [expandedWorks, setExpandedWorks] = useState<Record<string, boolean>>({});
 
   const { t } = useTranslation();
@@ -158,12 +156,12 @@ export default function SearchBooksPage({ loaderData }: Route.ComponentProps) {
         const works = await getWorksByIsbns({ supabase, isbns });
         if (works) {
           const newIsbnToWorkId: Record<string, string> = {};
-          const newWorkInfo: Record<string, { title: string; author: string | null }> = {};
+          const newWorkInfo: Record<string, { title: string }> = {};
 
           works.forEach((w) => {
             if (w.work_id && w.works) {
               newIsbnToWorkId[w.isbn] = w.work_id;
-              newWorkInfo[w.work_id] = { title: w.works.title, author: w.works.author };
+              newWorkInfo[w.work_id] = { title: w.works.title };
             }
           });
           setIsbnToWorkId(newIsbnToWorkId);
@@ -271,8 +269,8 @@ export default function SearchBooksPage({ loaderData }: Route.ComponentProps) {
                             {info?.title || groupBooks[0].TITLE}
                           </h3>
                         </div>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          {info?.author || groupBooks[0].AUTHOR}
+                        <p className="text-xs text-muted-foreground truncate">
+                          {groupBooks[0].EA_ISBN}
                         </p>
                         <p className="text-xs text-muted-foreground mt-1">
                           {groupBooks.length} editions found

@@ -1,0 +1,1 @@
+ALTER TABLE "den"."works" DROP COLUMN "author";

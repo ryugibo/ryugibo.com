@@ -43,6 +43,13 @@
       "when": 1771424699629,
       "tag": "0005_young_blue_blade",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1771428070851,
+      "tag": "0006_dark_kat_farrell",
+      "breakpoints": true
     }
   ]
 }

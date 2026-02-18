@@ -44,7 +44,6 @@ export const getLibrary = async ({
         works (
           id,
           title,
-          author,
           series_order,
           series (
             id,
