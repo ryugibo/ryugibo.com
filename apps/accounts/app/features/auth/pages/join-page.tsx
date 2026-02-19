@@ -1,6 +1,6 @@
 import { Button, LoadingButton } from "@ryugibo/ui";
 import { parseZodError } from "@ryugibo/utils";
-import { Form, Link, redirect, useNavigation } from "react-router";
+import { Form, Link, redirect, useNavigation, useSearchParams } from "react-router";
 import z from "zod";
 import InputPair from "~/common/components/input-pair.tsx";
 import AuthButtons from "~/features/auth/components/auth-buttons.tsx";
@@ -41,11 +41,12 @@ export const action = async ({ request }: Route.ActionArgs) => {
 
 export default function JoinPage({ actionData }: Route.ComponentProps) {
   const navigation = useNavigation();
+  const [searchParams] = useSearchParams();
   const isSubmitting = navigation.state === "submitting" || navigation.state === "loading";
   return (
     <div className="flex flex-col relative items-center justify-center h-full">
       <Button variant="ghost" asChild className="absolute top-8 right-8">
-        <Link to="/login">Login</Link>
+        <Link to={`/login?${searchParams.toString()}`}>Login</Link>
       </Button>
       <div className="flex flex-col items-center justify-center w-full max-w-md gap-10">
         <h1 className="text-2xl font-semibold">Create an account</h1>
