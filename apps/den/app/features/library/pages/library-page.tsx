@@ -348,7 +348,7 @@ export default function LibraryPage({ loaderData }: Route.ComponentProps) {
         })}
       </div>
       <Dialog open={!!selectedGroup} onOpenChange={(open) => !open && setSelectedGroup(null)}>
-        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+        <DialogContent className="w-[calc(100%-2rem)] max-w-lg md:max-w-4xl max-h-[80vh] overflow-y-auto rounded-lg">
           <DialogHeader>
             <DialogTitle>
               {selectedGroup?.title}
@@ -359,46 +359,80 @@ export default function LibraryPage({ loaderData }: Route.ComponentProps) {
               )}
             </DialogTitle>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
-            {selectedGroup?.items.map((item) => (
-              <div key={item.books.isbn} className="flex items-start gap-4">
-                <BookCover
-                  src={`${resolveAppUrl("den-api")}/cover/${item.books.isbn}.jpg`}
-                  alt={item.books.title}
-                  className="w-16 h-auto shrink-0"
-                />
-                <div className="flex-1 min-w-0">
-                  <Link to={`/books/${item.books.isbn}`} className="hover:underline">
-                    <h4 className="font-semibold text-sm truncate">{item.books.title}</h4>
-                  </Link>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {selectedGroup.type === "series" && item.books.works?.series_order
-                      ? `Vol. ${item.books.works.series_order}`
-                      : item.books.isbn}
-                  </p>
-                  <div className="flex gap-2 mt-1">
-                    <Badge variant="secondary" className="text-[10px]">
-                      {getSourceLabel(item.source || "")}
-                    </Badge>
+          <div className="grid gap-4 py-4 md:grid-cols-2">
+            {selectedGroup?.items.map((item) => {
+              // Dynamic Middle Truncation using Flexbox
+              // Split title into Head (truncate) and Tail (fixed)
+              const TAIL_LENGTH = 10;
+              const hasTail = item.books.title.length > 20;
+              const titleHead = hasTail
+                ? item.books.title.slice(0, -TAIL_LENGTH)
+                : item.books.title;
+              const titleTail = hasTail ? item.books.title.slice(-TAIL_LENGTH) : "";
+
+              return (
+                <div
+                  key={item.books.isbn}
+                  className="flex items-start gap-4 p-2 border rounded-lg overflow-hidden"
+                >
+                  <BookCover
+                    src={`${resolveAppUrl("den-api")}/cover/${item.books.isbn}.jpg`}
+                    alt={item.books.title}
+                    className="w-16 h-auto shrink-0 shadow-sm"
+                  />
+                  <div className="flex-1 min-w-0 flex flex-col gap-2">
+                    <div className="flex-1 min-w-0">
+                      <Link
+                        to={`/books/${item.books.isbn}`}
+                        className="hover:underline flex w-full items-baseline gap-0.5"
+                        title={item.books.title}
+                      >
+                        <h4 className="font-semibold text-sm truncate shrink">{titleHead}</h4>
+                        {hasTail && (
+                          <h4 className="font-semibold text-sm flex-none">{titleTail}</h4>
+                        )}
+                      </Link>
+                      <p className="text-xs text-muted-foreground mt-1 truncate">
+                        {selectedGroup.type === "series" && item.books.works?.series_order
+                          ? `Vol. ${item.books.works.series_order}`
+                          : item.books.isbn}
+                      </p>
+                      <div className="flex gap-2 mt-1">
+                        <Badge variant="secondary" className="text-[10px]">
+                          {getSourceLabel(item.source || "")}
+                        </Badge>
+                      </div>
+                    </div>
+
+                    <Form
+                      method="post"
+                      className="self-end w-full"
+                      onSubmit={(e) => {
+                        if (!isOwnLibrary) {
+                          e.preventDefault();
+                          toast.error(t("auth.loginRequired") || "로그인이 필요한 기능입니다.");
+                        } else {
+                          if (!confirm("Are you sure you want to delete this book?")) {
+                            e.preventDefault();
+                          }
+                        }
+                      }}
+                    >
+                      <input type="hidden" name="isbn" value={item.books.isbn} />
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        type="submit"
+                        className="w-full h-8 text-xs"
+                      >
+                        <Trash2 className="h-3 w-3 mr-1" />
+                        Delete
+                      </Button>
+                    </Form>
                   </div>
                 </div>
-                <Form
-                  method="post"
-                  onSubmit={(e) => {
-                    if (!isOwnLibrary) {
-                      e.preventDefault();
-                      toast.error(t("auth.loginRequired") || "로그인이 필요한 기능입니다.");
-                    }
-                  }}
-                >
-                  <input type="hidden" name="isbn" value={item.books.isbn} />
-                  <Button size="sm" variant="destructive" type="submit">
-                    <Trash2 className="h-4 w-4 mr-1" />
-                    Delete
-                  </Button>
-                </Form>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </DialogContent>
       </Dialog>
