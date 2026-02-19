@@ -215,22 +215,13 @@ export default function BookDetailPage({ loaderData }: Route.ComponentProps) {
           <div>
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h1 className="text-2xl font-bold sm:text-3xl">{book.title}</h1>
+                <h1 className="text-2xl font-bold sm:text-3xl">{book.TITLE}</h1>
                 {book.edition_info && (
                   <Badge variant="outline" className="mt-2 text-primary border-primary">
                     {book.edition_info}
                   </Badge>
                 )}
               </div>
-              <GroupingRequestButton
-                book={{
-                  isbn: book.isbn,
-                  title: book.title,
-                  author: book.AUTHOR,
-                  publisher: book.PUBLISHER,
-                  publishDate: book.PUBLISH_PREDATE,
-                }}
-              />
             </div>
 
             <div className="mt-4 space-y-2 text-sm text-muted-foreground">
@@ -286,7 +277,7 @@ export default function BookDetailPage({ loaderData }: Route.ComponentProps) {
               <GroupingRequestButton
                 book={{
                   isbn: book.isbn,
-                  title: book.title,
+                  title: book.TITLE,
                   author: book.AUTHOR,
                   publisher: book.PUBLISHER,
                   publishDate: book.PUBLISH_PREDATE,
