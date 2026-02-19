@@ -1,4 +1,6 @@
 import { AspectRatio, cn } from "@ryugibo/ui";
+import { BookOpen } from "@ryugibo/ui/icons";
+import { useEffect, useRef, useState } from "react";
 
 interface BookCoverProps extends React.HTMLAttributes<HTMLDivElement> {
   src?: string | null;
@@ -8,53 +10,64 @@ interface BookCoverProps extends React.HTMLAttributes<HTMLDivElement> {
   height?: number;
 }
 
-const gradients = [
-  "from-pink-500 via-red-500 to-yellow-500",
-  "from-blue-400 via-indigo-500 to-purple-500",
-  "from-green-400 to-blue-500",
-  "from-yellow-400 via-orange-500 to-red-500",
-  "from-purple-500 via-pink-500 to-red-500",
-  "from-teal-400 to-yellow-200",
-  "from-fuchsia-600 to-pink-600",
-  "from-indigo-400 to-cyan-400",
-  "from-rose-400 via-fuchsia-500 to-indigo-500",
-];
-
-function getBookCoverGradient(id: string) {
-  let hash = 0;
-  for (let i = 0; i < id.length; i++) {
-    hash = id.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  return gradients[Math.abs(hash) % gradients.length];
-}
-
 export function BookCover({ src, alt, aspectRatio = 2 / 3, className, ...props }: BookCoverProps) {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  const imgRef = useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    setHasError(false);
+    setIsLoaded(false);
+
+    // Check if image is already loaded (e.g. from cache)
+    if (imgRef.current?.complete && imgRef.current?.naturalWidth > 0) {
+      setIsLoaded(true);
+    }
+  }, [src]);
+
   return (
-    <div className={cn("overflow-hidden rounded-md shadow-md bg-muted", className)} {...props}>
+    <div
+      className={cn("overflow-hidden rounded-md shadow-md bg-muted group", className)}
+      {...props}
+    >
       <AspectRatio ratio={aspectRatio}>
-        {src ? (
-          <img
-            src={src}
-            alt={alt}
-            className="h-full w-full object-cover object-center transition-all hover:scale-105"
-          />
-        ) : (
+        <div className="relative w-full h-full">
+          {/* Fallback - Always rendered but faded out when image loads */}
           <div
             className={cn(
-              "h-full w-full flex items-center justify-center p-4 text-center bg-linear-to-br transition-all hover:scale-110",
-              getBookCoverGradient(alt),
+              "absolute inset-0 flex items-center justify-center bg-muted transition-opacity duration-500",
+              isLoaded && !hasError ? "opacity-0" : "opacity-100",
             )}
+            aria-hidden="true"
           >
-            <span
-              className="font-bold text-white line-clamp-3 text-lg"
-              style={{
-                textShadow: "2px 2px 4px rgba(0,0,0,0.5)",
-              }}
-            >
-              {alt}
-            </span>
+            <BookOpen className="h-10 w-10 text-muted-foreground/20" />
           </div>
-        )}
+
+          {/* Image */}
+          {src && (
+            <img
+              ref={imgRef}
+              key={src} // Force remount on source change to ensure onLoad fires
+              src={src}
+              alt={alt}
+              loading="lazy"
+              decoding="async"
+              onLoad={(e) => {
+                // Double check if image is actually loaded
+                if (e.currentTarget.complete) {
+                  setIsLoaded(true);
+                }
+              }}
+              onError={() => setHasError(true)}
+              className={cn(
+                "h-full w-full object-cover object-center transition-all duration-500",
+                // Restore hover effect
+                !hasError && "group-hover:scale-105",
+                isLoaded && !hasError ? "opacity-100" : "opacity-0",
+              )}
+            />
+          )}
+        </div>
       </AspectRatio>
     </div>
   );

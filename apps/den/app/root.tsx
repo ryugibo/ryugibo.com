@@ -63,7 +63,13 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
     data: { user },
   } = await supabase.auth.getUser();
 
-  return { user };
+  let profile = null;
+  if (user) {
+    const { data } = await supabase.from("profiles").select("role").eq("id", user.id).single();
+    profile = data;
+  }
+
+  return { user, profile };
 };
 
 export default function App() {

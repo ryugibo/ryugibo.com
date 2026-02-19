@@ -14,9 +14,43 @@ export type Database = {
   }
   den: {
     Tables: {
+      book_grouping_requests: {
+        Row: {
+          book_isbn: string
+          created_at: string
+          id: string
+          message: string | null
+          request_type: string
+          status: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          book_isbn: string
+          created_at?: string
+          id?: string
+          message?: string | null
+          request_type: string
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          book_isbn?: string
+          created_at?: string
+          id?: string
+          message?: string | null
+          request_type?: string
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       books: {
         Row: {
           created_at: string
+          edition_info: string | null
           id: number
           isbn: string
           title: string
@@ -25,6 +59,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          edition_info?: string | null
           id?: never
           isbn: string
           title: string
@@ -33,6 +68,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          edition_info?: string | null
           id?: never
           isbn?: string
           title?: string
@@ -94,6 +130,7 @@ export type Database = {
           email: string | null
           id: string
           public: boolean
+          role: string
           updated_at: string
           username: string
         }
@@ -102,6 +139,7 @@ export type Database = {
           email?: string | null
           id: string
           public?: boolean
+          role?: string
           updated_at?: string
           username: string
         }
@@ -110,6 +148,7 @@ export type Database = {
           email?: string | null
           id?: string
           public?: boolean
+          role?: string
           updated_at?: string
           username?: string
         }
@@ -138,7 +177,6 @@ export type Database = {
       }
       works: {
         Row: {
-          author: string | null
           created_at: string
           id: string
           series_id: string | null
@@ -147,7 +185,6 @@ export type Database = {
           updated_at: string
         }
         Insert: {
-          author?: string | null
           created_at?: string
           id?: string
           series_id?: string | null
@@ -156,7 +193,6 @@ export type Database = {
           updated_at?: string
         }
         Update: {
-          author?: string | null
           created_at?: string
           id?: string
           series_id?: string | null

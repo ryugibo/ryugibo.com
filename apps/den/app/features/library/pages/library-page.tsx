@@ -11,7 +11,7 @@ import {
 import { Search, Trash2 } from "@ryugibo/ui/icons";
 import { resolveAppUrl } from "@ryugibo/utils";
 import { useState } from "react";
-import { data, Form, useSearchParams } from "react-router";
+import { data, Form, Link, useSearchParams } from "react-router";
 import { toast } from "sonner";
 import z from "zod";
 import { removeBook } from "~/features/book/mutation.ts";
@@ -309,22 +309,24 @@ export default function LibraryPage({ loaderData }: Route.ComponentProps) {
             const { item: book } = entry;
             return (
               <div key={`book-${book.books.isbn}`} className="group relative block">
-                <BookCover
-                  src={`${resolveAppUrl("den-api")}/cover/${book.books.isbn}.jpg`}
-                  alt={book.books.title}
-                  className="mb-3"
-                />
-                <div className="space-y-1">
-                  <div className="flex justify-between items-start">
-                    <h3 className="text-sm font-semibold text-foreground truncate flex-1 pr-2">
-                      {book.books.title}
-                    </h3>
-                    <Badge variant="secondary" className="text-[10px] px-1.5 h-5">
-                      {getSourceLabel(book.source || "")}
-                    </Badge>
+                <Link to={`/books/${book.books.isbn}`} className="block">
+                  <BookCover
+                    src={`${resolveAppUrl("den-api")}/cover/${book.books.isbn}.jpg`}
+                    alt={book.books.title}
+                    className="mb-3"
+                  />
+                  <div className="space-y-1">
+                    <div className="flex justify-between items-start">
+                      <h3 className="text-sm font-semibold text-foreground truncate flex-1 pr-2">
+                        {book.books.title}
+                      </h3>
+                      <Badge variant="secondary" className="text-[10px] px-1.5 h-5">
+                        {getSourceLabel(book.source || "")}
+                      </Badge>
+                    </div>
+                    <p className="text-xs text-muted-foreground truncate">{book.books.isbn}</p>
                   </div>
-                  <p className="text-xs text-muted-foreground truncate">{book.books.isbn}</p>
-                </div>
+                </Link>
                 <Form
                   method="post"
                   className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
@@ -366,7 +368,9 @@ export default function LibraryPage({ loaderData }: Route.ComponentProps) {
                   className="w-16 h-auto shrink-0"
                 />
                 <div className="flex-1 min-w-0">
-                  <h4 className="font-semibold text-sm truncate">{item.books.title}</h4>
+                  <Link to={`/books/${item.books.isbn}`} className="hover:underline">
+                    <h4 className="font-semibold text-sm truncate">{item.books.title}</h4>
+                  </Link>
                   <p className="text-xs text-muted-foreground mt-1">
                     {selectedGroup.type === "series" && item.books.works?.series_order
                       ? `Vol. ${item.books.works.series_order}`

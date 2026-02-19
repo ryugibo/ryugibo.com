@@ -10,6 +10,9 @@ export const profiles = pg.table(
       .references(() => authUsers.id, { onDelete: "cascade" }),
     email: text().default(sql`(auth.jwt() ->> 'email')`),
     username: text().notNull().unique(),
+    role: text({ enum: ["user", "admin"] })
+      .notNull()
+      .default("user"),
     public: boolean().notNull().default(false),
     created_at: timestamp().notNull().defaultNow(),
     updated_at: timestamp().notNull().defaultNow(),

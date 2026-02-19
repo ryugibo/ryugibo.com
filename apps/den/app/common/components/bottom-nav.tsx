@@ -1,6 +1,6 @@
 import { cn } from "@ryugibo/ui";
-import { Home, Library, Search, Settings } from "@ryugibo/ui/icons";
-import { Link, useLocation } from "react-router";
+import { Home, LayoutDashboard, Library, Search, Settings } from "@ryugibo/ui/icons";
+import { Link, useLocation, useRouteLoaderData } from "react-router";
 
 import { useTranslation } from "../hooks/use-translation.ts";
 
@@ -30,6 +30,16 @@ export function BottomNav() {
       icon: Settings,
     },
   ];
+
+  // biome-ignore lint/suspicious/noExplicitAny: partial user type
+  const rootData = useRouteLoaderData("root") as { user?: any; profile?: { role: string } };
+  if (rootData?.profile?.role === "admin") {
+    items.push({
+      title: "Admin",
+      url: "/admin",
+      icon: LayoutDashboard,
+    });
+  }
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 border-t bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 md:hidden">

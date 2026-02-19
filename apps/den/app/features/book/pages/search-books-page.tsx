@@ -17,12 +17,13 @@ import {
 import { ChevronDown, ChevronUp, Plus, Search, Trash2 } from "@ryugibo/ui/icons";
 import { resolveAppUrl } from "@ryugibo/utils";
 import { useEffect, useState } from "react";
-import { data, Form, redirect, useActionData, useNavigation } from "react-router";
+import { data, Form, Link, redirect, useActionData, useNavigation } from "react-router";
 import { toast } from "sonner";
 import { supabase } from "~/supabase.client.ts";
 import { createSSRClient } from "~/supabase.server.ts";
 import { useTranslation } from "../../../common/hooks/use-translation.ts";
 import { BOOK_SOURCES, type BookSource } from "../../library/constant.ts";
+import { BookCover } from "../components/book-cover.tsx";
 import { addBook, removeBook } from "../mutation.ts";
 import { getWorksByIsbns } from "../queries.ts";
 import type { Route } from "./+types/search-books-page.ts";
@@ -394,40 +395,55 @@ function BookItem({
 
   return (
     <div
-      className={`group flex items-center gap-4 p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors ${nested ? "bg-background border-none shadow-none" : ""}`}
+      className={`group flex items-start gap-4 p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors ${nested ? "bg-background border-none shadow-none" : ""}`}
     >
+      <Link to={`/books/${book.EA_ISBN}`} className="shrink-0">
+        <BookCover
+          src={book.EA_ISBN ? `${resolveAppUrl("den-api")}/cover/${book.EA_ISBN}.jpg` : null}
+          alt={book.TITLE}
+          className="w-16 h-auto"
+        />
+      </Link>
       <div className="flex-1 min-w-0">
         <div className="flex justify-between items-start">
-          <div>
-            <h3 className="font-semibold text-base leading-tight text-foreground">{book.TITLE}</h3>
+          <div className="flex-1 pr-4">
+            <Link to={`/books/${book.EA_ISBN}`} className="hover:underline">
+              <h3 className="font-semibold text-base leading-tight text-foreground">
+                {book.TITLE}
+              </h3>
+            </Link>
             <p className="text-sm text-muted-foreground mt-1">
               {book.AUTHOR} · {book.PUBLISHER}
             </p>
             {book.EA_ISBN && (
               <p className="text-xs text-muted-foreground mt-0.5">ISBN: {book.EA_ISBN}</p>
             )}
+            <div className="mt-2">
+              {inLibrary ? (
+                <Form method="post" className="inline-block">
+                  <input type="hidden" name="_action" value="remove" />
+                  <input type="hidden" name="isbn" value={book.EA_ISBN} />
+                  <LoadingButton
+                    size="sm"
+                    variant="destructive"
+                    type="submit"
+                    isLoading={
+                      isSubmitting &&
+                      submittingAction === "remove" &&
+                      submittingIsbn === book.EA_ISBN
+                    }
+                    className="h-8"
+                  >
+                    <Trash2 className="mr-1 h-4 w-4" /> 삭제
+                  </LoadingButton>
+                </Form>
+              ) : (
+                <Button size="sm" onClick={() => openAddDialog(book)} className="h-8">
+                  <Plus className="mr-1 h-4 w-4" /> 추가
+                </Button>
+              )}
+            </div>
           </div>
-          {inLibrary ? (
-            <Form method="post">
-              <input type="hidden" name="_action" value="remove" />
-              <input type="hidden" name="isbn" value={book.EA_ISBN} />
-              <LoadingButton
-                size="sm"
-                variant="destructive"
-                type="submit"
-                isLoading={
-                  isSubmitting && submittingAction === "remove" && submittingIsbn === book.EA_ISBN
-                }
-                className="w-auto"
-              >
-                <Trash2 className="mr-1 h-4 w-4" /> 삭제
-              </LoadingButton>
-            </Form>
-          ) : (
-            <Button size="sm" onClick={() => openAddDialog(book)}>
-              <Plus className="mr-1 h-4 w-4" /> 추가
-            </Button>
-          )}
         </div>
       </div>
     </div>

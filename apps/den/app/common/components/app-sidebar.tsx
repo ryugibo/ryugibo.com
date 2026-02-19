@@ -13,7 +13,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@ryugibo/ui";
-import { BookOpen, Home, Library, Search, Settings } from "@ryugibo/ui/icons";
+import { BookOpen, Home, LayoutDashboard, Library, Search, Settings } from "@ryugibo/ui/icons";
 import { resolveAppUrl } from "@ryugibo/utils";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useRouteLoaderData } from "react-router";
@@ -52,6 +52,16 @@ export function AppSidebar() {
       icon: Settings,
     },
   ];
+
+  // biome-ignore lint/suspicious/noExplicitAny: partial user type
+  const rootData = useRouteLoaderData("root") as { user?: any; profile?: { role: string } };
+  if (rootData?.profile?.role === "admin") {
+    items.push({
+      title: "Admin",
+      url: "/admin",
+      icon: LayoutDashboard,
+    });
+  }
 
   return (
     <Sidebar collapsible="icon">

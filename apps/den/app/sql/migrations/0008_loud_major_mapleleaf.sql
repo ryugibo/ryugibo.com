@@ -1,0 +1,1 @@
+ALTER TABLE "den"."books" ADD COLUMN "edition_info" text;
