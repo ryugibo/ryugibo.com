@@ -24,7 +24,8 @@
       "!apps/den/app/sql/migrations/**/*.*",
       "!apps/den/database.types.ts",
       "!apps/den-api/worker-configuration.d.ts",
-      "!apps/den-api/src/data/books/**/*.*"
+      "!apps/den-api/public/isbn/**/*.*",
+      "!apps/den-api/public/cover/**/*.*"
     ]
   },
 
