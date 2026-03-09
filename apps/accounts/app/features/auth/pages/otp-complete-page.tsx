@@ -2,7 +2,7 @@ import { Button, LoadingButton } from "@ryugibo/ui";
 import { parseZodError } from "@ryugibo/utils";
 import { Form, Link, redirect, useNavigation, useSearchParams } from "react-router";
 import z from "zod";
-import InputPair from "~/common/components/input-pair.tsx";
+import FloatingInput from "~/common/components/floating-input.tsx";
 import { createSSRClient } from "~/supabase.server.ts";
 import type { Route } from "./+types/otp-complete-page";
 
@@ -59,31 +59,23 @@ export default function OtpCompletePage({ actionData }: Route.ComponentProps) {
           </p>
         </div>
         <Form method="post" className="w-full space-y-4">
-          <InputPair
+          <FloatingInput
             label="이메일"
-            description="이메일 주소를 입력해주세요."
             id="email"
             name="email"
             required
             type="email"
-            placeholder="이메일을 입력하세요"
             defaultValue={email}
             readOnly
           />
-          <InputPair
+          <FloatingInput
             label="인증 코드"
-            description="이메일로 전송된 OTP 인증 코드를 입력해주세요."
             id="token"
             name="token"
             required
             type="number"
-            placeholder="예: 1234"
+            error={actionData?.formError?.token?.map((e) => e.message).join(" ")}
           />
-          {actionData?.formError?.token?.map(({ key, message }) => (
-            <p key={key} className="text-sm text-red-500">
-              {message}
-            </p>
-          ))}
 
           <LoadingButton isLoading={isSubmitting}>로그인</LoadingButton>
         </Form>

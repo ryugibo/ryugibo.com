@@ -2,7 +2,7 @@ import { Button, LoadingButton } from "@ryugibo/ui";
 import { parseZodError } from "@ryugibo/utils";
 import { Form, Link, redirect, useNavigation } from "react-router";
 import z from "zod";
-import InputPair from "~/common/components/input-pair.tsx";
+import FloatingInput from "~/common/components/floating-input.tsx";
 import { createSSRClient } from "~/supabase.server.ts";
 import type { Route } from "./+types/otp-start-page";
 
@@ -31,7 +31,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
 
   if (authError) {
     console.log(authError);
-    return { authError };
+    return { error: "이메일 전송 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요." };
   }
 
   return redirect(`/otp/complete?email=${encodeURIComponent(email)}`);
@@ -53,24 +53,16 @@ export default function OtpStartPage({ actionData }: Route.ComponentProps) {
           </p>
         </div>
         <Form method="post" className="w-full space-y-4">
-          <InputPair
+          <FloatingInput
             label="이메일"
-            description="이메일 주소를 입력해주세요."
             id="email"
             name="email"
             required
             type="email"
-            placeholder="이메일을 입력하세요"
+            error={actionData?.formError?.email?.map((e) => e.message).join(" ")}
           />
-          {actionData?.formError?.email?.map(({ key, message }) => (
-            <p key={key} className="text-sm text-red-500">
-              {message}
-            </p>
-          ))}
           <LoadingButton isLoading={isSubmitting}>인증 코드 전송</LoadingButton>
-          {actionData?.authError && (
-            <p className="text-sm text-red-500">알 수 없는 오류가 발생했습니다.</p>
-          )}
+          {actionData?.error && <p className="text-sm text-red-500">{actionData.error}</p>}
         </Form>
       </div>
     </div>

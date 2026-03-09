@@ -2,7 +2,7 @@ import { LoadingButton } from "@ryugibo/ui";
 import { parseZodError } from "@ryugibo/utils";
 import { Form, Link, redirect, useNavigation, useSearchParams } from "react-router";
 import z from "zod";
-import InputPair from "~/common/components/input-pair.tsx";
+import FloatingInput from "~/common/components/floating-input.tsx";
 import AuthButtons from "~/features/auth/components/auth-buttons.tsx";
 import { createSSRClient } from "~/supabase.server.ts";
 import type { Route } from "./+types/login-page";
@@ -42,7 +42,11 @@ export const action = async ({ request }: Route.ActionArgs) => {
   const { error: loginError } = await supabase.auth.signInWithPassword({ email, password });
 
   if (loginError) {
-    return { loginError };
+    const message =
+      loginError.code === "invalid_credentials"
+        ? "이메일 또는 비밀번호가 올바르지 않습니다."
+        : "로그인 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.";
+    return { error: message };
   }
 
   const url = new URL(request.url);
@@ -60,38 +64,24 @@ export default function LoginPage({ actionData }: Route.ComponentProps) {
       <div className="flex flex-col items-center justify-center w-full max-w-lg gap-8">
         <h1 className="text-2xl font-semibold">로그인</h1>
         <Form method="post" className="w-full space-y-4">
-          <InputPair
+          <FloatingInput
             label="이메일"
-            description="이메일 주소를 입력해주세요."
             id="email"
             name="email"
             required
             type="email"
-            placeholder="이메일을 입력하세요"
+            error={actionData?.formError?.email?.map((e) => e.message).join(" ")}
           />
-          {actionData?.formError?.email?.map(({ key, message }) => (
-            <p key={key} className="text-sm text-red-500">
-              {message}
-            </p>
-          ))}
-          <InputPair
+          <FloatingInput
             label="비밀번호"
-            description="비밀번호를 입력해주세요."
             id="password"
             name="password"
             required
             type="password"
-            placeholder="비밀번호를 입력하세요"
+            error={actionData?.formError?.password?.map((e) => e.message).join(" ")}
           />
-          {actionData?.formError?.password?.map(({ key, message }) => (
-            <p key={key} className="text-sm text-red-500">
-              {message}
-            </p>
-          ))}
           <LoadingButton isLoading={isSubmitting}>로그인</LoadingButton>
-          {actionData?.loginError && (
-            <p className="text-sm text-red-500">{actionData.loginError.message}</p>
-          )}
+          {actionData?.error && <p className="text-sm text-red-500">{actionData.error}</p>}
         </Form>
         <AuthButtons />
         <div className="text-sm text-center text-muted-foreground">

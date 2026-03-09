@@ -16,7 +16,7 @@ import ReactMarkdown from "react-markdown";
 import { Form, Link, redirect, useNavigation, useSearchParams } from "react-router";
 import remarkGfm from "remark-gfm";
 import z from "zod";
-import InputPair from "~/common/components/input-pair.tsx";
+import FloatingInput from "~/common/components/floating-input.tsx";
 import AuthButtons from "~/features/auth/components/auth-buttons.tsx";
 import privacyPolicy from "~/features/auth/content/privacy-policy.md?raw";
 import { createSSRClient } from "~/supabase.server.ts";
@@ -99,34 +99,22 @@ export default function JoinPage({ actionData }: Route.ComponentProps) {
       <div className="flex flex-col items-center justify-center w-full max-w-lg gap-8">
         <h1 className="text-2xl font-semibold">계정 생성</h1>
         <Form method="post" className="w-full space-y-4">
-          <InputPair
+          <FloatingInput
             label="이메일"
-            description="이메일 주소를 입력해주세요."
             id="email"
             name="email"
             required
             type="email"
-            placeholder="이메일을 입력하세요"
+            error={actionData?.formError?.email?.map((e) => e.message).join(" ")}
           />
-          {actionData?.formError?.email?.map(({ key, message }) => (
-            <p key={key} className="text-sm text-red-500">
-              {message}
-            </p>
-          ))}
-          <InputPair
+          <FloatingInput
             label="비밀번호"
-            description="안전한 비밀번호를 설정해주세요."
             id="password"
             name="password"
             required
             type="password"
-            placeholder="비밀번호를 입력하세요"
+            error={actionData?.formError?.password?.map((e) => e.message).join(" ")}
           />
-          {actionData?.formError?.password?.map(({ key, message }) => (
-            <p key={key} className="text-sm text-red-500">
-              {message}
-            </p>
-          ))}
           <div className="flex items-start space-x-2 mt-4">
             <Checkbox
               id="terms"
