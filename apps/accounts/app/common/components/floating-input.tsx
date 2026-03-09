@@ -24,9 +24,8 @@ export default function FloatingInput({
         {...rest}
         placeholder=" "
         className={cn(
-          // Fixed height — padding never changes, so input size is always stable
           "peer w-full rounded-md border border-input bg-background px-3 pt-5 pb-2 text-sm text-foreground outline-none",
-          "transition-[border-color,box-shadow]",
+          "transition-[border-color,box-shadow] duration-200",
           "focus:border-ring focus:ring-1 focus:ring-ring",
           "disabled:cursor-not-allowed disabled:opacity-50",
           error && "border-destructive focus:border-destructive focus:ring-destructive",
@@ -36,14 +35,15 @@ export default function FloatingInput({
       <label
         htmlFor={inputId}
         className={cn(
-          // Always absolutely positioned — never affects input layout
-          "pointer-events-none absolute left-3 origin-left transition-all duration-200 ease-out",
-          // Default: label floated up (when input has value)
-          "top-1.5 scale-75 text-sm font-medium text-muted-foreground",
-          // Placeholder shown = input is empty & unfocused → label goes to center
-          "peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100",
-          // Focused → label floats back up
-          "peer-focus:top-1.5 peer-focus:translate-y-0 peer-focus:scale-75 peer-focus:text-primary",
+          // top fixed at top-2, only transform/color animate (GPU-accelerated)
+          "pointer-events-none absolute left-3 top-2 origin-top-left",
+          "transition-all duration-200 ease-out",
+          // Floated-up state (has value): scale down from top-left
+          "scale-75 translate-y-0 text-sm text-muted-foreground",
+          // Empty & unfocused: restore to center (scale back up, translateY down)
+          "peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-2",
+          // Focused: float back up
+          "peer-focus:scale-75 peer-focus:translate-y-0 peer-focus:text-primary",
           error && "text-destructive peer-focus:text-destructive",
         )}
       >
