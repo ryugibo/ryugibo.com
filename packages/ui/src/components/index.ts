@@ -1,5 +1,7 @@
+export * from "./floating-input.tsx";
 export * from "./loading-button.tsx";
 
+// ./ui/*.tsx
 export * from "./ui/alert.tsx";
 export * from "./ui/aspect-ratio.tsx";
 export * from "./ui/avatar.tsx";

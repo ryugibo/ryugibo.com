@@ -1,8 +1,7 @@
-import { LoadingButton } from "@ryugibo/ui";
+import { FloatingInput, LoadingButton } from "@ryugibo/ui";
 import { parseZodError } from "@ryugibo/utils";
 import { Form, Link, redirect, useNavigation, useSearchParams } from "react-router";
 import z from "zod";
-import FloatingInput from "~/common/components/floating-input.tsx";
 import AuthButtons from "~/features/auth/components/auth-buttons.tsx";
 import { createSSRClient } from "~/supabase.server.ts";
 import type { Route } from "./+types/login-page";

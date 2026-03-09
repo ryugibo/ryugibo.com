@@ -8,14 +8,7 @@ interface FloatingInputProps extends InputHTMLAttributes<HTMLInputElement> {
   error?: string;
 }
 
-export default function FloatingInput({
-  label,
-  error,
-  className,
-  id,
-  type,
-  ...rest
-}: FloatingInputProps) {
+function FloatingInput({ label, error, className, id, type, ...rest }: FloatingInputProps) {
   const generatedId = useId();
   const inputId = id ?? generatedId;
 
@@ -68,3 +61,5 @@ export default function FloatingInput({
     </div>
   );
 }
+
+export { FloatingInput };

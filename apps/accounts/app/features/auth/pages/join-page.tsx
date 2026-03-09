@@ -7,6 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  FloatingInput,
   LoadingButton,
   ScrollArea,
 } from "@ryugibo/ui";
@@ -16,7 +17,6 @@ import ReactMarkdown from "react-markdown";
 import { Form, Link, redirect, useNavigation, useSearchParams } from "react-router";
 import remarkGfm from "remark-gfm";
 import z from "zod";
-import FloatingInput from "~/common/components/floating-input.tsx";
 import AuthButtons from "~/features/auth/components/auth-buttons.tsx";
 import privacyPolicy from "~/features/auth/content/privacy-policy.md?raw";
 import { createSSRClient } from "~/supabase.server.ts";
