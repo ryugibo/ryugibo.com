@@ -4,7 +4,7 @@ import type { Route } from "./+types/auth-layout";
 
 export default function AuthLayout(_: Route.ComponentProps) {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 h-screen">
+    <div className="grid grid-cols-1 lg:grid-cols-2 grow">
       <FlickeringGrid
         squareSize={4}
         gridGap={5}

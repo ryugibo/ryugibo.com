@@ -6,7 +6,7 @@ import { createSSRClient } from "~/supabase-client.ts";
 import type { Route } from "./+types/home-page";
 
 export const meta = () => {
-  return [{ title: "Home | Accounts" }];
+  return [{ title: "홈 | ryugibo.com" }];
 };
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
@@ -30,7 +30,7 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
     <div className="flex flex-col items-center justify-center min-h-screen bg-muted/20 p-4">
       <div className="w-full max-w-4xl space-y-8">
         <div className="text-center space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight">Welcome back!</h1>
+          <h1 className="text-3xl font-bold tracking-tight">환영합니다!</h1>
           <p className="text-muted-foreground">{user.email}</p>
         </div>
 
@@ -44,10 +44,10 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
                   </span>
                   Den
                 </CardTitle>
-                <CardDescription>Your personal book library and reading tracker.</CardDescription>
+                <CardDescription>개인 도서 라이브러리 및 독서 기록 공간입니다.</CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground">Go to Den &rarr;</p>
+                <p className="text-sm text-muted-foreground">Den으로 이동하기 &rarr;</p>
               </CardContent>
             </Card>
           </a>
@@ -55,7 +55,7 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
 
         <div className="flex justify-center">
           <Button variant="ghost" asChild>
-            <Link to="/logout">Logout</Link>
+            <Link to="/logout">로그아웃</Link>
           </Button>
         </div>
       </div>

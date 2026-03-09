@@ -20,11 +20,14 @@
     "@ryugibo/vite-config": "workspace:*",
     "@supabase/ssr": "catalog:",
     "@supabase/supabase-js": "catalog:",
+    "@tailwindcss/typography": "catalog:",
     "isbot": "catalog:",
     "luxon": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
+    "react-markdown": "^10.1.0",
     "react-router": "catalog:",
+    "remark-gfm": "^4.0.1",
     "zod": "catalog:"
   },
   "devDependencies": {

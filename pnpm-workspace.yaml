@@ -11,6 +11,7 @@ catalogs:
     '@supabase/ssr': ^0.8.0
     '@supabase/supabase-js': ^2.94.1
     '@tailwindcss/vite': ^4.1.18
+    '@tailwindcss/typography': ^0.5.19
     '@types/luxon': ^3.7.1
     '@types/react': ^19.2.11
     '@types/react-dom': ^19.2.3

@@ -7,7 +7,7 @@ import { createSSRClient } from "~/supabase-client.ts";
 import type { Route } from "./+types/otp-start-page";
 
 export const meta = () => {
-  return [{ title: "OTP Start | wemake" }];
+  return [{ title: "OTP 로그인 | ryugibo.com" }];
 };
 
 const formSchema = z.object({
@@ -43,32 +43,34 @@ export default function OtpStartPage({ actionData }: Route.ComponentProps) {
   return (
     <div className="flex flex-col relative items-center justify-center h-full">
       <Button variant="ghost" asChild className="absolute top-8 right-8">
-        <Link to="/join">Join</Link>
+        <Link to="/join">회원가입</Link>
       </Button>
       <div className="flex flex-col items-center justify-center w-full max-w-md gap-10">
         <div className="text-center">
-          <h1 className="text-2xl font-semibold">Log in with OTP</h1>
+          <h1 className="text-2xl font-semibold">OTP로 로그인</h1>
           <p className="text-sm text-muted-foreground">
-            We will send you a 4-digit code to log in to your account.
+            계정에 로그인하기 위해 4자리 인증 코드를 보내드립니다.
           </p>
         </div>
         <Form method="post" className="w-full space-y-4">
           <InputPair
-            label="Email"
-            description="Enter your email"
+            label="이메일"
+            description="이메일 주소를 입력해주세요."
             id="email"
             name="email"
             required
             type="email"
-            placeholder="Enter your email"
+            placeholder="이메일을 입력하세요"
           />
           {actionData?.formError?.email?.map(({ key, message }) => (
             <p key={key} className="text-sm text-red-500">
               {message}
             </p>
           ))}
-          <LoadingButton isLoading={isSubmitting}>Send OTP</LoadingButton>
-          {actionData?.authError && <p className="text-sm text-red-500">Unknown Error occurred</p>}
+          <LoadingButton isLoading={isSubmitting}>인증 코드 전송</LoadingButton>
+          {actionData?.authError && (
+            <p className="text-sm text-red-500">알 수 없는 오류가 발생했습니다.</p>
+          )}
         </Form>
       </div>
     </div>
