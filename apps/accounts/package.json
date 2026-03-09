@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "^1.25.0",
-    "@cloudflare/workers-types": "^4.20260214.0",
+    "@cloudflare/workers-types": "catalog:",
     "@react-router/dev": "catalog:",
     "@ryugibo/react-router-kit": "workspace:*",
     "@tailwindcss/vite": "catalog:",
