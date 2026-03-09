@@ -11,7 +11,7 @@ import type { Route } from "./+types/root";
 import "~/app.css";
 import { Settings } from "luxon";
 
-import { createSSRClient } from "./supabase-client.ts";
+import { createSSRClient } from "./supabase.server.ts";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
