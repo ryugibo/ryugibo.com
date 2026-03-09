@@ -34,6 +34,25 @@ const formSchema = z.object({
   }),
 });
 
+const getSignUpErrorMessage = (code: string | undefined, message: string): string => {
+  switch (code) {
+    case "user_already_exists":
+    case "email_exists":
+      return "이미 가입된 이메일입니다.";
+    case "weak_password":
+      return "비밀번호가 너무 약합니다. 더 복잡한 비밀번호를 사용해주세요.";
+    case "over_request_rate_limit":
+      return "요청이 너무 많습니다. 잠시 후 다시 시도해 주세요.";
+    case "email_provider_disabled":
+      return "이메일 가입이 비활성화되어 있습니다.";
+    default:
+      if (message.includes("already registered") || message.includes("already exists")) {
+        return "이미 가입된 이메일입니다.";
+      }
+      return "회원가입 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.";
+  }
+};
+
 export const action = async ({ request }: Route.ActionArgs) => {
   const formData = await request.formData();
   const { success, data, error: formZodError } = formSchema.safeParse(Object.fromEntries(formData));
@@ -48,7 +67,8 @@ export const action = async ({ request }: Route.ActionArgs) => {
     password,
   });
   if (signUpError) {
-    return { signUpError };
+    const errorMessage = getSignUpErrorMessage(signUpError.code, signUpError.message);
+    return { error: errorMessage };
   }
 
   const url = new URL(request.url);
@@ -162,9 +182,7 @@ export default function JoinPage({ actionData }: Route.ComponentProps) {
             </p>
           ))}
           <LoadingButton isLoading={isSubmitting}>계정 생성하기</LoadingButton>
-          {actionData?.signUpError && (
-            <p className="text-sm text-red-500">{actionData.signUpError.message}</p>
-          )}
+          {actionData?.error && <p className="text-sm text-red-500">{actionData.error}</p>}
         </Form>
         <AuthButtons />
         <div className="text-sm text-center text-muted-foreground">
