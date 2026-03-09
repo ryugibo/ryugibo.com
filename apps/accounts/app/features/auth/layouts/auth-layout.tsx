@@ -27,7 +27,7 @@ export default function AuthLayout(_: Route.ComponentProps) {
           maxOpacity={0.5}
           flickerChance={0.2}
           color="#E11D49"
-          className="absolute inset-0 z-0"
+          className="absolute inset-0 z-0 mask-[radial-gradient(450px_circle_at_center,white,transparent)]"
         />
         <div className="z-10 text-foreground font-bold text-5xl tracking-widest flex items-center select-none">
           <span>ryugibo</span>
@@ -48,9 +48,13 @@ export default function AuthLayout(_: Route.ComponentProps) {
           style={{ maskImage: "linear-gradient(to bottom, black 40%, transparent 100%)" }}
         />
         {/* Mobile: ryugibo.com logo on top of grid */}
-        <div className="lg:hidden absolute top-0 inset-x-0 z-10 flex items-center justify-center px-6 pt-4 pointer-events-none select-none">
-          <span className="text-foreground font-bold text-xl tracking-widest">ryugibo</span>
-          <span className="text-primary font-bold text-xl tracking-widest animate-pulse">.com</span>
+        <div className="lg:hidden absolute top-0 inset-x-0 z-10 flex flex-col items-center pt-4 pointer-events-none select-none">
+          <div className="relative">
+            <span className="text-foreground font-bold text-xl tracking-widest">ryugibo</span>
+            <span className="absolute left-full text-primary font-bold text-xl tracking-widest animate-pulse">
+              .com
+            </span>
+          </div>
         </div>
         <div className="relative z-10 grow flex flex-col">
           <Outlet />
