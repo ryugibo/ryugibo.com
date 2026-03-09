@@ -1,6 +1,20 @@
 import { FlickeringGrid } from "@ryugibo/ui";
-import { Outlet } from "react-router";
+import { Outlet, redirect } from "react-router";
+import { createSSRClient } from "~/supabase.server.ts";
 import type { Route } from "./+types/auth-layout";
+
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { supabase } = createSSRClient(request);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (user) {
+    return redirect("/");
+  }
+
+  return null;
+};
 
 export default function AuthLayout(_: Route.ComponentProps) {
   return (

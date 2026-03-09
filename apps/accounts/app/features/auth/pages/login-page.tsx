@@ -11,17 +11,6 @@ export const meta = () => {
   return [{ title: "로그인 | ryugibo.com" }];
 };
 
-export const loader = async ({ request }: Route.LoaderArgs) => {
-  const { supabase } = createSSRClient(request);
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (user) {
-    return redirect("/");
-  }
-};
-
 const formSchema = z.object({
   email: z.email({ error: "유효하지 않은 이메일 형식입니다." }),
   password: z
