@@ -75,10 +75,7 @@ export default function JoinPage({ actionData }: Route.ComponentProps) {
   };
 
   return (
-    <div className="flex flex-col relative items-center justify-center h-full px-6 sm:px-12">
-      <Button variant="ghost" asChild className="absolute top-8 right-8">
-        <Link to={`/login?${searchParams.toString()}`}>로그인</Link>
-      </Button>
+    <div className="flex flex-col relative items-center justify-center h-full px-6 py-12 lg:py-0 sm:px-12">
       <div className="flex flex-col items-center justify-center w-full max-w-lg gap-8">
         <h1 className="text-2xl font-semibold">계정 생성</h1>
         <Form method="post" className="w-full space-y-4">
@@ -170,6 +167,15 @@ export default function JoinPage({ actionData }: Route.ComponentProps) {
           )}
         </Form>
         <AuthButtons />
+        <div className="text-sm text-center text-muted-foreground">
+          이미 계정이 있으신가요?{" "}
+          <Link
+            to={`/login?${searchParams.toString()}`}
+            className="text-primary hover:underline font-medium"
+          >
+            로그인
+          </Link>
+        </div>
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import { Button, LoadingButton } from "@ryugibo/ui";
+import { LoadingButton } from "@ryugibo/ui";
 import { parseZodError } from "@ryugibo/utils";
 import { Form, Link, redirect, useNavigation, useSearchParams } from "react-router";
 import z from "zod";
@@ -56,10 +56,7 @@ export default function LoginPage({ actionData }: Route.ComponentProps) {
   const [searchParams] = useSearchParams();
   const isSubmitting = navigation.state === "submitting" || navigation.state === "loading";
   return (
-    <div className="flex flex-col relative items-center justify-center h-full px-6 sm:px-12">
-      <Button variant="ghost" asChild className="absolute top-8 right-8 md:top-12 md:right-12">
-        <Link to={`/join?${searchParams.toString()}`}>회원가입</Link>
-      </Button>
+    <div className="flex flex-col relative items-center justify-center h-full px-6 py-12 lg:py-0 sm:px-12">
       <div className="flex flex-col items-center justify-center w-full max-w-lg gap-8">
         <h1 className="text-2xl font-semibold">로그인</h1>
         <Form method="post" className="w-full space-y-4">
@@ -97,6 +94,15 @@ export default function LoginPage({ actionData }: Route.ComponentProps) {
           )}
         </Form>
         <AuthButtons />
+        <div className="text-sm text-center text-muted-foreground">
+          계정이 없으신가요?{" "}
+          <Link
+            to={`/join?${searchParams.toString()}`}
+            className="text-primary hover:underline font-medium"
+          >
+            회원가입
+          </Link>
+        </div>
       </div>
     </div>
   );

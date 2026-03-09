@@ -27,7 +27,7 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
   const denUrl = resolveAppUrl("den");
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-muted/20 p-4">
+    <div className="flex flex-col items-center justify-center h-full grow bg-muted/20 px-6 py-12 lg:py-0 sm:px-12">
       <div className="w-full max-w-4xl space-y-8">
         <div className="text-center space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">환영합니다!</h1>
