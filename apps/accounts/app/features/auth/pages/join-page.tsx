@@ -19,7 +19,7 @@ import z from "zod";
 import InputPair from "~/common/components/input-pair.tsx";
 import AuthButtons from "~/features/auth/components/auth-buttons.tsx";
 import privacyPolicy from "~/features/auth/content/privacy-policy.md?raw";
-import { createSSRClient } from "~/supabase-client.ts";
+import { createSSRClient } from "~/supabase.server.ts";
 import type { Route } from "./+types/join-page";
 
 export const meta = () => {

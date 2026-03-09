@@ -1,8 +1,23 @@
-import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@ryugibo/ui";
+import {
+  Button,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@ryugibo/ui";
 import { BookOpen } from "@ryugibo/ui/icons";
 import { resolveAppUrl } from "@ryugibo/utils";
-import { Link, redirect } from "react-router";
-import { createSSRClient } from "~/supabase-client.ts";
+import { useState } from "react";
+import { Form, redirect } from "react-router";
+import { createAdminClient, createSSRClient } from "~/supabase.server.ts";
 import type { Route } from "./+types/home-page";
 
 export const meta = () => {
@@ -22,9 +37,38 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   return { user };
 };
 
-export default function HomePage({ loaderData }: Route.ComponentProps) {
+export const action = async ({ request, context }: Route.ActionArgs) => {
+  const { supabase, headers } = createSSRClient(request);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return redirect("/login", { headers });
+  }
+
+  const serviceRoleKey = context.cloudflare?.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!serviceRoleKey) {
+    return { error: "서비스 설정 오류입니다. 관리자에게 문의해 주세요." };
+  }
+
+  const adminClient = createAdminClient(serviceRoleKey);
+
+  const { error } = await adminClient.auth.admin.deleteUser(user.id);
+
+  if (error) {
+    return { error: "계정 삭제 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요." };
+  }
+
+  await supabase.auth.signOut();
+  return redirect("/login", { headers });
+};
+
+export default function HomePage({ loaderData, actionData }: Route.ComponentProps) {
   const { user } = loaderData;
   const denUrl = resolveAppUrl("den");
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   return (
     <div className="flex flex-col items-center justify-center h-full grow bg-muted/20 px-6 py-12 lg:py-0 sm:px-12">
@@ -53,10 +97,39 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
           </a>
         </div>
 
-        <div className="flex justify-center">
-          <Button variant="ghost" asChild>
-            <Link to="/logout">로그아웃</Link>
-          </Button>
+        <div className="flex flex-col items-center gap-2">
+          <Form method="get" action="/logout">
+            <Button type="submit" variant="ghost">
+              로그아웃
+            </Button>
+          </Form>
+
+          <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+            <DialogTrigger asChild>
+              <Button variant="ghost" className="text-destructive hover:text-destructive text-sm">
+                회원 탈퇴
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>정말로 탈퇴하시겠습니까?</DialogTitle>
+                <DialogDescription>
+                  계정을 삭제하면 모든 데이터가 영구적으로 삭제되며 복구할 수 없습니다.
+                </DialogDescription>
+              </DialogHeader>
+              {actionData?.error && <p className="text-sm text-destructive">{actionData.error}</p>}
+              <DialogFooter className="gap-2">
+                <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
+                  취소
+                </Button>
+                <Form method="post" onSubmit={() => setIsDeleteDialogOpen(false)}>
+                  <Button type="submit" variant="destructive">
+                    탈퇴하기
+                  </Button>
+                </Form>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
     </div>

@@ -1,7 +1,7 @@
 import { redirect } from "react-router";
 import z from "zod";
 import { OAUTH_PROVIDERS } from "~/features/auth/constants.ts";
-import { createSSRClient } from "~/supabase-client.ts";
+import { createSSRClient } from "~/supabase.server.ts";
 import type { Route } from "./+types/social-complete-page";
 
 const paramsSchema = z.object({

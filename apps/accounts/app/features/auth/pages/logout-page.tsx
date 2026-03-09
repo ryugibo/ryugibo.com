@@ -1,5 +1,5 @@
 import { redirect } from "react-router";
-import { createSSRClient } from "~/supabase-client.ts";
+import { createSSRClient } from "~/supabase.server.ts";
 import type { Route } from "./+types/logout-page";
 
 export const loader = async ({ request }: Route.LoaderArgs) => {

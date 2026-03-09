@@ -3,7 +3,7 @@ import { parseZodError } from "@ryugibo/utils";
 import { Form, Link, redirect, useNavigation, useSearchParams } from "react-router";
 import z from "zod";
 import InputPair from "~/common/components/input-pair.tsx";
-import { createSSRClient } from "~/supabase-client.ts";
+import { createSSRClient } from "~/supabase.server.ts";
 import type { Route } from "./+types/otp-complete-page";
 
 export const meta = () => {

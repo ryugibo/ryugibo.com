@@ -4,7 +4,7 @@ import { Form, Link, redirect, useNavigation, useSearchParams } from "react-rout
 import z from "zod";
 import InputPair from "~/common/components/input-pair.tsx";
 import AuthButtons from "~/features/auth/components/auth-buttons.tsx";
-import { createSSRClient } from "~/supabase-client.ts";
+import { createSSRClient } from "~/supabase.server.ts";
 import type { Route } from "./+types/login-page";
 
 export const meta = () => {
