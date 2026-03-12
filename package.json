@@ -7,6 +7,7 @@
     "dev": "turbo run dev",
     "dev:accounts": "turbo run dev --filter=accounts",
     "dev:den": "turbo run dev --filter=den --filter=accounts --filter=den-api",
+    "dev:snipt": "turbo run dev --filter=snipt --filter=accounts",
     "dev:wemake": "turbo run dev --filter=wemake --filter=accounts",
     "dev:@emails": "turbo run dev --filter=@ryugibo/emails",
     "lint": "turbo run lint",
