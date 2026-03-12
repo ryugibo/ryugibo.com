@@ -1,17 +1,116 @@
 ---
+import { desc, eq } from "@ryugibo/db";
+import { DateTime } from "luxon";
+import { profiles, snippets } from "../db/schema.ts";
+import AppLayout from "../layouts/AppLayout.astro";
+import { getDb } from "../lib/db.server.ts";
 
+const env = import.meta.env;
+const db = getDb(env);
+
+// Fetch snippets
+const allSnippets = await db
+  .select({
+    id: snippets.id,
+    content: snippets.content,
+    createdAt: snippets.created_at,
+    authorName: profiles.username,
+  })
+  .from(snippets)
+  .leftJoin(profiles, eq(snippets.profile_id, profiles.id))
+  .orderBy(desc(snippets.created_at))
+  .limit(50);
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<AppLayout>
+  <div class="space-y-8">
+    <!-- Header -->
+    <header class="flex justify-between items-center py-4 border-b border-zinc-200 dark:border-zinc-800">
+      <h1 class="text-xl font-bold tracking-tight">Snipt</h1>
+      <div class="flex items-center gap-4">
+        {
+          Astro.locals.profile && (
+            <span class="text-sm text-zinc-500 font-medium">@{Astro.locals.profile.username}</span>
+          )
+        }
+      </div>
+    </header>
+
+    <!-- Composer -->
+    <section>
+      <form action="/api/snippets" method="POST" id="compose-form" class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-sm overflow-hidden focus-within:ring-2 focus-within:ring-primary-500 focus-within:border-transparent transition-all">
+        <textarea
+          name="content"
+          id="content"
+          rows="3"
+          maxlength="500"
+          placeholder="What did you learn today?"
+          class="block w-full resize-none border-0 bg-transparent py-4 mx-4 text-zinc-900 dark:text-zinc-50 placeholder:text-zinc-400 focus:ring-0 sm:text-lg sm:leading-6"
+          required
+        ></textarea>
+        
+        <div class="flex items-center justify-between px-4 py-3 bg-zinc-50 dark:bg-zinc-950/50 border-t border-zinc-200 dark:border-zinc-800">
+          <span id="char-count" class="text-xs font-medium text-zinc-400">0 / 500</span>
+          <button
+            type="submit"
+            class="inline-flex items-center rounded-full bg-zinc-900 dark:bg-zinc-100 px-4 py-1.5 text-sm font-semibold text-white dark:text-zinc-900 shadow-sm hover:bg-zinc-700 dark:hover:bg-zinc-200 focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-primary-600 transition-colors"
+          >
+            Snipt
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Feed -->
+    <section class="space-y-4">
+      {allSnippets.map((snippet) => (
+        <article class="p-6 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-sm">
+          <header class="flex items-center justify-between mb-2">
+            <span class="font-semibold text-sm">@{snippet.authorName}</span>
+            <time datetime={snippet.createdAt?.toISOString()} class="text-xs text-zinc-500">
+              {snippet.createdAt ? DateTime.fromJSDate(snippet.createdAt).toRelative() : ''}
+            </time>
+          </header>
+          <div class="prose dark:prose-invert prose-zinc max-w-none text-sm wrap-break-word whitespace-pre-wrap">
+            {snippet.content}
+          </div>
+        </article>
+      ))}
+      
+      {allSnippets.length === 0 && (
+        <div class="text-center py-12 text-zinc-500 text-sm">
+          No snipts yet. Be the first to write something!
+        </div>
+      )}
+    </section>
+  </div>
+</AppLayout>
+
+<script>
+  const textarea = document.getElementById('content') as HTMLTextAreaElement;
+  const charCount = document.getElementById('char-count');
+  
+  if (textarea && charCount) {
+    textarea.addEventListener('input', () => {
+      const current = textarea.value.length;
+      charCount.textContent = `${current} / 500`;
+      
+      if (current >= 500) {
+        charCount.classList.add('text-red-500');
+        charCount.classList.remove('text-zinc-400');
+      } else {
+        charCount.classList.remove('text-red-500');
+        charCount.classList.add('text-zinc-400');
+      }
+    });
+
+    // Auto-resize
+    textarea.addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = (this.scrollHeight) + 'px';
+      if (this.value === '') {
+         this.style.height = 'auto';
+      }
+    });
+  }
+</script>

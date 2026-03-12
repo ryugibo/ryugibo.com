@@ -7,11 +7,29 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro check && astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio",
+    "check-types": "astro check"
   },
   "dependencies": {
-    "astro": "^6.0.3"
+    "@astrojs/check": "^0.9.7",
+    "@astrojs/cloudflare": "^13.1.0",
+    "@ryugibo/db": "workspace:*",
+    "@ryugibo/ui": "workspace:*",
+    "@ryugibo/utils": "workspace:*",
+    "@supabase/ssr": "catalog:",
+    "@supabase/supabase-js": "catalog:",
+    "@tailwindcss/vite": "catalog:",
+    "astro": "^6.0.3",
+    "luxon": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@types/luxon": "catalog:",
+    "wrangler": "catalog:"
   }
 }
