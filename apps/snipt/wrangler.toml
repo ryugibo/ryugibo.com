@@ -1,0 +1,8 @@
+#:schema node_modules/wrangler/config-schema.json
+
+name = "snipt"
+compatibility_date = "2026-03-12"
+compatibility_flags = ["nodejs_compat"]
+
+[observability]
+enabled = true

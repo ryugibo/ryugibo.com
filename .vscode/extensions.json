@@ -1,3 +1,8 @@
 {
-  "recommendations": ["biomejs.biome", "bradlc.vscode-tailwindcss", "astro-build.astro-vscode"]
+  "recommendations": [
+    "biomejs.biome",
+    "bradlc.vscode-tailwindcss",
+    "astro-build.astro-vscode",
+    "tamasfe.even-better-toml"
+  ]
 }

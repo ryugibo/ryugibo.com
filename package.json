@@ -11,14 +11,15 @@
     "dev:wemake": "turbo run dev --filter=wemake --filter=accounts",
     "dev:@emails": "turbo run dev --filter=@ryugibo/emails",
     "lint": "turbo run lint",
-    "format": "biome check .",
-    "format:fix": "biome check . --write",
-    "check-types": "biome check . --error-on-warnings && turbo run check-types"
+    "format": "biome check . && taplo format --check",
+    "format:fix": "biome check . --write && taplo format",
+    "check-types": "biome check . --error-on-warnings && taplo format --check && turbo run check-types"
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.15",
     "@commitlint/cli": "^20.4.1",
     "@commitlint/config-conventional": "^20.4.1",
+    "@taplo/cli": "^0.7.0",
     "@types/node": "^25.2.3",
     "drizzle-kit": "^0.31.9",
     "husky": "^9.1.7",

@@ -19,6 +19,9 @@
   "[jsonc]": {
     "editor.defaultFormatter": "biomejs.biome"
   },
+  "[toml]": {
+    "editor.defaultFormatter": "tamasfe.even-better-toml"
+  },
   "editor.quickSuggestions": {
     "strings": "on"
   },
